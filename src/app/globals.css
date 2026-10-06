@@ -1,0 +1,121 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  /* Variáveis em formato HSL sem vírgula, para que o Tailwind possa aplicar
+     opacidade via <alpha-value> (ex.: border-border/60). */
+  :root {
+    color-scheme: light;
+
+    --border: 220 13% 91%;
+  }
+
+  .dark {
+    color-scheme: dark;
+
+    --border: 222 17% 18%;
+  }
+
+  * {
+    @apply border-border;
+  }
+
+  html {
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  body {
+    @apply bg-ink-50 text-ink-900 antialiased dark:bg-ink-950 dark:text-ink-50;
+    font-feature-settings: 'cv11', 'ss01';
+  }
+
+  /* Foco visível e consistente em todo o teclado. */
+  :focus-visible {
+    @apply outline-none ring-2 ring-brand-500 ring-offset-2 ring-offset-white dark:ring-offset-ink-950;
+  }
+
+  ::selection {
+    @apply bg-brand-500/20;
+  }
+
+  /* Scrollbar discreto — não deve competir com o conteúdo. */
+  ::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+  ::-webkit-scrollbar-track {
+    @apply bg-transparent;
+  }
+  ::-webkit-scrollbar-thumb {
+    @apply rounded-full bg-ink-300/60 dark:bg-ink-700;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    @apply bg-ink-400 dark:bg-ink-600;
+  }
+}
+
+@layer components {
+  /* Superfície padrão de cards e painéis. */
+  .surface {
+    @apply rounded-2xl border border-ink-200/80 bg-white shadow-card
+           dark:border-ink-800 dark:bg-ink-900 dark:shadow-none;
+  }
+
+  .surface-hover {
+    @apply transition-all duration-200 ease-premium hover:border-brand-300 hover:shadow-card-hover dark:hover:border-brand-800;
+  }
+
+  /* Rótulo de seção, discreto e consistente. */
+  .label {
+    @apply text-xs font-medium uppercase tracking-wider text-ink-500 dark:text-ink-400;
+  }
+
+  /* Gradiente da marca — usado no botão primário e em detalhes de destaque. */
+  .brand-gradient {
+    @apply bg-gradient-to-br from-brand-500 to-brand-700;
+  }
+
+  .brand-text-gradient {
+    @apply bg-gradient-to-br from-brand-400 to-brand-700 bg-clip-text text-transparent;
+  }
+
+  /* Halo roxo muito discreto, só em surfaces de destaque. */
+  .brand-glow {
+    box-shadow: 0 0 0 1px rgb(139 92 246 / 0.12), 0 10px 40px -12px rgb(139 92 246 / 0.28);
+  }
+
+  /* Shimmer do skeleton. */
+  .skeleton {
+    @apply relative overflow-hidden bg-ink-200/70 dark:bg-ink-800;
+  }
+  .skeleton::after {
+    @apply absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/50 to-transparent dark:via-white/5;
+    animation: shimmer 1.6s infinite;
+    content: '';
+  }
+
+  /* Tabela densa e legível. */
+  .data-table {
+    @apply w-full text-left text-sm;
+  }
+  .data-table thead th {
+    @apply whitespace-nowrap border-b border-ink-200 px-4 py-3 text-xs font-medium uppercase tracking-wider text-ink-500 dark:border-ink-800 dark:text-ink-400;
+  }
+  .data-table tbody td {
+    @apply border-b border-ink-100 px-4 py-3.5 dark:border-ink-800/70;
+  }
+  .data-table tbody tr {
+    @apply transition-colors duration-150 hover:bg-ink-50 dark:hover:bg-ink-800/40;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
