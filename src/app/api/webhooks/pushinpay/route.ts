@@ -3,6 +3,7 @@ import { createAdminClient, isAdminConfigured } from '@/lib/supabase/admin'
 import { mapStatus, verifyWebhookSecret, webhookHeaderName } from '@/services/pix'
 import { createNotification } from '@/services/notifications'
 import { roundCurrency } from '@/services/payments/rules'
+import { dispatchToUser } from '@/services/webhooks/dispatcher'
 
 /**
  * Webhook da Pushin Pay.
@@ -137,6 +138,13 @@ export async function POST(request: NextRequest) {
       body: `Recebemos R$ ${Number(pix.amount).toFixed(2)} via PIX.`,
       type: 'payment',
       link: '/vendas',
+    })
+    // Dispara webhook de saída pro merchant (se ele configurou).
+    // Fire-and-forget: não bloqueia a response do PSP.
+    void dispatchToUser(pix.user_id, 'charge.paid', {
+      transaction_id: pix.transaction_id,
+      amount: Number(pix.amount),
+      paid_at: new Date().toISOString(),
     })
   } else if (status === 'canceled' || status === 'expired') {
     await createNotification({

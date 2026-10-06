@@ -123,7 +123,7 @@ function BannerSlide({ banner }: { banner: Banner }) {
       fill
       sizes="(max-width: 1024px) 100vw, 900px"
       className="object-cover"
-      priority={false}
+      priority
     />
   ) : (
     <div

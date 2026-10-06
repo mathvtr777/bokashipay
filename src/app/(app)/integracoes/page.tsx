@@ -1,7 +1,9 @@
 import * as React from 'react'
 import type { Metadata } from 'next'
+import Link from 'next/link'
 import { PageHeader } from '@/components/layout/app-shell'
 import { UtmfyIntegration } from '@/components/integracoes/utmfy-integration'
+import * as Icons from '@/components/ui/icons'
 import { getIntegration, getIntegrationEvents } from '@/lib/queries'
 
 export const metadata: Metadata = { title: 'Integrações' }
@@ -25,8 +27,26 @@ export default async function IntegrationsPage() {
     <div className="space-y-6">
       <PageHeader
         title="Integrações"
-        description="Conecte seus serviços de rastreamento e automação."
+        description="Conecte seus serviços de rastreamento, automação e expanda via API."
       />
+
+      <Link
+        href="/integracoes/api"
+        className="surface flex items-center justify-between gap-4 p-5 transition-colors hover:bg-ink-50 dark:hover:bg-ink-900"
+      >
+        <div className="flex items-center gap-3">
+          <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-brand-50 text-brand-600 dark:bg-brand-500/10 dark:text-brand-400">
+            <Icons.Barcode />
+          </span>
+          <div>
+            <p className="font-medium text-ink-900 dark:text-white">API & Webhooks</p>
+            <p className="text-xs text-ink-500 dark:text-ink-400">
+              Gere API keys e cadastre webhooks de saída
+            </p>
+          </div>
+        </div>
+        <Icons.ArrowRight className="h-4 w-4 text-ink-400" />
+      </Link>
 
       <UtmfyIntegration
         integration={integration}

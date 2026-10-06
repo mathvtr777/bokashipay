@@ -24,6 +24,32 @@ export type IntegrationEvent = Database['public']['Tables']['integration_events'
 export type Notification = Database['public']['Tables']['notifications']['Row']
 export type Banner = Database['public']['Tables']['banners']['Row']
 export type Settings = Database['public']['Tables']['settings']['Row']
+export type ApiKey = Database['public']['Tables']['api_keys']['Row']
+export type WebhookEndpoint = Database['public']['Tables']['webhook_endpoints']['Row']
+export type Product = Database['public']['Tables']['products']['Row']
+
+/** Status possíveis de um produto. */
+export type ProductStatus = 'draft' | 'active' | 'archived'
+
+/** Modelo de cobrança do produto. Assinatura por enquanto é só flag — pagamento ainda é one-time. */
+export type ProductModel = 'one_time' | 'subscription'
+
+/**
+ * Configurações visuais e funcionais do checkout público.
+ * Persistidas como JSONB em `products.checkout_settings`.
+ */
+export interface ProductCheckoutSettings {
+  /** Cor primária do checkout (hex). Default: brand-500. */
+  primaryColor?: string
+  /** URL de banner/imagem de capa. */
+  bannerUrl?: string
+  /** Mensagem mostrada após pagamento confirmado. */
+  successMessage?: string
+  /** Pedir telefone no formulário. */
+  requirePhone?: boolean
+  /** Pedir CPF no formulário. */
+  requireDocument?: boolean
+}
 
 // -----------------------------------------------------------------------------
 // Agregados do dashboard

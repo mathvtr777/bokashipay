@@ -5,6 +5,7 @@ import type { Database, Json } from '@/lib/database.types'
 import type {
   CustomerWithStats, Customer, Transaction, PixTransaction, BankAccount, WithdrawalRequest,
   FinancialEntry, IntegrationSafe, IntegrationEvent, Notification, Profile, DateRange,
+  Product,
 } from '@/lib/types'
 import {
   computeAvailableBalance, computePendingBalance, computeConversionRate,
@@ -519,6 +520,129 @@ export async function getSettings() {
   const supabase = await createClient()
   const { data } = await supabase.from('settings').select('*').maybeSingle()
   return data
+}
+
+// -----------------------------------------------------------------------------
+// Produtos
+// -----------------------------------------------------------------------------
+
+export async function getProducts(): Promise<Product[]> {
+  const supabase = await createClient()
+  const { data, error } = await supabase
+    .from('products')
+    .select('*')
+    .order('created_at', { ascending: false })
+  if (error) throw new Error(error.message)
+  return (data ?? []) as Product[]
+}
+
+// -----------------------------------------------------------------------------
+// API pública
+// -----------------------------------------------------------------------------
+
+export async function getApiKeys(userId: string) {
+  const supabase = await createClient()
+  const { data, error } = await supabase
+    .from('api_keys')
+    .select('id, name, prefix, suffix, last_used_at, expires_at, revoked_at, created_at')
+    .eq('user_id', userId)
+    .order('created_at', { ascending: false })
+  if (error) throw new Error(error.message)
+  return data ?? []
+}
+
+export async function getWebhookEndpoints(userId: string) {
+  const supabase = await createClient()
+  const { data, error } = await supabase
+    .from('webhook_endpoints')
+    .select('id, url, events, active, last_delivery_at, last_status, last_error, created_at')
+    .eq('user_id', userId)
+    .order('created_at', { ascending: false })
+  if (error) throw new Error(error.message)
+  return data ?? []
+}
+
+// -----------------------------------------------------------------------------
+// Checkout público
+// -----------------------------------------------------------------------------
+
+/**
+ * Carrega um produto pelo slug. Server-side, sem depender de usuário logado
+ * (o checkout é público). Usa service role pra bypassar RLS.
+ */
+export async function getProductBySlug(slug: string) {
+  const { createAdminClient } = await import('@/lib/supabase/admin')
+  const admin = createAdminClient()
+  const { data, error } = await admin
+    .from('products')
+    .select('*')
+    .eq('slug', slug)
+    .maybeSingle()
+  if (error) throw new Error(error.message)
+  return data as Product | null
+}
+
+export interface CheckoutSocialProof {
+  totalSold: number
+  /** Nomes abreviados dos compradores mais recentes, mais novo primeiro. */
+  recent: { name: string; minutesAgo: number }[]
+  /** Pessoas que compraram nos últimos 5 minutos. */
+  buyingNow: number
+}
+
+/**
+ * Social proof: total de vendas aprovadas + nomes recentes + quantos
+ * estão comprando agora (últimos 5 minutos).
+ */
+export async function getCheckoutSocialProof(
+  productId: string,
+): Promise<CheckoutSocialProof> {
+  const { createAdminClient } = await import('@/lib/supabase/admin')
+  const admin = createAdminClient()
+  const now = Date.now()
+  const fiveMinAgo = new Date(now - 5 * 60 * 1000).toISOString()
+
+  // Total vendido (approved)
+  const { count: totalSold } = await admin
+    .from('transactions')
+    .select('id', { count: 'exact', head: true })
+    .eq('product_id', productId)
+    .eq('status', 'approved')
+
+  // Comprando agora (últimos 5min, qualquer status: indica interesse)
+  const { count: buyingNow } = await admin
+    .from('transactions')
+    .select('id', { count: 'exact', head: true })
+    .eq('product_id', productId)
+    .gte('created_at', fiveMinAgo)
+
+  // Últimos compradores aprovados (nomes)
+  const { data: recentTx } = await admin
+    .from('transactions')
+    .select('payer_name, created_at')
+    .eq('product_id', productId)
+    .eq('status', 'approved')
+    .not('payer_name', 'is', null)
+    .order('created_at', { ascending: false })
+    .limit(5)
+
+  const recent = (recentTx ?? []).map((t) => {
+    const fullName = (t.payer_name ?? '').trim()
+    const first = fullName.split(/\s+/)[0] ?? ''
+    const last = fullName.split(/\s+/).slice(-1)[0] ?? ''
+    const abbrev = last ? `${first} ${last[0]}.` : first
+    const minutesAgo = Math.max(
+      0,
+      Math.round((now - new Date(t.created_at).getTime()) / 60000),
+    )
+    return { name: abbrev, minutesAgo }
+  })
+
+  return {
+    totalSold: totalSold ?? 0,
+    recent,
+    buyingNow: buyingNow ?? 0,
+  }
 }
 
 export type { Json, Database }

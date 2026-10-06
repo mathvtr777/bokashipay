@@ -81,6 +81,7 @@ export interface Database {
           id: string
           user_id: string
           customer_id: string | null
+          product_id: string | null
           amount: number
           fee: number
           net_amount: number
@@ -97,6 +98,7 @@ export interface Database {
           id?: string
           user_id: string
           customer_id?: string | null
+          product_id?: string | null
           amount: number
           fee?: number
           net_amount?: number
@@ -113,6 +115,7 @@ export interface Database {
           id?: string
           user_id?: string
           customer_id?: string | null
+          product_id?: string | null
           amount?: number
           fee?: number
           net_amount?: number
@@ -442,6 +445,51 @@ export interface Database {
         }
         Relationships: []
       }
+      products: {
+        Row: {
+          id: string
+          user_id: string
+          name: string
+          slug: string
+          description: string | null
+          price_cents: number
+          image_url: string | null
+          status: string
+          model: string
+          checkout_settings: Json
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          user_id: string
+          name: string
+          slug: string
+          description?: string | null
+          price_cents: number
+          image_url?: string | null
+          status?: string
+          model?: string
+          checkout_settings?: Json
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          user_id?: string
+          name?: string
+          slug?: string
+          description?: string | null
+          price_cents?: number
+          image_url?: string | null
+          status?: string
+          model?: string
+          checkout_settings?: Json
+          created_at?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       settings: {
         Row: {
           user_id: string
@@ -475,6 +523,84 @@ export interface Database {
           theme?: string
           created_at?: string
           updated_at?: string
+        }
+        Relationships: []
+      }
+      api_keys: {
+        Row: {
+          id: string
+          user_id: string
+          name: string
+          prefix: string
+          key_hash: string
+          suffix: string
+          last_used_at: string | null
+          expires_at: string | null
+          revoked_at: string | null
+          created_at: string
+        }
+        Insert: {
+          id?: string
+          user_id: string
+          name: string
+          prefix: string
+          key_hash: string
+          suffix: string
+          last_used_at?: string | null
+          expires_at?: string | null
+          revoked_at?: string | null
+          created_at?: string
+        }
+        Update: {
+          id?: string
+          user_id?: string
+          name?: string
+          prefix?: string
+          key_hash?: string
+          suffix?: string
+          last_used_at?: string | null
+          expires_at?: string | null
+          revoked_at?: string | null
+          created_at?: string
+        }
+        Relationships: []
+      }
+      webhook_endpoints: {
+        Row: {
+          id: string
+          user_id: string
+          url: string
+          secret: string
+          events: string[]
+          active: boolean
+          last_delivery_at: string | null
+          last_status: number | null
+          last_error: string | null
+          created_at: string
+        }
+        Insert: {
+          id?: string
+          user_id: string
+          url: string
+          secret: string
+          events?: string[]
+          active?: boolean
+          last_delivery_at?: string | null
+          last_status?: number | null
+          last_error?: string | null
+          created_at?: string
+        }
+        Update: {
+          id?: string
+          user_id?: string
+          url?: string
+          secret?: string
+          events?: string[]
+          active?: boolean
+          last_delivery_at?: string | null
+          last_status?: number | null
+          last_error?: string | null
+          created_at?: string
         }
         Relationships: []
       }

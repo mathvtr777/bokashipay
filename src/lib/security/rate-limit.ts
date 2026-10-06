@@ -92,6 +92,8 @@ export function clientIp(request: NextRequest): string {
 // Limites instanciados uma vez por módulo (compartilhados entre requests).
 export const loginLimiter = new RateLimiter({ limit: 5, windowSeconds: 60 })
 export const registerLimiter = new RateLimiter({ limit: 3, windowSeconds: 60 })
+/** API pública: 60 req/min por API key (não por IP). */
+export const apiLimiter = new RateLimiter({ limit: 60, windowSeconds: 60 })
 
 // Sweep a cada 5 minutos. Em Vercel, cada cold start zera — em produção
 // durável o sweep impede que o Map cresça indefinidamente.
@@ -100,6 +102,7 @@ if (typeof setInterval !== 'undefined') {
     () => {
       loginLimiter.sweep()
       registerLimiter.sweep()
+      apiLimiter.sweep()
     },
     5 * 60 * 1000,
   )
