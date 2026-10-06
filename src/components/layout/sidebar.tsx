@@ -49,15 +49,28 @@ export function Sidebar({
 
   const signOut = async () => {
     setSigningOut(true)
-    const supabase = createClient()
-    const { error } = await supabase.auth.signOut()
-    if (error) {
-      toast({ title: 'Não foi possível sair', description: error.message, tone: 'error' })
+    try {
+      const res = await fetch('/api/auth/logout', { method: 'POST' })
+      if (!res.ok) {
+        const body = (await res.json().catch(() => ({}))) as { error?: string }
+        toast({
+          title: 'Não foi possível sair',
+          description: body.error ?? 'Tente novamente.',
+          tone: 'error',
+        })
+        setSigningOut(false)
+        return
+      }
+      router.push('/login')
+      router.refresh()
+    } catch (err) {
+      toast({
+        title: 'Não foi possível sair',
+        description: err instanceof Error ? err.message : 'Erro de rede.',
+        tone: 'error',
+      })
       setSigningOut(false)
-      return
     }
-    router.push('/login')
-    router.refresh()
   }
 
   return (
