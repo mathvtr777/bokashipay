@@ -1,7 +1,7 @@
 import * as React from 'react'
 import { cn } from '@/lib/utils'
 import { formatCurrency, formatNumber, formatPercent } from '@/lib/format'
-import type { DashboardMetrics } from '@/lib/types'
+import type { DashboardMetrics, RangeChange } from '@/lib/types'
 import * as Icons from '@/components/ui/icons'
 import { SkeletonCard } from '@/components/ui/feedback'
 
@@ -50,6 +50,7 @@ export function StatCards({
       icon: Icons.TrendUp,
       tone: 'positive' as const,
       hint: 'Vendas aprovadas',
+      change: metrics.change.totalReceived,
     },
     {
       label: 'Vendas aprovadas',
@@ -57,6 +58,7 @@ export function StatCards({
       icon: Icons.Sales,
       tone: 'info' as const,
       hint: `de ${formatNumber(metrics.totalSales)} no total`,
+      change: metrics.change.approvedSales,
     },
     {
       label: 'Conversão',
@@ -89,12 +91,14 @@ function StatCard({
   icon: IconComponent,
   tone,
   hint,
+  change,
 }: {
   label: string
   value: string
   icon: (props: { className?: string }) => React.ReactElement
   tone: keyof typeof TONES
   hint: string
+  change?: RangeChange
 }) {
   return (
     <div className="surface surface-hover p-5">
@@ -115,7 +119,37 @@ function StatCard({
       <p className="mt-3 text-2xl font-semibold tracking-tight text-ink-900 dark:text-white">
         {value}
       </p>
-      <p className="mt-1 truncate text-xs text-ink-500 dark:text-ink-400">{hint}</p>
+      <div className="mt-1 flex items-center gap-2 text-xs text-ink-500 dark:text-ink-400">
+        <span className="truncate">{hint}</span>
+        {change && <ChangeBadge change={change} />}
+      </div>
     </div>
+  )
+}
+
+function ChangeBadge({ change }: { change: RangeChange }) {
+  // Sem base de comparação (período anterior vazio) → não mostra badge.
+  if (change.value === null) return null
+
+  const arrow =
+    change.trend === 'up' ? '↑' : change.trend === 'down' ? '↓' : '·'
+  const tone =
+    change.trend === 'up'
+      ? 'bg-emerald-50 text-emerald-700 dark:bg-emerald-500/10 dark:text-emerald-300'
+      : change.trend === 'down'
+        ? 'bg-red-50 text-red-700 dark:bg-red-500/10 dark:text-red-300'
+        : 'bg-ink-100 text-ink-600 dark:bg-ink-800 dark:text-ink-300'
+
+  return (
+    <span
+      className={cn(
+        'inline-flex shrink-0 items-center gap-0.5 rounded-full px-1.5 py-0.5 text-[10px] font-semibold tabular-nums',
+        tone,
+      )}
+      title="Comparado ao período anterior"
+    >
+      <span aria-hidden>{arrow}</span>
+      {Math.abs(change.value).toFixed(1).replace('.', ',')}%
+    </span>
   )
 }

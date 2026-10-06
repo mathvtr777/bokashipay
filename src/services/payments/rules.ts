@@ -3,7 +3,7 @@
  * Testáveis isoladamente e compartilhadas entre servidor e cliente.
  */
 
-import type { Transaction, GoalProgress } from '@/lib/types'
+import type { Transaction, GoalProgress, RangeChange } from '@/lib/types'
 
 /** Taxas padrão por método, em percentual. Configurável por settings no futuro. */
 export const DEFAULT_FEES = {
@@ -94,6 +94,17 @@ export function percentChange(current: number, previous: number): number | null 
 export function formatPercentChange(value: number): string {
   const sign = value > 0 ? '+' : ''
   return `${sign}${value.toFixed(1).replace('.', ',')}%`
+}
+
+export function rangeChange(current: number, previous: number): RangeChange {
+  if (previous === 0) {
+    return { value: current === 0 ? 0 : null, trend: 'flat' }
+  }
+  const value = ((current - previous) / Math.abs(previous)) * 100
+  return {
+    value: Math.round(value * 10) / 10,
+    trend: value > 0.05 ? 'up' : value < -0.05 ? 'down' : 'flat',
+  }
 }
 
 // -----------------------------------------------------------------------------

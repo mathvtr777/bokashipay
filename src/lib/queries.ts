@@ -8,8 +8,9 @@ import type {
 } from '@/lib/types'
 import {
   computeAvailableBalance, computePendingBalance, computeConversionRate,
-  computeMethodStats, computeGoalProgress, roundCurrency,
+  computeMethodStats, computeGoalProgress, rangeChange, roundCurrency,
 } from '@/services/payments/rules'
+import { previousRange } from '@/lib/date-range'
 import type { DashboardMetrics, SalesPoint } from '@/lib/types'
 
 /**
@@ -45,22 +46,48 @@ export async function getProfile(): Promise<Profile | null> {
 // Dashboard
 // -----------------------------------------------------------------------------
 
-export async function getDashboardMetrics(): Promise<DashboardMetrics> {
+export async function getDashboardMetrics(
+  range?: DateRange,
+): Promise<DashboardMetrics> {
   const supabase = await createClient()
 
-  const [transactionsResult, withdrawalsResult] = await Promise.all([
-    supabase
-      .from('transactions')
-      .select('status, amount, net_amount, fee')
-      .returns<Pick<Transaction, 'status' | 'amount' | 'net_amount' | 'fee'>[]>(),
+  // Saldos são lidos sobre TODAS as transactions (snapshot, não range).
+  // Variação é lida sobre [range atual, range anterior] — em paralelo.
+  const allTxP = supabase
+    .from('transactions')
+    .select('status, amount, net_amount, fee')
+
+  const prev = range ? previousRange(range) : null
+  const currentRangeQ = range
+    ? supabase
+        .from('transactions')
+        .select('status, amount, net_amount, fee')
+        .gte('created_at', range.from)
+        .lte('created_at', `${range.to}T23:59:59.999Z`)
+    : null
+  const previousRangeQ = prev
+    ? supabase
+        .from('transactions')
+        .select('status, amount, net_amount, fee')
+        .gte('created_at', prev.from)
+        .lte('created_at', `${prev.to}T23:59:59.999Z`)
+    : null
+
+  const empty: Pick<Transaction, 'status' | 'amount' | 'net_amount' | 'fee'>[] = []
+  const [allTxRes, currentRes, previousRes, withdrawalsRes] = await Promise.all([
+    allTxP,
+    currentRangeQ ? currentRangeQ : Promise.resolve({ data: empty, error: null }),
+    previousRangeQ ? previousRangeQ : Promise.resolve({ data: empty, error: null }),
     supabase
       .from('withdrawal_requests')
       .select('amount_brl, status')
       .returns<{ amount_brl: number; status: string }[]>(),
   ])
 
-  const transactions = transactionsResult.data ?? []
-  const withdrawals = withdrawalsResult.data ?? []
+  const transactions = allTxRes.data ?? []
+  const currentTx = currentRes.data ?? empty
+  const previousTx = previousRes.data ?? empty
+  const withdrawals = withdrawalsRes.data ?? []
 
   // Só o que foi efetivamente pago sai do saldo. Um saque aprovado e ainda não
   // concluído continua sendo dinheiro do usuário.
@@ -73,6 +100,16 @@ export async function getDashboardMetrics(): Promise<DashboardMetrics> {
       .filter((t) => t.status === 'approved')
       .reduce((sum, t) => sum + Number(t.amount), 0),
   )
+
+  // Variação: soma/quantidade dentro do range atual vs. range anterior.
+  const currentReceived = currentTx
+    .filter((t) => t.status === 'approved')
+    .reduce((s, t) => s + Number(t.amount), 0)
+  const previousReceived = previousTx
+    .filter((t) => t.status === 'approved')
+    .reduce((s, t) => s + Number(t.amount), 0)
+  const currentApproved = currentTx.filter((t) => t.status === 'approved').length
+  const previousApproved = previousTx.filter((t) => t.status === 'approved').length
 
   return {
     availableBalance: roundCurrency(
@@ -88,6 +125,10 @@ export async function getDashboardMetrics(): Promise<DashboardMetrics> {
     ),
     totalWithdrawn: roundCurrency(withdrawn),
     goal: computeGoalProgress(totalReceived),
+    change: {
+      totalReceived: rangeChange(currentReceived, previousReceived),
+      approvedSales: rangeChange(currentApproved, previousApproved),
+    },
   }
 }
 

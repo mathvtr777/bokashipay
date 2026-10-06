@@ -39,6 +39,21 @@ export interface DashboardMetrics {
   totalFees: number
   totalWithdrawn: number
   goal: GoalProgress
+  /** Variação entre o range atual e o anterior. `value: null` = sem base. */
+  change: DashboardChange
+}
+
+export interface DashboardChange {
+  totalReceived: RangeChange
+  approvedSales: RangeChange
+}
+
+/** Direção da variação entre dois valores. */
+export type Trend = 'up' | 'down' | 'flat'
+
+export interface RangeChange {
+  value: number | null
+  trend: Trend
 }
 
 /**

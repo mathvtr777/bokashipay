@@ -54,7 +54,7 @@ export function BannerCarousel({ banners }: { banners: Banner[] }) {
       onBlur={() => setPaused(false)}
       className="group relative overflow-hidden rounded-3xl"
     >
-      <div className="relative min-h-[220px] sm:min-h-[264px]">
+      <div className="relative aspect-[3/1] min-h-[120px] w-full">
         {banners.map((banner, i) => (
           <div
             key={banner.id}

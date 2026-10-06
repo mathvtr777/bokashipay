@@ -47,3 +47,25 @@ export function rangeLabel(range: DateRange): string {
   const found = PERIOD_LABELS.find((p) => p.value === range.preset)
   return found?.label ?? 'Período'
 }
+
+/**
+ * Período imediatamente anterior ao informado, com a mesma duração.
+ * Ex.: 30d de 13 dias atrás até hoje → 30d anteriores (43 dias atrás até 14 dias atrás).
+ *
+ * Usado para calcular variação % entre o range atual e o anterior.
+ */
+export function previousRange(range: DateRange): DateRange {
+  const from = new Date(`${range.from}T00:00:00Z`)
+  const to = new Date(`${range.to}T00:00:00Z`)
+  const days =
+    Math.round((to.getTime() - from.getTime()) / (1000 * 60 * 60 * 24)) + 1
+  const prevTo = new Date(from)
+  prevTo.setUTCDate(prevTo.getUTCDate() - 1)
+  const prevFrom = new Date(prevTo)
+  prevFrom.setUTCDate(prevFrom.getUTCDate() - (days - 1))
+  return {
+    from: prevFrom.toISOString().slice(0, 10),
+    to: prevTo.toISOString().slice(0, 10),
+    preset: 'custom',
+  }
+}

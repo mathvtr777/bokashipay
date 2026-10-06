@@ -39,7 +39,7 @@ export default async function DashboardPage({
   // Tudo em paralelo: cinco idas ao banco em vez de cinco em sequência.
   const [profile, metrics, series, recent, methods, products, banners] = await Promise.all([
     getProfile(),
-    getDashboardMetrics(),
+    getDashboardMetrics(range),
     getSalesSeries(range),
     getRecentTransactions(5),
     getPaymentMethodStats(),
