@@ -13,6 +13,9 @@ const securityHeaders = [
   { key: 'Referrer-Policy', value: 'strict-origin-when-cross-origin' },
   { key: 'Permissions-Policy', value: 'camera=(), microphone=(), geolocation=(), interest-cohort=()' },
   { key: 'Cross-Origin-Opener-Policy', value: 'same-origin' },
+  // CORP: recursos da mesma origem só podem ser embedded pela mesma origem.
+  // Bloqueia tentativas de cross-origin resource loading como Spectre.
+  { key: 'Cross-Origin-Resource-Policy', value: 'same-origin' },
   {
     // Só HTTPS depois do primeiro acesso. Incluir desde já quebraria o
     // ambiente local, que ainda é http.

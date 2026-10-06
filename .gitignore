@@ -35,3 +35,7 @@ next-env.d.ts
 
 # imagens de marketing — não comitar (servidas de public/ mas atualizadas manualmente)
 /imagens/
+
+# scripts operacionais sensíveis (audit, ban) — não comitar, rodar localmente
+scripts/audit-unknown-users.ts
+scripts/ban-unknown-users.ts

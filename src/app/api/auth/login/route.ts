@@ -1,5 +1,6 @@
 import { NextResponse, type NextRequest } from 'next/server'
 import { createServerClient } from '@supabase/ssr'
+import { clientIp, loginLimiter } from '@/lib/security/rate-limit'
 
 /**
  * Login com controle de persistência da sessão.
@@ -14,6 +15,17 @@ import { createServerClient } from '@supabase/ssr'
 const MAX_AGE_SECONDS = 60 * 60 * 24 * 30 // 30 dias
 
 export async function POST(request: NextRequest) {
+  // Rate limit por IP antes de qualquer outra coisa. Sem isso, um pentester
+  // pode tentar milhares de senhas sem freio.
+  const ip = clientIp(request)
+  const verdict = loginLimiter.hit(ip)
+  if (!verdict.allowed) {
+    return NextResponse.json(
+      { error: 'Muitas tentativas. Tente novamente em alguns instantes.' },
+      { status: 429, headers: { 'Retry-After': String(verdict.retryAfterSeconds) } },
+    )
+  }
+
   let payload: { email?: string; password?: string; remember?: boolean }
 
   try {

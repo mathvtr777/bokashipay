@@ -266,36 +266,35 @@ export function RegisterForm() {
     if (!validate()) return
 
     setLoading(true)
-    const supabase = createClient()
 
-    const { data, error } = await supabase.auth.signUp({
-      email: form.email,
-      password: form.password,
-      options: {
-        // Consumido pelo trigger handle_new_user() para criar o perfil.
-        data: { full_name: form.fullName.trim(), phone: form.phone.trim() || null },
-        emailRedirectTo: `${window.location.origin}/login`,
-      },
+    // Server-side: passa pelo rate-limit + cria usuário via admin API.
+    const res = await fetch('/api/auth/register', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        email: form.email,
+        password: form.password,
+        fullName: form.fullName.trim(),
+        phone: form.phone.trim() || null,
+      }),
     })
 
-    if (error) {
-      setFormError(
-        error.message.includes('already registered')
-          ? 'Já existe uma conta com este e-mail.'
-          : error.message,
-      )
+    if (!res.ok) {
+      const body = (await res.json().catch(() => ({}))) as { error?: string }
+      const msg = body.error ?? 'Não foi possível criar a conta.'
+      if (res.status === 429) {
+        setFormError(msg)
+      } else if (msg.toLowerCase().includes('already') || msg.toLowerCase().includes('já existe')) {
+        setFormError('Já existe uma conta com este e-mail.')
+      } else {
+        setFormError(msg)
+      }
       setLoading(false)
       return
     }
 
-    // Sem sessão = e-mail ainda não confirmado. Não fingimos que entrou.
-    if (data.session) {
-      router.push('/dashboard')
-      router.refresh()
-      return
-    }
-
-    router.push('/login?registered=1')
+    router.push('/dashboard')
+    router.refresh()
   }
 
   return (
