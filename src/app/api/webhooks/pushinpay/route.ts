@@ -1,6 +1,6 @@
 import { NextResponse, type NextRequest } from 'next/server'
 import { createAdminClient, isAdminConfigured } from '@/lib/supabase/admin'
-import { verifyWebhookSignature, mapStatus } from '@/services/pix'
+import { mapStatus, verifyWebhookSecret, webhookHeaderName } from '@/services/pix'
 import { createNotification } from '@/services/notifications'
 import { roundCurrency } from '@/services/payments/rules'
 
@@ -24,17 +24,23 @@ export async function POST(request: NextRequest) {
 
   const rawBody = await request.text()
 
-  // A Pushin Pay permite configurar um header customizado no painel. Com
-  // segredo definido, exigimos a assinatura; sem ele, aceitamos (com o risco
-  // explícito de um webhook forjado marcar pagamento como pago).
-  const secret = process.env.PUSHINPAY_WEBHOOK_SECRET
-  if (secret) {
-    const signature =
-      request.headers.get('x-pushinpay-signature') ?? request.headers.get('x-webhook-signature')
+  // A Pushin Pay envia um header customizado de valor estático, configurável no
+  // painel dela. Sem ele configurado aqui, aceitamos o evento e avisamos no log
+  // — recusar seria pior, porque pagamento legítimo deixaria de confirmar.
+  const secret = process.env.PUSHINPAY_WEBHOOK_SECRET ?? ''
 
-    if (!verifyWebhookSignature(rawBody, signature, secret)) {
-      return NextResponse.json({ error: 'Assinatura inválida.' }, { status: 401 })
-    }
+  if (!secret) {
+    console.warn(
+      '[webhook pushinpay] PUSHINPAY_WEBHOOK_SECRET não configurada: aceitando ' +
+        'qualquer chamada nesta URL. Quem descobrir a URL poderia marcar ' +
+        'uma cobrança como paga.',
+    )
+  } else if (!verifyWebhookSecret(request.headers, secret)) {
+    console.warn(
+      `[webhook pushinpay] header "${webhookHeaderName()}" ausente ou divergente — ` +
+        'confira se o valor configurado no painel da Pushin Pay é o mesmo.',
+    )
+    return NextResponse.json({ error: 'Header de verificação inválido.' }, { status: 401 })
   }
 
   let payload: Record<string, unknown>

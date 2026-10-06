@@ -1,4 +1,4 @@
-import { createHmac } from 'node:crypto'
+import { timingSafeEqual } from 'node:crypto'
 
 import { INTEGRATION_NOT_CONFIGURED, type Result } from '@/lib/types'
 import type {
@@ -234,21 +234,46 @@ export function getPixProvider(): PixProvider {
   return provider
 }
 
-/** Assinatura HMAC para callbacks do PSP confirmarem a origem. */
-export function verifyWebhookSignature(
-  rawBody: string,
-  signature: string | null,
-  secret: string,
+/**
+ * Nome do header que a Pushin Pay envia em todos os webhooks.
+ *
+ * O provedor deixa você escolher nome e valor no menu de configurações do
+ * painel. Se `PUSHINPAY_WEBHOOK_HEADER` não estiver definida, usamos este
+ * nome — então o header configurado lá precisa se chamar exatamente isso.
+ */
+export const DEFAULT_WEBHOOK_HEADER = 'x-bokashipay-secret'
+
+export function webhookHeaderName(): string {
+  return (process.env.PUSHINPAY_WEBHOOK_HEADER ?? DEFAULT_WEBHOOK_HEADER)
+    .trim()
+    .toLowerCase()
+}
+
+/**
+ * Confere o header customizado do webhook.
+ *
+ * A Pushin Pay envia um **valor estático** escolhido no painel — não é uma
+ * assinatura HMAC do corpo. Exigir HMAC rejeitaria todo webhook com 401 e
+ * nenhum pagamento confirmaria, que é pior do que não ter verificação. Aqui
+ * comparamos o valor direto, em tempo constante.
+ *
+ * Sem segredo configurado devolvemos `true` e quem chama registra o aviso:
+ * é preferível um webhook sem autenticação, com aviso no log, a um webhook
+ * que rejeita pagamento legítimo.
+ */
+export function verifyWebhookSecret(
+  headers: Headers,
+  secret = process.env.PUSHINPAY_WEBHOOK_SECRET ?? '',
 ): boolean {
-  if (!signature || !secret) return false
-  const expected = createHmac('sha256', secret).update(rawBody).digest('hex')
-  if (expected.length !== signature.length) return false
-  // Comparação em tempo constante para não vazar informação por timing.
-  let diff = 0
-  for (let i = 0; i < expected.length; i++) {
-    diff |= expected.charCodeAt(i) ^ signature.charCodeAt(i)
-  }
-  return diff === 0
+  if (!secret) return true
+
+  const received = headers.get(webhookHeaderName())
+  if (!received) return false
+
+  // timingSafeEqual exige entradas do mesmo tamanho; normalizar antes evita
+  // que o tamanho da comparação vaze informação sobre o segredo.
+  const pad = (value: string) => Buffer.from(value.padEnd(256, '\0').slice(0, 256), 'utf8')
+  return timingSafeEqual(pad(received), pad(secret))
 }
 
 export type { Result }

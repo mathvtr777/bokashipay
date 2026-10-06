@@ -1,6 +1,6 @@
 import { NextResponse, type NextRequest } from 'next/server'
 import { createAdminClient, isAdminConfigured } from '@/lib/supabase/admin'
-import { verifyWebhookSignature } from '@/services/pix'
+import { verifyWebhookSignature } from '@/lib/signature'
 import { createNotification } from '@/services/notifications'
 import { roundCurrency } from '@/services/payments/rules'
 import type { Json } from '@/lib/database.types'

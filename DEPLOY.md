@@ -62,16 +62,25 @@ A Vercel mostra os registros. No seu registrador, crie:
 O certificado HTTPS é emitido automaticamente em 1–2 minutos. Não precisa de
 Let's Encrypt na mão.
 
-## 4. Assinar o webhook na Pushin Pay
+## 4. Proteger o webhook (opcional, mas recomendado)
 
 **Só depois** que o domínio responder em HTTPS.
 
-Painel Pushin Pay → Configurações → header customizado de webhook → defina um
-valor aleatório longo (ex.: `openssl rand -hex 32`) e use **o mesmo** como
-`PUSHINPAY_WEBHOOK_SECRET` na Vercel.
+A Pushin Pay envia em todos os webhooks um **header customizado de valor
+estático** que você escolhe no painel. Não é assinatura HMAC — é um valor
+combinado.
 
-Sem isso, `/api/webhooks/pushinpay` aceita qualquer chamada e alguém pode
-marcar uma cobrança como paga sem pagar.
+1. Painel Pushin Pay → **Configurações** → header customizado
+2. Nome do header: `x-bokashipay-secret`
+3. Valor: uma string longa e aleatória (`openssl rand -hex 32`)
+4. Na Vercel, defina `PUSHINPAY_WEBHOOK_SECRET` com **o mesmo valor**
+
+Se o nome não aparecer em Configurações e sim em outra aba, tudo bem: defina
+também `PUSHINPAY_WEBHOOK_HEADER` na Vercel com o nome que você usou lá.
+
+Sem isso o webhook aceita qualquer chamada — quem descobrir a URL marca
+cobrança como paga sem pagar. O servidor registra um aviso no log a cada
+requisição nesse caso.
 
 ## 5. Desligar o auto-confirm de e-mail
 

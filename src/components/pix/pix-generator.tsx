@@ -320,11 +320,20 @@ function PixHistory({ items }: { items: PixTransaction[] }) {
         return
       }
 
-      // checked:false = não deu para consultar o provedor. Preferimos dizer isso
-      // a prometer atualização que não aconteceu.
+      // checked:false = não deu para consultar. Dizer o motivo específico
+      // importa: "não sei" e "não tenho provedor" levam a ações diferentes.
+      const REASONS: Record<string, string> = {
+        'sem-id-do-provedor':
+          'Esta cobrança foi criada antes da integração com a Pushin Pay. Gere uma nova.',
+        'provedor-nao-configurado':
+          'PUSHINPAY_API_TOKEN não está configurado no servidor. Sem token não há consulta.',
+        'consulta-falhou':
+          body?.detail ?? 'A Pushin Pay não respondeu. Tente de novo em instantes.',
+      }
+
       toast({
         title: 'Status não atualizado',
-        description: 'Sem provedor PIX conectado, o status não pode ser consultado.',
+        description: REASONS[body?.reason] ?? 'Não foi possível consultar a Pushin Pay.',
         tone: 'info',
       })
     }

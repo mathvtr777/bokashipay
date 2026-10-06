@@ -37,16 +37,24 @@ export async function POST(request: NextRequest) {
   if (!pix) return NextResponse.json({ error: 'Cobrança não encontrada.' }, { status: 404 })
 
   // Sem identificador do provedor, não há o que consultar: é uma cobrança
-  // local sem provedor configurado, e continua pendente.
+  // criada antes de existir integração, e continua pendente.
   if (!pix.provider_request_id) {
-    return NextResponse.json({ status: pix.status, checked: false })
+    return NextResponse.json({
+      status: pix.status,
+      checked: false,
+      reason: 'sem-id-do-provedor',
+    })
   }
 
   const { getPixProvider } = await import('@/services/pix')
   const provider = getPixProvider()
 
   if (!provider.isConfigured()) {
-    return NextResponse.json({ status: pix.status, checked: false })
+    return NextResponse.json({
+      status: pix.status,
+      checked: false,
+      reason: 'provedor-nao-configurado',
+    })
   }
 
   let remoteStatus: string
@@ -65,7 +73,12 @@ export async function POST(request: NextRequest) {
       `[pix/status] falha ao consultar ${pix.provider_request_id}:`,
       error instanceof Error ? error.message : error,
     )
-    return NextResponse.json({ status: pix.status, checked: false })
+    return NextResponse.json({
+      status: pix.status,
+      checked: false,
+      reason: 'consulta-falhou',
+      detail: error instanceof Error ? error.message : String(error),
+    })
   }
 
   // O provedor já normaliza o vocabulário para o nosso domínio; qualquer
