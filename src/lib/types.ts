@@ -38,6 +38,20 @@ export interface DashboardMetrics {
   conversionRate: number
   totalFees: number
   totalWithdrawn: number
+  goal: GoalProgress
+}
+
+/**
+ * Progresso do merchant em relação aos tiers de meta.
+ * Os tiers são fixos (vide `GOAL_TIERS` em services/payments/rules.ts).
+ */
+export interface GoalProgress {
+  current: number         // valor bruto recebido até agora
+  currentTier: number     // tier atual em que o merchant está
+  nextTier: number | null // próximo tier, ou null se já passou do último
+  percent: number         // 0..100 dentro do tier atual
+  remaining: number       // quanto falta pro próximo tier (0 se null)
+  isLastTier: boolean     // true se nextTier === null
 }
 
 export type DateRangePreset =

@@ -3,7 +3,7 @@
  * Testáveis isoladamente e compartilhadas entre servidor e cliente.
  */
 
-import type { Transaction } from '@/lib/types'
+import type { Transaction, GoalProgress } from '@/lib/types'
 
 /** Taxas padrão por método, em percentual. Configurável por settings no futuro. */
 export const DEFAULT_FEES = {
@@ -94,4 +94,47 @@ export function percentChange(current: number, previous: number): number | null 
 export function formatPercentChange(value: number): string {
   const sign = value > 0 ? '+' : ''
   return `${sign}${value.toFixed(1).replace('.', ',')}%`
+}
+
+// -----------------------------------------------------------------------------
+// Metas progressivas
+// -----------------------------------------------------------------------------
+
+/**
+ * Tiers de meta em reais. O merchant sobe de nível conforme o volume bruto
+ * de vendas aprovadas ultrapassa cada um deles.
+ */
+export const GOAL_TIERS = [10_000, 50_000, 100_000, 250_000] as const
+
+/**
+ * Dado o total bruto recebido, devolve em qual tier o merchant está e quanto
+ * falta pro próximo. Sem dependência de I/O: a regra é determinística.
+ *
+ * `percent` é o progresso **dentro do tier atual** (received / currentTier),
+ * cap em 100. Isso casa com a label "Faltam R$ X para R$ Y".
+ */
+export function computeGoalProgress(received: number): GoalProgress {
+  let currentTier: number = GOAL_TIERS[0]
+  for (const t of GOAL_TIERS) {
+    if (received < t) {
+      currentTier = t
+      break
+    }
+    currentTier = t
+  }
+
+  const idx = GOAL_TIERS.indexOf(currentTier as (typeof GOAL_TIERS)[number])
+  const nextTier = (GOAL_TIERS[idx + 1] ?? null) as number | null
+  const percent = Math.min(100, Math.round((received / currentTier) * 100))
+  const remaining =
+    nextTier === null ? 0 : Math.max(0, currentTier - received)
+
+  return {
+    current: received,
+    currentTier,
+    nextTier,
+    percent,
+    remaining,
+    isLastTier: nextTier === null,
+  }
 }

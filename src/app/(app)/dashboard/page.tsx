@@ -1,9 +1,9 @@
 import * as React from 'react'
 import type { Metadata } from 'next'
 import { PageHeader } from '@/components/layout/app-shell'
-import { PeriodSelector } from '@/components/dashboard/period-selector'
 import { BannerCarousel, FALLBACK_BANNERS } from '@/components/dashboard/banner-carousel'
 import { StatCards } from '@/components/dashboard/stat-cards'
+import { GoalProgress } from '@/components/dashboard/goal-progress'
 import { SalesChart } from '@/components/dashboard/sales-chart'
 import { PaymentMethods } from '@/components/dashboard/payment-methods'
 import { SalesTable, TopProducts } from '@/components/dashboard/sales-table'
@@ -54,7 +54,7 @@ export default async function DashboardPage({
       <PageHeader
         title={`Olá, ${name}`}
         description="Veja o desempenho do seu negócio hoje."
-        actions={<PeriodSelector />}
+        actions={<GoalProgress goal={metrics?.goal ?? null} />}
       />
 
       <BannerCarousel banners={banners.length > 0 ? banners : FALLBACK_BANNERS} />

@@ -8,7 +8,7 @@ import type {
 } from '@/lib/types'
 import {
   computeAvailableBalance, computePendingBalance, computeConversionRate,
-  computeMethodStats, roundCurrency,
+  computeMethodStats, computeGoalProgress, roundCurrency,
 } from '@/services/payments/rules'
 import type { DashboardMetrics, SalesPoint } from '@/lib/types'
 
@@ -68,16 +68,18 @@ export async function getDashboardMetrics(): Promise<DashboardMetrics> {
     .filter((w) => w.status === 'completed')
     .reduce((sum, w) => sum + Number(w.amount_brl), 0)
 
+  const totalReceived = roundCurrency(
+    transactions
+      .filter((t) => t.status === 'approved')
+      .reduce((sum, t) => sum + Number(t.amount), 0),
+  )
+
   return {
     availableBalance: roundCurrency(
       computeAvailableBalance(transactions) - withdrawn,
     ),
     pendingBalance: computePendingBalance(transactions),
-    totalReceived: roundCurrency(
-      transactions
-        .filter((t) => t.status === 'approved')
-        .reduce((sum, t) => sum + Number(t.amount), 0),
-    ),
+    totalReceived,
     approvedSales: transactions.filter((t) => t.status === 'approved').length,
     totalSales: transactions.length,
     conversionRate: computeConversionRate(transactions),
@@ -85,6 +87,7 @@ export async function getDashboardMetrics(): Promise<DashboardMetrics> {
       transactions.filter((t) => t.status === 'approved').reduce((sum, t) => sum + Number(t.fee), 0),
     ),
     totalWithdrawn: roundCurrency(withdrawn),
+    goal: computeGoalProgress(totalReceived),
   }
 }
 

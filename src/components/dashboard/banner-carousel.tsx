@@ -2,10 +2,9 @@
 
 import * as React from 'react'
 import Image from 'next/image'
-import Link from 'next/link'
 import { cn } from '@/lib/utils'
 import type { Banner } from '@/lib/types'
-import { ChevronLeft, ChevronRight, Zap } from '@/components/ui/icons'
+import { ChevronLeft, ChevronRight } from '@/components/ui/icons'
 
 /**
  * Carrossel de banners.
@@ -111,67 +110,46 @@ export function BannerCarousel({ banners }: { banners: Banner[] }) {
 }
 
 function BannerSlide({ banner }: { banner: Banner }) {
+  const isExternal = /^https?:\/\//i.test(banner.cta_href ?? '')
+  const ctaHref = banner.cta_href ?? ''
+
+  // O slide é apenas a imagem: sem pill, título, subtítulo, véu ou decorações.
+  // Banners com link externo abrem em nova aba ao clicar na imagem; sem link,
+  // ficam como decoração.
+  const image = banner.image_url ? (
+    <Image
+      src={banner.image_url}
+      alt=""
+      fill
+      sizes="(max-width: 1024px) 100vw, 900px"
+      className="object-cover"
+      priority={false}
+    />
+  ) : (
+    <div
+      className="absolute inset-0"
+      style={{
+        background:
+          'radial-gradient(700px 400px at 78% 20%, #6d28d9 0%, transparent 62%), radial-gradient(600px 400px at 12% 88%, #2e1065 0%, transparent 58%)',
+      }}
+    />
+  )
+
   return (
     <div className="absolute inset-0 overflow-hidden bg-ink-950">
-      {/* Imagem do banner. Fallback: gradiente roxo da marca. */}
-      {banner.image_url ? (
-        <Image
-          src={banner.image_url}
-          alt=""
-          fill
-          sizes="(max-width: 1024px) 100vw, 900px"
-          className="object-cover"
-          priority={false}
-        />
+      {isExternal ? (
+        <a
+          href={ctaHref}
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label={banner.title}
+          className="absolute inset-0 block cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-white/60"
+        >
+          {image}
+        </a>
       ) : (
-        <div
-          className="absolute inset-0"
-          style={{
-            background:
-              'radial-gradient(700px 400px at 78% 20%, #6d28d9 0%, transparent 62%), radial-gradient(600px 400px at 12% 88%, #2e1065 0%, transparent 58%)',
-          }}
-        />
+        image
       )}
-
-      {/* Véu para garantir contraste do texto sobre qualquer imagem. */}
-      <div className="absolute inset-0 bg-gradient-to-r from-ink-950/92 via-ink-950/70 to-ink-950/25" />
-
-      <div className="relative flex h-full flex-col justify-center p-7 sm:p-10">
-        <span className="mb-4 inline-flex w-fit items-center gap-1.5 rounded-full border border-white/20 bg-white/10 px-3 py-1 text-[11px] font-medium tracking-wide text-white/90 backdrop-blur-md">
-          <Zap className="h-3 w-3" />
-          BokashiPay
-        </span>
-
-        <h2 className="max-w-lg text-xl font-semibold leading-tight tracking-tight text-white sm:text-[28px]">
-          {banner.title}
-        </h2>
-
-        {banner.subtitle && (
-          <p className="mt-2.5 max-w-md text-sm leading-relaxed text-white/70">{banner.subtitle}</p>
-        )}
-
-        {banner.cta_label && (
-          <div className="mt-6">
-            <Link
-              href={banner.cta_href ?? '/vendas'}
-              className="inline-flex h-10 items-center gap-2 rounded-xl bg-white px-5 text-sm font-semibold text-ink-900 transition-all duration-200 hover:bg-brand-50 hover:shadow-lg"
-            >
-              {banner.cta_label}
-              <ChevronRight className="h-4 w-4" />
-            </Link>
-          </div>
-        )}
-      </div>
-
-      {/* Decoração geométrica discreta. */}
-      <div
-        className="pointer-events-none absolute -right-16 -top-16 h-64 w-64 rounded-full border border-white/5"
-        aria-hidden="true"
-      />
-      <div
-        className="pointer-events-none absolute -bottom-24 right-16 h-56 w-56 rounded-full border border-white/[0.07]"
-        aria-hidden="true"
-      />
     </div>
   )
 }

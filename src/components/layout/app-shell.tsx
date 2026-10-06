@@ -26,10 +26,13 @@ export function AppShell({
   children: React.ReactNode
 }) {
   const [menuOpen, setMenuOpen] = React.useState(false)
+  // Estável — sem isso, o `useEffect` da Sidebar (que fecha o drawer ao
+  // navegar) dispara em todo render, e a sidebar nunca chega a abrir.
+  const closeMenu = React.useCallback(() => setMenuOpen(false), [])
 
   return (
     <div className="min-h-screen bg-ink-50 dark:bg-ink-950">
-      <Sidebar open={menuOpen} onClose={() => setMenuOpen(false)} user={user} isAdmin={isAdmin} />
+      <Sidebar open={menuOpen} onClose={closeMenu} user={user} isAdmin={isAdmin} />
 
       <div className="md:pl-[76px] lg:pl-[264px]">
         <header className="sticky top-0 z-30 h-16 border-b border-ink-200 bg-white/80 backdrop-blur-xl dark:border-ink-800 dark:bg-ink-900/80">
