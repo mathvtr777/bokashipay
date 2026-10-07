@@ -237,3 +237,9 @@ export const ShoppingBag = (p: IconProps) => (
 export const CreditCard = (p: IconProps) => (
   <Icon {...p}><rect x="2" y="6" width="20" height="13" rx="2" /><path d="M2 10h20M6 15h4" /></Icon>
 )
+export const UploadCloud = (p: IconProps) => (
+  <Icon {...p}><path d="M16 16l-4-4-4 4M12 12v9" /><path d="M20.4 14.5A5 5 0 0 0 18 5h-1.3A8 8 0 1 0 4 13.7" /></Icon>
+)
+export const Link2 = (p: IconProps) => (
+  <Icon {...p}><path d="M9 17H7a5 5 0 0 1 0-10h2" /><path d="M15 7h2a5 5 0 1 1 0 10h-2" /><path d="M8 12h8" /></Icon>
+)

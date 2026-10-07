@@ -179,7 +179,7 @@ export function Sidebar({
               { href: '/integracoes', label: 'Bot Telegram', icon: Bot },
               { href: '/integracoes', label: 'Agent IA', icon: Sparkles, badge: 'EM BREVE' },
               { href: '/produtos', label: 'Produtos & Checkouts', icon: Box },
-              { href: '/configuracoes', label: 'Temas', icon: Settings, badge: 'NOVO' },
+              { href: '/temas', label: 'Temas', icon: Sparkles, badge: 'NOVO' },
             ]}
           />
 

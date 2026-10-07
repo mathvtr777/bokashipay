@@ -700,6 +700,45 @@ export interface Database {
         }
         Relationships: []
       }
+      bio_pages: {
+        Row: {
+          id: string
+          user_id: string
+          slug: string
+          display_name: string | null
+          bio: string | null
+          avatar_url: string | null
+          theme: string
+          active: boolean
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          user_id: string
+          slug: string
+          display_name?: string | null
+          bio?: string | null
+          avatar_url?: string | null
+          theme?: string
+          active?: boolean
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          user_id?: string
+          slug?: string
+          display_name?: string | null
+          bio?: string | null
+          avatar_url?: string | null
+          theme?: string
+          active?: boolean
+          created_at?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       integrations_safe: {

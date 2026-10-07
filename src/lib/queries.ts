@@ -415,6 +415,83 @@ function queryFilter(q: any, term: string) {
   )
 }
 
+// -----------------------------------------------------------------------------
+// Bio pages — feed de "Meus Links" (rota /temas)
+//
+// A tabela `bio_pages` é criada pela migration 0008. Até rodar a migration,
+// `getBioPage` retorna null e o salvamento falha com mensagem clara no
+// toast — UI segue funcional (preview ao vivo, formulário).
+// -----------------------------------------------------------------------------
+
+export async function getBioPage(): Promise<BioPage | null> {
+  try {
+    const supabase = await createClient()
+    const { data: { user } } = await supabase.auth.getUser()
+    if (!user) return null
+    const { data, error } = await supabase
+      .from('bio_pages')
+      .select('*')
+      .eq('user_id', user.id)
+      .order('created_at', { ascending: false })
+      .limit(1)
+      .maybeSingle()
+    if (error) {
+      // Se a tabela ainda não existe (PGRST205 / 42P01), retorna null
+      // silenciosamente — a UI continua funcional e o usuário pode
+      // rodar a migration depois.
+      return null
+    }
+    return (data as BioPage | null) ?? null
+  } catch {
+    return null
+  }
+}
+
+export interface BioPageInput {
+  slug: string
+  displayName: string
+  bio: string
+  avatarUrl: string | null
+}
+
+export async function saveBioPage(input: BioPageInput): Promise<BioPage> {
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) throw new Error('Não autenticado.')
+
+  // Upsert: se já existe uma página, atualiza; senão, cria.
+  // A constraint `bio_pages_slug_unique` é global — se outro usuário já
+  // pegou o slug, o insert/update falha com 23505; a UI trata.
+  const { data, error } = await supabase
+    .from('bio_pages')
+    .upsert(
+      {
+        user_id: user.id,
+        slug: input.slug,
+        display_name: input.displayName,
+        bio: input.bio,
+        avatar_url: input.avatarUrl,
+        active: true,
+      },
+      { onConflict: 'user_id' },
+    )
+    .select('*')
+    .single()
+  if (error) throw new Error(error.message)
+  return data as BioPage
+}
+
+export async function countBioPages(): Promise<number> {
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) return 0
+  const { count } = await supabase
+    .from('bio_pages')
+    .select('id', { count: 'exact', head: true })
+    .eq('user_id', user.id)
+  return count ?? 0
+}
+
 export interface SalesRow extends Transaction {
   customer: Pick<Customer, 'id' | 'name' | 'email'> | null
 }
@@ -796,6 +873,7 @@ export type { CustomerWithStats } from '@/lib/types'
 // -----------------------------------------------------------------------------
 
 import type {
+  BioPage,
   ConversionFunnel,
   ConversionFunnelSteps,
   ConversionHeatmap,

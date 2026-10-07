@@ -30,6 +30,8 @@ export const NAV_ITEMS: NavItem[] = [
   { href: '/saques', label: 'Saques', icon: Icons.Wallet },
   { href: '/integracoes', label: 'Integrações', icon: Icons.Integrations },
   { href: '/configuracoes', label: 'Configurações', icon: Icons.Settings },
+  // "Temas" mora em Automações (hardcoded na sidebar, com badge NOVO);
+  // não duplicar aqui.
 ]
 
 /** Área administrativa — aparece só para quem está em ADMIN_USER_EMAILS. */

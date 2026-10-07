@@ -27,6 +27,7 @@ export type Settings = Database['public']['Tables']['settings']['Row']
 export type ApiKey = Database['public']['Tables']['api_keys']['Row']
 export type WebhookEndpoint = Database['public']['Tables']['webhook_endpoints']['Row']
 export type Product = Database['public']['Tables']['products']['Row']
+export type BioPage = Database['public']['Tables']['bio_pages']['Row']
 
 /** Status possíveis de um produto. */
 export type ProductStatus = 'draft' | 'active' | 'archived'
