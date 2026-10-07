@@ -201,3 +201,12 @@ export const ArrowDownToLine = (p: IconProps) => (
 export const Activity = (p: IconProps) => (
   <Icon {...p}><path d="M3 12h4l3-9 4 18 3-9h4" /></Icon>
 )
+export const Bot = (p: IconProps) => (
+  <Icon {...p}><rect x="4" y="7" width="16" height="12" rx="3" /><path d="M12 3v4M9 13h.01M15 13h.01M9 17h6" /><circle cx="18" cy="5" r="1" /><circle cx="6" cy="5" r="1" /></Icon>
+)
+export const Sparkles = (p: IconProps) => (
+  <Icon {...p}><path d="M12 3v3M12 18v3M3 12h3M18 12h3M5.6 5.6l2.1 2.1M16.3 16.3l2.1 2.1M5.6 18.4l2.1-2.1M16.3 7.7l2.1-2.1" /><path d="M12 8.5l1.4 2.6 2.6 1.4-2.6 1.4L12 16.5l-1.4-2.6L8 12.5l2.6-1.4Z" /></Icon>
+)
+export const Box = (p: IconProps) => (
+  <Icon {...p}><path d="M3 7.5 12 3l9 4.5v9L12 21l-9-4.5Z" /><path d="m3 7.5 9 4.5 9-4.5M12 12v9" /></Icon>
+)

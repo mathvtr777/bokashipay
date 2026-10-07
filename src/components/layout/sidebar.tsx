@@ -22,6 +22,9 @@ import {
   X,
   Zap,
   Gift,
+  Bot,
+  Sparkles,
+  Box,
 } from '@/components/ui/icons'
 import { useToast } from '@/components/ui/toast'
 
@@ -206,10 +209,10 @@ export function Sidebar({
             label="Automações"
             pathname={pathname}
             items={[
-              { href: '/integracoes', label: 'Bot Telegram', icon: Zap },
-              { href: '/integracoes', label: 'Agent IA', icon: Zap, badge: 'EM BREVE' },
-              { href: '/produtos', label: 'Produtos & Checkouts', icon: Zap },
-              { href: '/configuracoes', label: 'Temas', icon: Zap, badge: 'NOVO' },
+              { href: '/integracoes', label: 'Bot Telegram', icon: Bot },
+              { href: '/integracoes', label: 'Agent IA', icon: Sparkles, badge: 'EM BREVE' },
+              { href: '/produtos', label: 'Produtos & Checkouts', icon: Box },
+              { href: '/configuracoes', label: 'Temas', icon: Settings, badge: 'NOVO' },
             ]}
           />
 
