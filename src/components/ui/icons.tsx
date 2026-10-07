@@ -210,3 +210,9 @@ export const Sparkles = (p: IconProps) => (
 export const Box = (p: IconProps) => (
   <Icon {...p}><path d="M3 7.5 12 3l9 4.5v9L12 21l-9-4.5Z" /><path d="m3 7.5 9 4.5 9-4.5M12 12v9" /></Icon>
 )
+export const ChartBar = (p: IconProps) => (
+  <Icon {...p}><path d="M4 20V10M10 20V4M16 20v-7M22 20H2" /></Icon>
+)
+export const ShieldAlert = (p: IconProps) => (
+  <Icon {...p}><path d="M12 3l8 3v6c0 4.5-3.2 8.2-8 9.5-4.8-1.3-8-5-8-9.5V6Z" /><path d="M12 8v4M12 15h.01" /></Icon>
+)

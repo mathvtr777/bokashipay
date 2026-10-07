@@ -5,15 +5,25 @@ export interface NavItem {
   href: string
   label: string
   icon: (props: { className?: string }) => React.ReactElement
+  /**
+   * Pathname que marca este item como ativo. Se ausente, usa `href`.
+   * Útil quando dois itens compartilham o mesmo `href` mas só um deve
+   * aparecer ativo (ex.: aliases que apontam para a mesma rota).
+   */
+  activePath?: string
 }
 
 export const NAV_ITEMS: NavItem[] = [
   { href: '/dashboard', label: 'Dashboard', icon: Icons.Dashboard },
-  { href: '/vendas', label: 'Vendas', icon: Icons.Sales },
-  { href: '/pix', label: 'PIX', icon: Icons.Pix },
-  { href: '/produtos', label: 'Produtos', icon: Icons.Sales },
-  { href: '/financeiro', label: 'Financeiro', icon: Icons.Finance },
+  { href: '/vendas', label: 'Adquirentes', icon: Icons.Bank },
+  // Análises é o item canônico que fica ativo em /vendas.
+  { href: '/vendas', label: 'Análises', icon: Icons.ChartBar, activePath: '/vendas' },
+  { href: '/pix', label: 'Transações', icon: Icons.Wallet, activePath: '/pix' },
+  // Infrações é o placeholder — rota ainda não criada; clica não vai a lugar.
+  { href: '/pix', label: 'Infrações', icon: Icons.ShieldAlert },
   { href: '/clientes', label: 'Clientes', icon: Icons.Customers },
+  { href: '/financeiro', label: 'Financeiro', icon: Icons.Finance },
+  { href: '/produtos', label: 'Produtos', icon: Icons.Sales },
   { href: '/contas-bancarias', label: 'Contas Bancárias', icon: Icons.Bank },
   { href: '/saques', label: 'Saques', icon: Icons.Wallet },
   { href: '/integracoes', label: 'Integrações', icon: Icons.Integrations },
@@ -31,6 +41,18 @@ export const FOOTER_ITEMS: NavItem[] = [
 ]
 
 /** Um item é ativo quando a URL é ele ou uma subpágina. */
-export function isActive(href: string, pathname: string): boolean {
+/**
+ * Um item é ativo quando a URL é ele (ou uma subpágina) — ou, se o item
+ * define `activePath`, quando o pathname é exatamente esse path. Isso permite
+ * ter dois itens que apontam para a mesma rota mas só um aparece ativo.
+ */
+export function isActive(item: NavItem, pathname: string): boolean {
+  const target = item.activePath ?? item.href
+  return pathname === target || pathname.startsWith(`${target}/`)
+}
+
+// Mantém compat com o uso antigo que recebe (href, pathname) em outros
+// lugares. Se perder performance, troquem as chamadas para a forma nova.
+export function isActiveLegacy(href: string, pathname: string): boolean {
   return pathname === href || pathname.startsWith(`${href}/`)
 }

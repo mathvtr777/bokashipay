@@ -342,7 +342,7 @@ function NavLink({
   pathname: string
   badge?: string
 }) {
-  const active = isActive(item.href, pathname)
+  const active = isActive(item, pathname)
   const Icon = item.icon
   return (
     <li>
