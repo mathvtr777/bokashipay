@@ -87,21 +87,21 @@ export function PixGenerator({ initialItems, providerConfigured }: { initialItem
       {/* Geração */}
       <div className="xl:col-span-2">
         <div className="surface p-6">
-          <h1 className="text-xl font-semibold tracking-tight text-ink-900 dark:text-white">
+          <h1 className="text-xl font-semibold tracking-tight text-white text-white">
             Gerar PIX
           </h1>
-          <p className="mt-1.5 text-sm text-ink-500 dark:text-ink-400">
+          <p className="mt-1.5 text-sm text-white/50 text-white/50">
             Informe o valor e gere a cobrança na hora.
           </p>
 
           {!providerConfigured && (
-            <div className="mt-5 flex gap-3 rounded-xl border border-amber-200 bg-amber-50 p-3.5 dark:border-amber-500/25 dark:bg-amber-500/10">
-              <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0 text-amber-600 dark:text-amber-400" />
+            <div className="mt-5 flex gap-3 rounded-xl border border-amber-200 bg-white/[0.05] p-3.5 border-amber-500/25 bg-white/[0.10]/10">
+              <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0 text-white/70 text-white/70" />
               <div className="text-sm">
-                <p className="font-medium text-amber-800 dark:text-amber-300">
+                <p className="font-medium text-amber-800 text-amber-300">
                   {INTEGRATION_NOT_CONFIGURED}
                 </p>
-                <p className="mt-0.5 text-amber-700/90 dark:text-amber-400/80">
+                <p className="mt-0.5 text-white/70/90 text-white/70/80">
                   Configure <code className="font-mono text-xs">PUSHINPAY_API_TOKEN</code> para emitir
                   cobranças reais. Nenhum QR Code é gerado localmente.
                 </p>
@@ -149,13 +149,13 @@ export function PixGenerator({ initialItems, providerConfigured }: { initialItem
 function PixPlaceholder() {
   return (
     <div className="surface flex flex-col items-center justify-center p-10 text-center">
-      <div className="brand-glow flex h-14 w-14 items-center justify-center rounded-2xl bg-brand-50 text-brand-600 dark:bg-brand-500/10 dark:text-brand-400">
+      <div className="brand-glow flex h-14 w-14 items-center justify-center rounded-2xl bg-brand-50 text-brand-600 bg-brand-500/10 text-brand-400">
         <Pix className="h-6 w-6" />
       </div>
-      <h2 className="mt-4 text-base font-semibold text-ink-900 dark:text-white">
+      <h2 className="mt-4 text-base font-semibold text-white text-white">
         Sua cobrança aparece aqui
       </h2>
-      <p className="mt-1.5 max-w-sm text-sm text-ink-500 dark:text-ink-400">
+      <p className="mt-1.5 max-w-sm text-sm text-white/50 text-white/50">
         Depois de gerar, você verá o QR Code, o código copia-e-cola e o identificador da cobrança.
       </p>
     </div>
@@ -205,8 +205,8 @@ function PixResult({ pix, onDismiss }: { pix: PixTransaction; onDismiss: () => v
     <div className="surface animate-slide-up p-6">
       <div className="flex items-start justify-between gap-3">
         <div>
-          <h2 className="text-base font-semibold text-ink-900 dark:text-white">Cobrança gerada</h2>
-          <p className="mt-1 text-sm text-ink-500 dark:text-ink-400">
+          <h2 className="text-base font-semibold text-white text-white">Cobrança gerada</h2>
+          <p className="mt-1 text-sm text-white/50 text-white/50">
             {formatDateTime(pix.created_at)}
           </p>
         </div>
@@ -222,18 +222,18 @@ function PixResult({ pix, onDismiss }: { pix: PixTransaction; onDismiss: () => v
             alt="QR Code da cobrança PIX"
             width={208}
             height={208}
-            className="rounded-2xl border border-ink-200 bg-white p-3 dark:border-ink-700"
+            className="rounded-2xl border border-white/[0.08] bg-white p-3 border-white/[0.14]"
           />
         ) : (
-          <div className="flex h-[232px] w-[232px] flex-col items-center justify-center gap-2 rounded-2xl border border-dashed border-ink-300 p-4 text-center dark:border-ink-700">
-            <Pix className="h-7 w-7 text-ink-300 dark:text-ink-600" />
-            <p className="text-xs text-ink-500 dark:text-ink-400">
+          <div className="flex h-[232px] w-[232px] flex-col items-center justify-center gap-2 rounded-2xl border border-dashed border-white/[0.10] p-4 text-center border-white/[0.14]">
+            <Pix className="h-7 w-7 text-white/70 text-white/60" />
+            <p className="text-xs text-white/50 text-white/50">
               QR Code disponível após conectar o provedor
             </p>
           </div>
         )}
 
-        <p className="mt-5 text-3xl font-semibold tracking-tight text-ink-900 dark:text-white">
+        <p className="mt-5 text-3xl font-semibold tracking-tight text-white text-white">
           {formatCurrency(pix.amount)}
         </p>
 
@@ -241,16 +241,16 @@ function PixResult({ pix, onDismiss }: { pix: PixTransaction; onDismiss: () => v
           <>
             <p className="mt-5 label">Código PIX copia e cola</p>
             <div className="mt-2 w-full">
-              <div className="flex items-start gap-2 rounded-xl border border-ink-200 bg-ink-50 p-3 dark:border-ink-700 dark:bg-ink-800">
-                <p className="min-w-0 flex-1 break-all font-mono text-[11px] leading-relaxed text-ink-600 dark:text-ink-300">
+              <div className="flex items-start gap-2 rounded-xl border border-white/[0.08] bg-white/[0.04] p-3 border-white/[0.14] bg-white/[0.08]">
+                <p className="min-w-0 flex-1 break-all font-mono text-[11px] leading-relaxed text-white/60 text-white/70">
                   {pix.copy_paste_code}
                 </p>
                 <button
                   onClick={copy}
                   aria-label="Copiar código PIX"
-                  className="shrink-0 rounded-lg bg-white p-2 text-ink-500 shadow-sm transition-colors hover:text-brand-600 dark:bg-ink-700 dark:text-ink-300"
+                  className="shrink-0 rounded-lg bg-white p-2 text-white/50 shadow-sm transition-colors hover:text-brand-600 bg-white/[0.2] text-white/70"
                 >
-                  {copied ? <Check className="h-4 w-4 text-emerald-500" /> : <Copy className="h-4 w-4" />}
+                  {copied ? <Check className="h-4 w-4 text-white" /> : <Copy className="h-4 w-4" />}
                 </button>
               </div>
             </div>
@@ -272,16 +272,16 @@ function PixResult({ pix, onDismiss }: { pix: PixTransaction; onDismiss: () => v
           </Button>
         </div>
 
-        <dl className="mt-6 grid w-full grid-cols-2 gap-3 border-t border-ink-100 pt-5 dark:border-ink-800">
+        <dl className="mt-6 grid w-full grid-cols-2 gap-3 border-t border-white/[0.06] pt-5 border-white/[0.08]">
           <div>
             <dt className="label">Identificador</dt>
-            <dd className="mt-1 truncate font-mono text-xs text-ink-700 dark:text-ink-200">
+            <dd className="mt-1 truncate font-mono text-xs text-white/70 text-white/80">
               {pix.provider_request_id ?? 'Aguardando provedor'}
             </dd>
           </div>
           <div>
             <dt className="label">Criada em</dt>
-            <dd className="mt-1 text-xs text-ink-700 dark:text-ink-200">
+            <dd className="mt-1 text-xs text-white/70 text-white/80">
               {formatDateTime(pix.created_at)}
             </dd>
           </div>
@@ -289,7 +289,7 @@ function PixResult({ pix, onDismiss }: { pix: PixTransaction; onDismiss: () => v
 
         <button
           onClick={onDismiss}
-          className="mt-4 text-xs font-medium text-ink-500 transition-colors hover:text-ink-800 dark:hover:text-ink-200"
+          className="mt-4 text-xs font-medium text-white/50 transition-colors hover:text-white/80 hover:text-white/80"
         >
           Gerar outra cobrança
         </button>
@@ -343,10 +343,10 @@ function PixHistory({ items }: { items: PixTransaction[] }) {
     <div className="surface overflow-hidden">
       <div className="flex items-center justify-between gap-4 p-5 pb-4">
         <div>
-          <h2 className="text-base font-semibold tracking-tight text-ink-900 dark:text-white">
+          <h2 className="text-base font-semibold tracking-tight text-white text-white">
             PIX gerados
           </h2>
-          <p className="mt-1 text-sm text-ink-500 dark:text-ink-400">
+          <p className="mt-1 text-sm text-white/50 text-white/50">
             Histórico das suas cobranças
           </p>
         </div>
@@ -359,14 +359,14 @@ function PixHistory({ items }: { items: PixTransaction[] }) {
           description="Gere sua primeira cobrança PIX para vê-la aqui."
         />
       ) : (
-        <ul className="divide-y divide-ink-100 dark:divide-ink-800">
+        <ul className="divide-y divide-white/[0.06] divide-white/[0.06]">
           {items.map((pix) => (
             <li key={pix.id} className="flex items-center justify-between gap-4 px-5 py-4">
               <div className="min-w-0">
-                <p className="font-semibold tabular-nums text-ink-900 dark:text-white">
+                <p className="font-semibold tabular-nums text-white text-white">
                   {formatCurrency(pix.amount)}
                 </p>
-                <p className="mt-0.5 truncate text-xs text-ink-500 dark:text-ink-400">
+                <p className="mt-0.5 truncate text-xs text-white/50 text-white/50">
                   {formatDateTime(pix.created_at)}
                 </p>
               </div>

@@ -1,5 +1,22 @@
 import type { Config } from 'tailwindcss'
 
+/**
+ * Tema dark-only.
+ *
+ * A BokashiPay usa exclusivamente o tema escuro em todas as superfícies:
+ * visitante (landing), autenticado (dashboard) e auth. As classes `dark:`
+ * foram removidas dos componentes porque o "dark" virou o estado base — não há
+ * um modo claro para alternar.
+ *
+ * Paleta restrita a:
+ *   - `brand`   → gradiente roxo (única cor de destaque)
+ *   - `ink`     → cinzas neutros para textos e superfícies
+ *   - `surface` → cor única do card (#14171f, distinto do body)
+ *   - `line`    → bordas translúcidas brancas
+ *
+ * Sem semântica por cor: status, sucessos e pendências se diferenciam por
+ * shape e opacidade dentro da paleta, não por hue.
+ */
 const config: Config = {
   darkMode: 'class',
   content: ['./src/**/*.{ts,tsx}'],
@@ -20,7 +37,9 @@ const config: Config = {
           900: '#4c1d95',
           950: '#2e1065',
         },
-        // Neutros frios para o preto/cinza do fintech.
+        // Cinzas neutros. `ink-950` é o body. `ink-900` é a sidebar. `ink-800`
+        // são superfícies elevadas (popovers, modais). Tons mais claros são
+        // texto.
         ink: {
           50:  '#f6f7f9',
           100: '#eceef2',
@@ -34,10 +53,20 @@ const config: Config = {
           900: '#1c2028',
           950: '#0e1016',
         },
-        // Borda padrão do tema. Aparece como `border-border` e em `*`.
+        // Surface única: cor do `surface` (card). Mais escura que ink-900 para
+        // destacar do body ink-950.
+        surface: {
+          DEFAULT: '#14171f',
+          hover: '#1a1e28',
+          sunken: '#0e1016',
+        },
+        // Borda padrão translúcida. `border-line/60` é o uso mais comum.
         border: {
           DEFAULT: 'hsl(var(--border) / <alpha-value>)',
         },
+        // Wrapper mantido para retrocompatibilidade: `border-border` continua
+        // funcionando.
+        line: 'rgba(255, 255, 255, 0.08)',
       },
       borderRadius: {
         xl: '0.875rem',

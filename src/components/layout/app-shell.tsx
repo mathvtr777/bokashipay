@@ -6,13 +6,13 @@ import { cn } from '@/lib/utils'
 import { firstName } from '@/lib/format'
 import { Sidebar } from './sidebar'
 import { GlobalSearch, MobileMenuButton, NotificationBell } from './header'
-import { LogoLockup } from '@/components/ui/logo'
 
 /**
  * Shell autenticado. Monta sidebar + header e centraliza o conteúdo.
  *
- * O conteúdo vem pronto do servidor (dados reais lidos via RLS) — os componentes
- * interativos dentro dele são client components, o shell em si não precisa ser.
+ * Tema único escuro — sem toggle. O conteúdo vem pronto do servidor (dados
+ * reais lidos via RLS) — os componentes interativos dentro dele são client
+ * components, o shell em si não precisa ser.
  */
 export function AppShell({
   user,
@@ -31,20 +31,21 @@ export function AppShell({
   const closeMenu = React.useCallback(() => setMenuOpen(false), [])
 
   return (
-    <div className="min-h-screen bg-ink-50 dark:bg-ink-950">
-      <Sidebar open={menuOpen} onClose={closeMenu} user={user} isAdmin={isAdmin} />
+    <div className="min-h-screen bg-ink-950 text-white">
+      <Sidebar
+        open={menuOpen}
+        onClose={closeMenu}
+        user={user}
+        isAdmin={isAdmin}
+        unreadCount={unreadCount}
+      />
 
       <div className="md:pl-[76px] lg:pl-[264px]">
-        <header className="sticky top-0 z-30 h-16 border-b border-ink-200 bg-white/80 backdrop-blur-xl dark:border-ink-800 dark:bg-ink-900/80">
+        <header className="sticky top-0 z-30 h-16 border-b border-white/[0.06] bg-ink-950/80 backdrop-blur-xl">
           <div className="flex h-full items-center gap-3 px-4 sm:px-6">
             <MobileMenuButton onClick={() => setMenuOpen(true)} />
 
-            {/* Marca em todos os tamanhos: no tablet/desktop reforça a identidade
-                que também aparece na sidebar; no mobile substitui o texto solto. */}
-            <Link href="/dashboard" aria-label="BokashiPay">
-              <LogoLockup />
-            </Link>
-
+            {/* Espaçador para empurrar busca para o centro no desktop. */}
             <div className="flex-1">
               <GlobalSearch />
             </div>
@@ -54,14 +55,14 @@ export function AppShell({
 
               <Link
                 href="/perfil"
-                className="ml-1 flex items-center gap-2.5 rounded-xl py-1 pl-1 pr-2 transition-colors hover:bg-ink-100 dark:hover:bg-ink-800"
+                className="ml-1 flex items-center gap-2.5 rounded-xl py-1 pl-1 pr-2 transition-colors hover:bg-white/[0.05]"
               >
                 <Avatar name={user.name} />
                 <span className="hidden text-left lg:block">
-                  <span className="block text-sm font-medium leading-tight text-ink-900 dark:text-ink-50">
+                  <span className="block text-sm font-medium leading-tight text-white">
                     {firstName(user.name)}
                   </span>
-                  <span className="block text-xs leading-tight text-ink-500 dark:text-ink-400">
+                  <span className="block text-xs leading-tight text-white/40">
                     {user.email}
                   </span>
                 </span>
@@ -111,11 +112,11 @@ export function PageHeader({
       )}
     >
       <div>
-        <h1 className="text-xl font-semibold tracking-tight text-ink-900 sm:text-2xl dark:text-white">
+        <h1 className="text-xl font-semibold tracking-tight text-white sm:text-2xl">
           {title}
         </h1>
         {description && (
-          <p className="mt-1.5 text-sm text-ink-500 dark:text-ink-400">{description}</p>
+          <p className="mt-1.5 text-sm text-white/50">{description}</p>
         )}
       </div>
       {actions && <div className="flex shrink-0 items-center gap-3">{actions}</div>}

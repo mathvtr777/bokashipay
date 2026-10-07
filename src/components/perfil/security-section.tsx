@@ -97,8 +97,8 @@ export function SecuritySection() {
   return (
     <div className="space-y-6">
       <div className="surface p-6">
-        <h2 className="flex items-center gap-2 text-base font-semibold text-ink-900 dark:text-white">
-          <Lock className="h-4 w-4 text-brand-600 dark:text-brand-400" />
+        <h2 className="flex items-center gap-2 text-base font-semibold text-white text-white">
+          <Lock className="h-4 w-4 text-brand-600 text-brand-400" />
           Segurança
         </h2>
 
@@ -123,11 +123,11 @@ export function SecuritySection() {
       </div>
 
       <div className="surface p-6">
-        <h2 className="flex items-center gap-2 text-base font-semibold text-ink-900 dark:text-white">
-          <Devices className="h-4 w-4 text-brand-600 dark:text-brand-400" />
+        <h2 className="flex items-center gap-2 text-base font-semibold text-white text-white">
+          <Devices className="h-4 w-4 text-brand-600 text-brand-400" />
           Sessões
         </h2>
-        <p className="mt-1.5 text-sm text-ink-500 dark:text-ink-400">
+        <p className="mt-1.5 text-sm text-white/50 text-white/50">
           Encerre o acesso em outros dispositivos caso suspeite de algo estranho.
         </p>
 
@@ -142,7 +142,7 @@ export function SecuritySection() {
           </Button>
           <Button
             variant="outline"
-            className="w-full text-red-600 hover:bg-red-50 dark:text-red-400 dark:hover:bg-red-500/10"
+            className="w-full text-red-600 hover:bg-red-50 text-red-400 hover:bg-red-500/10"
             onClick={signOut}
             disabled={signingOut}
           >

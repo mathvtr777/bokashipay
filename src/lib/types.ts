@@ -132,6 +132,40 @@ export interface PaymentMethodStat {
 }
 
 // -----------------------------------------------------------------------------
+// Estruturas do dashboard (visual Laranjinha) — mocks por enquanto.
+// Quando forem ligadas, basta substituir o corpo das queries stub
+// correspondentes em `lib/queries.ts`. Os componentes da UI já consomem
+// esses tipos.
+// -----------------------------------------------------------------------------
+
+/** Produtor no ranking — nome, vendas e valor. */
+export interface Producer {
+  id: string
+  name: string
+  count: number
+  amount: number
+}
+
+/** Status dos pedidos no período (donut). */
+export interface StatusDonut {
+  approved: number
+  pending: number
+}
+
+/** Funil de conversão: PIX gerados → pagos. */
+export interface ConversionFunnel {
+  generated: number
+  paid: number
+  percent: number
+}
+
+/** Velocidade de pagamento: série por hora + mediana em segundos. */
+export interface PaymentVelocity {
+  series: { hour: string; seconds: number }[]
+  medianSeconds: number | null
+}
+
+// -----------------------------------------------------------------------------
 // Resultado padrão das chamadas de serviço
 // -----------------------------------------------------------------------------
 

@@ -40,10 +40,10 @@ export default function HelpPage() {
       <div className="mx-auto max-w-3xl space-y-4">
         {FAQ.map((item) => (
           <Card key={item.question} className="p-5">
-            <h2 className="text-sm font-semibold text-ink-900 dark:text-white">
+            <h2 className="text-sm font-semibold text-white text-white">
               {item.question}
             </h2>
-            <p className="mt-2 text-sm leading-relaxed text-ink-600 dark:text-ink-300">
+            <p className="mt-2 text-sm leading-relaxed text-white/60 text-white/70">
               {item.answer}
             </p>
           </Card>

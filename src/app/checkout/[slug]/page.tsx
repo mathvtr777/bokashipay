@@ -30,7 +30,7 @@ export default async function CheckoutPage({
 
   return (
     <div
-      className="min-h-screen bg-ink-50 dark:bg-ink-950"
+      className="min-h-screen bg-white/[0.04] bg-ink-950"
       style={
         settings.primaryColor
           ? ({ '--brand': settings.primaryColor } as React.CSSProperties)
@@ -51,7 +51,7 @@ export default async function CheckoutPage({
         socialProof={socialProof}
       />
 
-      <footer className="mx-auto max-w-md px-4 pb-8 pt-4 text-center text-[11px] text-ink-400 dark:text-ink-500">
+      <footer className="mx-auto max-w-md px-4 pb-8 pt-4 text-center text-[11px] text-white/50 text-white/50">
         Pagamento processado pela BokashiPay · A PUSHIN PAY atua exclusivamente como processadora de pagamentos.
       </footer>
     </div>

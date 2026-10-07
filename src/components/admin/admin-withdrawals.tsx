@@ -162,21 +162,21 @@ export function AdminWithdrawals({ adminConfigured }: { adminConfigured: boolean
     <div className="space-y-6">
       <div className="flex flex-wrap items-center justify-between gap-4">
         <div>
-          <h1 className="text-xl font-semibold tracking-tight text-ink-900 sm:text-2xl dark:text-white">
+          <h1 className="text-xl font-semibold tracking-tight text-white sm:text-2xl text-white">
             Saques
           </h1>
-          <p className="mt-1.5 text-sm text-ink-500 dark:text-ink-400">
+          <p className="mt-1.5 text-sm text-white/50 text-white/50">
             Aprove e confirme os pagamentos. Nenhum dinheiro sai sem sua decisão.
           </p>
         </div>
 
-        <div className="flex items-center gap-4 rounded-2xl border border-ink-200 bg-white px-5 py-3 dark:border-ink-800 dark:bg-ink-900">
-          <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-brand-50 text-brand-600 dark:bg-brand-500/10 dark:text-brand-400">
+        <div className="flex items-center gap-4 rounded-2xl border border-white/[0.08] bg-white px-5 py-3 border-white/[0.08] bg-ink-900">
+          <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-brand-50 text-brand-600 bg-brand-500/10 text-brand-400">
             <Wallet className="h-4 w-4" />
           </span>
           <div>
-            <p className="text-xs text-ink-500 dark:text-ink-400">Aguardando análise</p>
-            <p className="text-lg font-semibold tabular-nums text-ink-900 dark:text-white">
+            <p className="text-xs text-white/50 text-white/50">Aguardando análise</p>
+            <p className="text-lg font-semibold tabular-nums text-white text-white">
               {formatCurrency(pendingTotal)}
             </p>
           </div>
@@ -184,7 +184,7 @@ export function AdminWithdrawals({ adminConfigured }: { adminConfigured: boolean
       </div>
 
       <div className="surface overflow-hidden">
-        <div className="flex gap-1 overflow-x-auto border-b border-ink-100 p-2 dark:border-ink-800">
+        <div className="flex gap-1 overflow-x-auto border-b border-white/[0.06] p-2 border-white/[0.08]">
           {TABS.map((item) => {
             const count = items.filter((i) => i.status === item.key).length
             const active = tab === item.key
@@ -195,8 +195,8 @@ export function AdminWithdrawals({ adminConfigured }: { adminConfigured: boolean
                 className={cn(
                   'flex shrink-0 items-center gap-2 rounded-xl px-3.5 py-2 text-sm font-medium transition-all duration-200',
                   active
-                    ? 'bg-brand-50 text-brand-700 dark:bg-brand-500/10 dark:text-brand-300'
-                    : 'text-ink-600 hover:bg-ink-100 dark:text-ink-400 dark:hover:bg-ink-800',
+                    ? 'bg-brand-50 text-brand-700 bg-brand-500/10 text-brand-300'
+                    : 'text-white/60 hover:bg-white/[0.04] text-white/50 hover:bg-white/[0.08]',
                 )}
               >
                 {item.label}
@@ -206,7 +206,7 @@ export function AdminWithdrawals({ adminConfigured }: { adminConfigured: boolean
                       'rounded-full px-1.5 py-0.5 text-[10px] font-semibold tabular-nums',
                       active
                         ? 'bg-brand-600 text-white'
-                        : 'bg-ink-100 text-ink-600 dark:bg-ink-800 dark:text-ink-400',
+                        : 'bg-white/[0.04] text-white/60 bg-white/[0.08] text-white/50',
                     )}
                   >
                     {count}
@@ -232,7 +232,7 @@ export function AdminWithdrawals({ adminConfigured }: { adminConfigured: boolean
             }
           />
         ) : (
-          <ul className="divide-y divide-ink-100 dark:divide-ink-800">
+          <ul className="divide-y divide-white/[0.06] divide-white/[0.06]">
             {filtered.map((item) => {
               const keyInfo = classifyPixKey(item.pix_key)
               const busy = acting === item.id
@@ -242,7 +242,7 @@ export function AdminWithdrawals({ adminConfigured }: { adminConfigured: boolean
                   <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
                     <div className="min-w-0 flex-1">
                       <div className="flex flex-wrap items-center gap-3">
-                        <p className="text-lg font-semibold tabular-nums text-ink-900 dark:text-white">
+                        <p className="text-lg font-semibold tabular-nums text-white text-white">
                           {formatCurrency(item.amount_brl)}
                         </p>
                         <Badge tone="brand">{pixKeyTypeLabel(item.pix_key_type)}</Badge>
@@ -270,12 +270,12 @@ export function AdminWithdrawals({ adminConfigured }: { adminConfigured: boolean
                       </dl>
 
                       {item.status === 'rejected' && item.rejection_reason && (
-                        <p className="mt-2.5 text-xs text-red-600 dark:text-red-400">
+                        <p className="mt-2.5 text-xs text-red-600 text-red-400">
                           Motivo enviado ao usuário: {item.rejection_reason}
                         </p>
                       )}
                       {item.payout_reference && (
-                        <p className="mt-2.5 text-xs text-ink-500 dark:text-ink-400">
+                        <p className="mt-2.5 text-xs text-white/50 text-white/50">
                           Referência do pagamento: {item.payout_reference}
                         </p>
                       )}
@@ -297,7 +297,7 @@ export function AdminWithdrawals({ adminConfigured }: { adminConfigured: boolean
                             variant="outline"
                             disabled={busy}
                             onClick={() => setRejecting(item)}
-                            className="text-red-600 hover:bg-red-50 dark:text-red-400 dark:hover:bg-red-500/10"
+                            className="text-red-600 hover:bg-red-50 text-red-400 hover:bg-red-500/10"
                           >
                             <X className="h-4 w-4" />
                             Recusar
@@ -313,7 +313,7 @@ export function AdminWithdrawals({ adminConfigured }: { adminConfigured: boolean
                       )}
 
                       {(item.status === 'completed' || item.status === 'rejected') && (
-                        <Badge tone={item.status === 'completed' ? 'positive' : 'negative'} dot>
+                        <Badge tone={item.status === 'completed' ? 'positive' : 'muted'} dot>
                           {item.status === 'completed' ? 'Concluído' : 'Recusado'}
                         </Badge>
                       )}
@@ -350,13 +350,13 @@ export function AdminWithdrawals({ adminConfigured }: { adminConfigured: boolean
       >
         {rejecting && (
           <>
-            <div className="mb-4 flex gap-3 rounded-xl bg-ink-50 p-3.5 text-sm dark:bg-ink-800/60">
-              <Wallet className="h-4 w-4 shrink-0 text-ink-400" />
+            <div className="mb-4 flex gap-3 rounded-xl bg-white/[0.04] p-3.5 text-sm bg-white/[0.08]/60">
+              <Wallet className="h-4 w-4 shrink-0 text-white/50" />
               <div>
-                <p className="font-medium text-ink-900 dark:text-ink-50">
+                <p className="font-medium text-white text-white">
                   {formatCurrency(rejecting.amount_brl)}
                 </p>
-                <p className="mt-0.5 text-xs text-ink-500 dark:text-ink-400">
+                <p className="mt-0.5 text-xs text-white/50 text-white/50">
                   Chave {pixKeyTypeLabel(rejecting.pix_key_type).toLowerCase()}: {rejecting.pix_key}
                 </p>
               </div>
@@ -396,9 +396,9 @@ export function AdminWithdrawals({ adminConfigured }: { adminConfigured: boolean
       >
         {completing && (
           <>
-            <div className="mb-4 flex gap-3 rounded-xl border border-amber-200 bg-amber-50 p-3.5 text-sm dark:border-amber-500/25 dark:bg-amber-500/10">
-              <AlertTriangle className="h-4 w-4 shrink-0 text-amber-600 dark:text-amber-400" />
-              <p className="text-amber-800 dark:text-amber-300">
+            <div className="mb-4 flex gap-3 rounded-xl border border-amber-200 bg-white/[0.05] p-3.5 text-sm border-amber-500/25 bg-white/[0.10]/10">
+              <AlertTriangle className="h-4 w-4 shrink-0 text-white/70 text-white/70" />
+              <p className="text-amber-800 text-amber-300">
                 Confirme <strong>depois</strong> de efetivamente transferir{' '}
                 {formatCurrency(completing.amount_brl)} para a chave informada. Esta ação não envia
                 dinheiro — ela registra o que você já pagou.
@@ -432,16 +432,16 @@ function Field({
 }) {
   return (
     <div className="min-w-0">
-      <dt className="text-xs text-ink-500 dark:text-ink-400">{label}</dt>
+      <dt className="text-xs text-white/50 text-white/50">{label}</dt>
       <dd
         className={cn(
-          'truncate font-medium text-ink-900 dark:text-ink-50',
+          'truncate font-medium text-white text-white',
           mono && 'font-mono text-sm',
         )}
       >
         {value}
       </dd>
-      {hint && <p className="truncate text-xs text-ink-400">{hint}</p>}
+      {hint && <p className="truncate text-xs text-white/50">{hint}</p>}
     </div>
   )
 }

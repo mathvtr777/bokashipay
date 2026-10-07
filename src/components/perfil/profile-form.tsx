@@ -55,8 +55,8 @@ export function ProfileForm({
 
   return (
     <div className="surface p-6">
-      <h2 className="text-base font-semibold text-ink-900 dark:text-white">Dados pessoais</h2>
-      <p className="mt-1.5 text-sm text-ink-500 dark:text-ink-400">
+      <h2 className="text-base font-semibold text-white text-white">Dados pessoais</h2>
+      <p className="mt-1.5 text-sm text-white/50 text-white/50">
         Estas informações aparecem nos seus comprovantes.
       </p>
 
@@ -87,8 +87,8 @@ export function ProfileForm({
           hint="Necessário para emitir cobranças em seu nome."
         />
 
-        <div className="flex items-center justify-between gap-4 border-t border-ink-100 pt-5 dark:border-ink-800">
-          <p className="text-xs text-ink-500 dark:text-ink-400">
+        <div className="flex items-center justify-between gap-4 border-t border-white/[0.06] pt-5 border-white/[0.08]">
+          <p className="text-xs text-white/50 text-white/50">
             Conta criada em {formatDate(createdAt)}
           </p>
           <Button type="submit" loading={saving}>

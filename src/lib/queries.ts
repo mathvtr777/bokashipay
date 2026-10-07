@@ -647,3 +647,62 @@ export async function getCheckoutSocialProof(
 
 export type { Json, Database }
 export type { CustomerWithStats } from '@/lib/types'
+
+// -----------------------------------------------------------------------------
+// Dashboard — queries stub (visual Laranjinha)
+//
+// Estas funções alimentam os novos blocos da home (Status Donut, Ranking de
+// Produtores, Conversão de PIX, Funil de Conversão, Velocidade de
+// Pagamento). Por enquanto retornam mocks vazios/zeros para que a UI já
+// renderize a forma final. Quando forem integradas, basta substituir o corpo
+// preservando a assinatura. Não alteram nem dependem de nenhuma query
+// existente.
+// -----------------------------------------------------------------------------
+
+import type {
+  ConversionFunnel,
+  PaymentVelocity,
+  Producer,
+  StatusDonut,
+} from '@/lib/types'
+
+/**
+ * Status dos pedidos no período — aprovados vs pendentes.
+ * @todo integrar com dados reais quando a feature for ligada.
+ */
+export async function getStatusDonut(_range?: DateRange): Promise<StatusDonut> {
+  return { approved: 0, pending: 0 }
+}
+
+/**
+ * Ranking dos top produtores que mais venderam no período.
+ * @todo integrar com dados reais quando a feature for ligada.
+ */
+export async function getProducerRanking(_limit = 5): Promise<Producer[]> {
+  return []
+}
+
+/**
+ * Conversão de PIX: total gerado vs pago (e percent derivado).
+ * @todo integrar com dados reais quando a feature for ligada.
+ */
+export async function getPixConversion(): Promise<ConversionFunnel> {
+  return { generated: 0, paid: 0, percent: 0 }
+}
+
+/**
+ * Funil de conversão: PIX gerados → pagos. Mantém duas structs com a mesma
+ * forma para evitar duplicação com `getPixConversion`.
+ * @todo integrar com dados reais quando a feature for ligada.
+ */
+export async function getConversionFunnel(): Promise<ConversionFunnel> {
+  return { generated: 0, paid: 0, percent: 0 }
+}
+
+/**
+ * Velocidade de pagamento: série por hora + mediana em segundos.
+ * @todo integrar com dados reais quando a feature for ligada.
+ */
+export async function getPaymentVelocity(): Promise<PaymentVelocity> {
+  return { series: [], medianSeconds: null }
+}

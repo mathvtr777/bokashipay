@@ -113,11 +113,11 @@ export function ProductsTable({ products }: { products: Product[] }) {
                       <div className="flex items-center gap-3">
                         <ProductThumb product={p} />
                         <div className="min-w-0">
-                          <p className="truncate font-medium text-ink-900 dark:text-ink-50">
+                          <p className="truncate font-medium text-white text-white">
                             {p.name}
                           </p>
                           {p.description && (
-                            <p className="line-clamp-1 text-xs text-ink-500 dark:text-ink-400">
+                            <p className="line-clamp-1 text-xs text-white/50 text-white/50">
                               {p.description}
                             </p>
                           )}
@@ -125,7 +125,7 @@ export function ProductsTable({ products }: { products: Product[] }) {
                       </div>
                     </td>
                     <td>
-                      <code className="rounded bg-ink-100 px-1.5 py-0.5 text-xs text-ink-700 dark:bg-ink-800 dark:text-ink-300">
+                      <code className="rounded bg-white/[0.04] px-1.5 py-0.5 text-xs text-white/70 bg-white/[0.08] text-white/70">
                         /{p.slug}
                       </code>
                     </td>
@@ -142,7 +142,7 @@ export function ProductsTable({ products }: { products: Product[] }) {
                           aria-label="Copiar link de checkout"
                           title="Copiar link de checkout"
                           disabled={p.status !== 'active'}
-                          className="rounded-lg p-1.5 text-ink-500 transition-colors hover:bg-ink-100 hover:text-ink-900 disabled:cursor-not-allowed disabled:opacity-30 dark:hover:bg-ink-800 dark:hover:text-white"
+                          className="rounded-lg p-1.5 text-white/50 transition-colors hover:bg-white/[0.04] hover:text-white disabled:cursor-not-allowed disabled:opacity-30 hover:bg-white/[0.08] hover:text-white"
                         >
                           <Copy className="h-4 w-4" />
                         </button>
@@ -154,7 +154,7 @@ export function ProductsTable({ products }: { products: Product[] }) {
                           title={
                             p.status === 'active' ? 'Arquivar' : 'Ativar'
                           }
-                          className="rounded-lg p-1.5 text-ink-500 transition-colors hover:bg-ink-100 hover:text-ink-900 dark:hover:bg-ink-800 dark:hover:text-white"
+                          className="rounded-lg p-1.5 text-white/50 transition-colors hover:bg-white/[0.04] hover:text-white hover:bg-white/[0.08] hover:text-white"
                         >
                           <CheckCircle className="h-4 w-4" />
                         </button>
@@ -162,7 +162,7 @@ export function ProductsTable({ products }: { products: Product[] }) {
                           onClick={() => setEditing(p)}
                           aria-label="Editar produto"
                           title="Editar"
-                          className="rounded-lg p-1.5 text-ink-500 transition-colors hover:bg-ink-100 hover:text-ink-900 dark:hover:bg-ink-800 dark:hover:text-white"
+                          className="rounded-lg p-1.5 text-white/50 transition-colors hover:bg-white/[0.04] hover:text-white hover:bg-white/[0.08] hover:text-white"
                         >
                           <Edit className="h-4 w-4" />
                         </button>
@@ -170,7 +170,7 @@ export function ProductsTable({ products }: { products: Product[] }) {
                           onClick={() => setDeleting(p)}
                           aria-label="Excluir produto"
                           title="Excluir"
-                          className="rounded-lg p-1.5 text-ink-500 transition-colors hover:bg-red-50 hover:text-red-600 dark:hover:bg-red-500/10 dark:hover:text-red-400"
+                          className="rounded-lg p-1.5 text-white/50 transition-colors hover:bg-red-50 hover:text-red-600 hover:bg-red-500/10 hover:text-red-400"
                         >
                           <Trash className="h-4 w-4" />
                         </button>
@@ -215,11 +215,11 @@ export function ProductsTable({ products }: { products: Product[] }) {
 
 function ProductStatusBadge({ status }: { status: string }) {
   const map: Record<string, { label: string; tone: string }> = {
-    active: { label: 'Ativo', tone: 'bg-emerald-50 text-emerald-700 dark:bg-emerald-500/10 dark:text-emerald-300' },
-    draft: { label: 'Rascunho', tone: 'bg-ink-100 text-ink-700 dark:bg-ink-800 dark:text-ink-300' },
-    archived: { label: 'Arquivado', tone: 'bg-amber-50 text-amber-700 dark:bg-amber-500/10 dark:text-amber-300' },
+    active: { label: 'Ativo', tone: 'bg-white/[0.05] text-white bg-white/[0.08]/10 text-emerald-300' },
+    draft: { label: 'Rascunho', tone: 'bg-white/[0.04] text-white/70 bg-white/[0.08] text-white/70' },
+    archived: { label: 'Arquivado', tone: 'bg-white/[0.05] text-white/70 bg-white/[0.10]/10 text-amber-300' },
   }
-  const item = map[status] ?? { label: status, tone: 'bg-ink-100 text-ink-700' }
+  const item = map[status] ?? { label: status, tone: 'bg-white/[0.04] text-white/70' }
   return (
     <span className={cn('inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium', item.tone)}>
       {item.label}
@@ -361,7 +361,7 @@ function ProductFormModal({
       <form id="product-form" onSubmit={submit} className="space-y-4">
         <div className="grid gap-4 sm:grid-cols-2">
           <div>
-            <label htmlFor="name" className="mb-1.5 block text-xs font-medium text-ink-700 dark:text-ink-200">
+            <label htmlFor="name" className="mb-1.5 block text-xs font-medium text-white/70 text-white/80">
               Nome
             </label>
             <Input
@@ -374,7 +374,7 @@ function ProductFormModal({
             />
           </div>
           <div>
-            <label htmlFor="slug" className="mb-1.5 block text-xs font-medium text-ink-700 dark:text-ink-200">
+            <label htmlFor="slug" className="mb-1.5 block text-xs font-medium text-white/70 text-white/80">
               Slug
             </label>
             <Input
@@ -388,14 +388,14 @@ function ProductFormModal({
               maxLength={60}
               required
             />
-            <p className="mt-1 text-[11px] text-ink-500 dark:text-ink-400">
+            <p className="mt-1 text-[11px] text-white/50 text-white/50">
               letras minúsculas, números e hífens. Vira a URL do checkout.
             </p>
           </div>
         </div>
 
         <div>
-          <label htmlFor="description" className="mb-1.5 block text-xs font-medium text-ink-700 dark:text-ink-200">
+          <label htmlFor="description" className="mb-1.5 block text-xs font-medium text-white/70 text-white/80">
             Descrição
           </label>
           <Textarea
@@ -410,11 +410,11 @@ function ProductFormModal({
 
         <div className="grid gap-4 sm:grid-cols-2">
           <div>
-            <label htmlFor="price" className="mb-1.5 block text-xs font-medium text-ink-700 dark:text-ink-200">
+            <label htmlFor="price" className="mb-1.5 block text-xs font-medium text-white/70 text-white/80">
               Preço
             </label>
             <div className="relative">
-              <span className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-sm text-ink-400">
+              <span className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-sm text-white/50">
                 R$
               </span>
               <input
@@ -423,13 +423,13 @@ function ProductFormModal({
                 onChange={(e) => setPriceText(e.target.value)}
                 placeholder="99,90"
                 inputMode="decimal"
-                className="h-9 w-full rounded-xl border border-ink-200 bg-white pl-10 pr-3 text-sm tabular-nums text-ink-900 transition-all placeholder:text-ink-400 focus:border-brand-500 focus:outline-none focus:ring-4 focus:ring-brand-500/12 dark:border-ink-700 dark:bg-ink-900 dark:text-ink-50"
+                className="h-9 w-full rounded-xl border border-white/[0.08] bg-white pl-10 pr-3 text-sm tabular-nums text-white transition-all placeholder:text-white/50 focus:border-brand-500 focus:outline-none focus:ring-4 focus:ring-brand-500/12 border-white/[0.14] bg-ink-900 text-white"
                 required
               />
             </div>
           </div>
           <div>
-            <label htmlFor="status" className="mb-1.5 block text-xs font-medium text-ink-700 dark:text-ink-200">
+            <label htmlFor="status" className="mb-1.5 block text-xs font-medium text-white/70 text-white/80">
               Status
             </label>
             <Select
@@ -446,7 +446,7 @@ function ProductFormModal({
         </div>
 
         <div>
-          <label htmlFor="image" className="mb-1.5 block text-xs font-medium text-ink-700 dark:text-ink-200">
+          <label htmlFor="image" className="mb-1.5 block text-xs font-medium text-white/70 text-white/80">
             URL da imagem de capa
           </label>
           <Input
@@ -456,18 +456,18 @@ function ProductFormModal({
             placeholder="https://..."
             type="url"
           />
-          <p className="mt-1 text-[11px] text-ink-500 dark:text-ink-400">
+          <p className="mt-1 text-[11px] text-white/50 text-white/50">
             Cole um link. Upload de imagem direto pra cá vem em fase seguinte.
           </p>
         </div>
 
         {/* Modelo de cobrança */}
         <div>
-          <label className="mb-1.5 block text-xs font-medium text-ink-700 dark:text-ink-200">
+          <label className="mb-1.5 block text-xs font-medium text-white/70 text-white/80">
             Modelo de cobrança
           </label>
           <div className="flex gap-3">
-            <label className="flex flex-1 cursor-pointer items-center gap-2 rounded-xl border border-ink-200 bg-white px-3 py-2.5 text-sm dark:border-ink-700 dark:bg-ink-900">
+            <label className="flex flex-1 cursor-pointer items-center gap-2 rounded-xl border border-white/[0.08] bg-white px-3 py-2.5 text-sm border-white/[0.14] bg-ink-900">
               <input
                 type="radio"
                 name="model"
@@ -477,13 +477,13 @@ function ProductFormModal({
                 className="accent-brand-500"
               />
               <div>
-                <p className="font-medium text-ink-900 dark:text-white">Venda única</p>
-                <p className="text-[11px] text-ink-500 dark:text-ink-400">
+                <p className="font-medium text-white text-white">Venda única</p>
+                <p className="text-[11px] text-white/50 text-white/50">
                   Cobrança PIX avulsa
                 </p>
               </div>
             </label>
-            <label className="flex flex-1 cursor-pointer items-center gap-2 rounded-xl border border-ink-200 bg-white px-3 py-2.5 text-sm dark:border-ink-700 dark:bg-ink-900">
+            <label className="flex flex-1 cursor-pointer items-center gap-2 rounded-xl border border-white/[0.08] bg-white px-3 py-2.5 text-sm border-white/[0.14] bg-ink-900">
               <input
                 type="radio"
                 name="model"
@@ -493,8 +493,8 @@ function ProductFormModal({
                 className="accent-brand-500"
               />
               <div>
-                <p className="font-medium text-ink-900 dark:text-white">Assinatura</p>
-                <p className="text-[11px] text-ink-500 dark:text-ink-400">
+                <p className="font-medium text-white text-white">Assinatura</p>
+                <p className="text-[11px] text-white/50 text-white/50">
                   Recorrência (em breve)
                 </p>
               </div>
@@ -503,14 +503,14 @@ function ProductFormModal({
         </div>
 
         {/* Personalização do checkout */}
-        <fieldset className="space-y-3 rounded-xl border border-ink-200 p-4 dark:border-ink-700">
-          <legend className="px-1 text-[11px] font-semibold uppercase tracking-wider text-ink-500 dark:text-ink-400">
+        <fieldset className="space-y-3 rounded-xl border border-white/[0.08] p-4 border-white/[0.14]">
+          <legend className="px-1 text-[11px] font-semibold uppercase tracking-wider text-white/50 text-white/50">
             Personalização do checkout
           </legend>
 
           <div className="grid gap-3 sm:grid-cols-2">
             <div>
-              <label htmlFor="primaryColor" className="mb-1.5 block text-xs font-medium text-ink-700 dark:text-ink-200">
+              <label htmlFor="primaryColor" className="mb-1.5 block text-xs font-medium text-white/70 text-white/80">
                 Cor primária
               </label>
               <div className="flex items-center gap-2">
@@ -519,7 +519,7 @@ function ProductFormModal({
                   type="color"
                   value={primaryColor}
                   onChange={(e) => setPrimaryColor(e.target.value)}
-                  className="h-9 w-12 cursor-pointer rounded-lg border border-ink-200 bg-white dark:border-ink-700 dark:bg-ink-900"
+                  className="h-9 w-12 cursor-pointer rounded-lg border border-white/[0.08] bg-white border-white/[0.14] bg-ink-900"
                 />
                 <Input
                   value={primaryColor}
@@ -531,7 +531,7 @@ function ProductFormModal({
             </div>
 
             <div>
-              <label htmlFor="bannerUrl" className="mb-1.5 block text-xs font-medium text-ink-700 dark:text-ink-200">
+              <label htmlFor="bannerUrl" className="mb-1.5 block text-xs font-medium text-white/70 text-white/80">
                 Banner (URL)
               </label>
               <Input
@@ -545,7 +545,7 @@ function ProductFormModal({
           </div>
 
           <div>
-            <label htmlFor="successMessage" className="mb-1.5 block text-xs font-medium text-ink-700 dark:text-ink-200">
+            <label htmlFor="successMessage" className="mb-1.5 block text-xs font-medium text-white/70 text-white/80">
               Mensagem de sucesso
             </label>
             <Textarea
@@ -559,7 +559,7 @@ function ProductFormModal({
           </div>
 
           <div className="flex flex-col gap-2 sm:flex-row sm:gap-6">
-            <label className="flex items-center gap-2 text-xs text-ink-700 dark:text-ink-200">
+            <label className="flex items-center gap-2 text-xs text-white/70 text-white/80">
               <input
                 type="checkbox"
                 checked={requirePhone}
@@ -568,7 +568,7 @@ function ProductFormModal({
               />
               Pedir telefone
             </label>
-            <label className="flex items-center gap-2 text-xs text-ink-700 dark:text-ink-200">
+            <label className="flex items-center gap-2 text-xs text-white/70 text-white/80">
               <input
                 type="checkbox"
                 checked={requireDocument}
@@ -581,7 +581,7 @@ function ProductFormModal({
         </fieldset>
 
         {error && (
-          <p className="rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700 dark:border-red-500/30 dark:bg-red-500/10 dark:text-red-300">
+          <p className="rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700 border-red-500/30 bg-red-500/10 text-red-300">
             {error}
           </p>
         )}

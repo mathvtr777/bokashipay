@@ -66,7 +66,7 @@ export function Modal({
   return createPortal(
     <div className="fixed inset-0 z-50 flex items-end justify-center p-0 sm:items-center sm:p-4">
       <div
-        className="absolute inset-0 animate-fade-in bg-ink-950/50 backdrop-blur-sm"
+        className="absolute inset-0 animate-fade-in bg-black/70 backdrop-blur-sm"
         onClick={onClose}
         aria-hidden="true"
       />
@@ -77,20 +77,20 @@ export function Modal({
         aria-label={title}
         tabIndex={-1}
         className={cn(
-          'relative flex max-h-[92vh] w-full flex-col animate-slide-up rounded-t-2xl bg-white shadow-2xl outline-none dark:bg-ink-900 sm:rounded-2xl',
+          'relative flex max-h-[92vh] w-full flex-col animate-slide-up rounded-t-2xl bg-surface shadow-2xl outline-none ring-1 ring-white/[0.08] sm:rounded-2xl',
           SIZES[size],
         )}
       >
         {(title || description) && (
-          <div className="flex items-start justify-between gap-4 border-b border-ink-100 p-5 dark:border-ink-800">
+          <div className="flex items-start justify-between gap-4 border-b border-white/[0.06] p-5">
             <div>
-              {title && <h2 className="text-base font-semibold text-ink-900 dark:text-ink-50">{title}</h2>}
-              {description && <p className="mt-1 text-sm text-ink-500 dark:text-ink-400">{description}</p>}
+              {title && <h2 className="text-base font-semibold text-white">{title}</h2>}
+              {description && <p className="mt-1 text-sm text-white/50">{description}</p>}
             </div>
             <button
               onClick={onClose}
               aria-label="Fechar"
-              className="-mr-1 rounded-lg p-1.5 text-ink-400 transition-colors hover:bg-ink-100 hover:text-ink-700 dark:hover:bg-ink-800 dark:hover:text-ink-100"
+              className="-mr-1 rounded-lg p-1.5 text-white/40 transition-colors hover:bg-white/[0.06] hover:text-white"
             >
               <X className="h-4 w-4" />
             </button>
@@ -100,7 +100,7 @@ export function Modal({
         <div className="min-h-0 flex-1 overflow-y-auto p-5">{children}</div>
 
         {footer && (
-          <div className="flex items-center justify-end gap-3 border-t border-ink-100 p-5 dark:border-ink-800">
+          <div className="flex items-center justify-end gap-3 border-t border-white/[0.06] p-5">
             {footer}
           </div>
         )}
@@ -148,7 +148,7 @@ export function ConfirmDialog({
         </>
       }
     >
-      <p className="text-sm text-ink-600 dark:text-ink-300">
+      <p className="text-sm text-white/60">
         Esta ação não pode ser desfeita.
       </p>
     </Modal>

@@ -55,9 +55,9 @@ export function SaleDetailsModal({
       title="Detalhes da venda"
       description={sale.description ?? undefined}
       size="lg"
-      footer={<button onClick={onClose} className="text-sm font-medium text-ink-500 hover:text-ink-800">Fechar</button>}
+      footer={<button onClick={onClose} className="text-sm font-medium text-white/50 hover:text-white/80">Fechar</button>}
     >
-      <div className="flex items-center justify-between gap-3 rounded-xl border border-ink-200 bg-ink-50 p-3.5 dark:border-ink-700 dark:bg-ink-800/50">
+      <div className="flex items-center justify-between gap-3 rounded-xl border border-white/[0.08] bg-white/[0.04] p-3.5 border-white/[0.14] bg-white/[0.08]/50">
         <div>
           <p className="label">Status</p>
           <div className="mt-1.5">
@@ -66,21 +66,21 @@ export function SaleDetailsModal({
         </div>
         <div className="text-right">
           <p className="label">Recebido em</p>
-          <p className="mt-1.5 text-sm text-ink-600 dark:text-ink-300">
+          <p className="mt-1.5 text-sm text-white/60 text-white/70">
             {formatRelative(sale.created_at)}
           </p>
         </div>
       </div>
 
-      <dl className="mt-5 divide-y divide-ink-100 dark:divide-ink-800">
+      <dl className="mt-5 divide-y divide-white/[0.06] divide-white/[0.06]">
         {rows.map((row) => (
           <div key={row.label} className="flex items-center justify-between gap-4 py-3">
-            <dt className="text-sm text-ink-500 dark:text-ink-400">{row.label}</dt>
+            <dt className="text-sm text-white/50 text-white/50">{row.label}</dt>
             <dd
               className={
                 row.emphasis
-                  ? 'text-sm font-semibold tabular-nums text-ink-900 dark:text-white'
-                  : 'text-sm font-medium text-ink-900 dark:text-ink-50'
+                  ? 'text-sm font-semibold tabular-nums text-white text-white'
+                  : 'text-sm font-medium text-white text-white'
               }
             >
               {row.value}
@@ -91,7 +91,7 @@ export function SaleDetailsModal({
 
       {/* Identificadores técnicos — o que o usuário precisa para concatenar
           com o provedor ou abrir um chamado. */}
-      <div className="mt-5 space-y-3 rounded-xl border border-ink-200 p-4 dark:border-ink-700">
+      <div className="mt-5 space-y-3 rounded-xl border border-white/[0.08] p-4 border-white/[0.14]">
         <p className="label">Identificadores</p>
 
         <IdentifierRow
@@ -126,16 +126,16 @@ function IdentifierRow({
   return (
     <div className="flex items-center justify-between gap-3">
       <div className="min-w-0">
-        <p className="text-xs text-ink-500 dark:text-ink-400">{label}</p>
-        <p className="truncate font-mono text-xs text-ink-700 dark:text-ink-200">{value}</p>
+        <p className="text-xs text-white/50 text-white/50">{label}</p>
+        <p className="truncate font-mono text-xs text-white/70 text-white/80">{value}</p>
       </div>
       {onCopy && (
         <button
           onClick={onCopy}
           aria-label={`Copiar ${label.toLowerCase()}`}
-          className="shrink-0 rounded-lg p-1.5 text-ink-400 transition-colors hover:bg-ink-100 hover:text-ink-700 dark:hover:bg-ink-700"
+          className="shrink-0 rounded-lg p-1.5 text-white/50 transition-colors hover:bg-white/[0.04] hover:text-white/70 hover:bg-white/[0.2]"
         >
-          {copied ? <Check className="h-4 w-4 text-emerald-500" /> : <Copy className="h-4 w-4" />}
+          {copied ? <Check className="h-4 w-4 text-white" /> : <Copy className="h-4 w-4" />}
         </button>
       )}
     </div>
@@ -148,7 +148,7 @@ export function ViewAllLink({ href, label = 'Ver todas' }: { href: string; label
   return (
     <button
       onClick={() => router.push(href)}
-      className="text-xs font-medium text-brand-600 transition-colors hover:text-brand-700 dark:text-brand-400"
+      className="text-xs font-medium text-brand-600 transition-colors hover:text-brand-700 text-brand-400"
     >
       {label}
     </button>

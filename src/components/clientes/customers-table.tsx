@@ -30,7 +30,7 @@ export function CustomersTable({ customers }: { customers: CustomerWithStats[] }
 
   return (
     <div className="surface overflow-hidden">
-      <div className="border-b border-ink-100 p-5 dark:border-ink-800">
+      <div className="border-b border-white/[0.06] p-5 border-white/[0.08]">
         <Input
           ref={search}
           placeholder="Buscar cliente pelo nome…"
@@ -78,11 +78,11 @@ export function CustomersTable({ customers }: { customers: CustomerWithStats[] }
                         {customer.name.slice(0, 2).toUpperCase()}
                       </span>
                       <div className="min-w-0">
-                        <p className="truncate font-medium text-ink-900 dark:text-ink-50">
+                        <p className="truncate font-medium text-white text-white">
                           {customer.name}
                         </p>
                         {customer.document && (
-                          <p className="text-xs text-ink-500 dark:text-ink-400">
+                          <p className="text-xs text-white/50 text-white/50">
                             {maskDocument(customer.document)}
                           </p>
                         )}
@@ -93,26 +93,26 @@ export function CustomersTable({ customers }: { customers: CustomerWithStats[] }
                   <td>
                     <div className="min-w-0 text-sm">
                       {customer.email && (
-                        <p className="truncate text-ink-600 dark:text-ink-300">{customer.email}</p>
+                        <p className="truncate text-white/60 text-white/70">{customer.email}</p>
                       )}
                       {customer.phone && (
-                        <p className="text-xs text-ink-500 dark:text-ink-400">{customer.phone}</p>
+                        <p className="text-xs text-white/50 text-white/50">{customer.phone}</p>
                       )}
                       {!customer.email && !customer.phone && (
-                        <span className="text-ink-400">—</span>
+                        <span className="text-white/50">—</span>
                       )}
                     </div>
                   </td>
 
-                  <td className="text-right font-semibold tabular-nums text-ink-900 dark:text-ink-50">
+                  <td className="text-right font-semibold tabular-nums text-white text-white">
                     {formatCurrency(customer.total_purchased)}
                   </td>
 
-                  <td className="text-right tabular-nums text-ink-600 dark:text-ink-300">
+                  <td className="text-right tabular-nums text-white/60 text-white/70">
                     {formatNumber(customer.purchase_count)}
                   </td>
 
-                  <td className="whitespace-nowrap text-ink-500 dark:text-ink-400">
+                  <td className="whitespace-nowrap text-white/50 text-white/50">
                     {customer.last_purchase_at ? formatDate(customer.last_purchase_at) : '—'}
                   </td>
 
@@ -149,7 +149,7 @@ function CustomerModal({
       description={`Cliente desde ${customer ? formatDate(customer.created_at) : ''}`}
       size="md"
       footer={
-        <button onClick={onClose} className="text-sm font-medium text-ink-500 hover:text-ink-800 dark:hover:text-ink-200">
+        <button onClick={onClose} className="text-sm font-medium text-white/50 hover:text-white/80 hover:text-white/80">
           Fechar
         </button>
       }
@@ -157,15 +157,15 @@ function CustomerModal({
       {customer && (
         <>
           <dl className="grid grid-cols-2 gap-4">
-            <div className="rounded-xl bg-ink-50 p-4 dark:bg-ink-800/60">
+            <div className="rounded-xl bg-white/[0.04] p-4 bg-white/[0.08]/60">
               <dt className="label">Total comprado</dt>
-              <dd className="mt-1.5 text-lg font-semibold tabular-nums text-ink-900 dark:text-white">
+              <dd className="mt-1.5 text-lg font-semibold tabular-nums text-white text-white">
                 {formatCurrency(customer.total_purchased)}
               </dd>
             </div>
-            <div className="rounded-xl bg-ink-50 p-4 dark:bg-ink-800/60">
+            <div className="rounded-xl bg-white/[0.04] p-4 bg-white/[0.08]/60">
               <dt className="label">Compras</dt>
-              <dd className="mt-1.5 text-lg font-semibold tabular-nums text-ink-900 dark:text-white">
+              <dd className="mt-1.5 text-lg font-semibold tabular-nums text-white text-white">
                 {formatNumber(customer.purchase_count)}
               </dd>
             </div>
@@ -183,23 +183,23 @@ function CustomerModal({
           <div className="mt-5">
             <p className="label">Histórico</p>
             {customer.purchase_count === 0 ? (
-              <p className="mt-2 text-sm text-ink-500 dark:text-ink-400">
+              <p className="mt-2 text-sm text-white/50 text-white/50">
                 Este cliente ainda não tem compras aprovadas.
               </p>
             ) : (
               <div className="mt-2 space-y-1.5">
-                <div className="flex items-center justify-between rounded-lg bg-ink-50 px-3 py-2.5 text-sm dark:bg-ink-800/60">
-                  <span className="text-ink-600 dark:text-ink-300">
+                <div className="flex items-center justify-between rounded-lg bg-white/[0.04] px-3 py-2.5 text-sm bg-white/[0.08]/60">
+                  <span className="text-white/60 text-white/70">
                     {customer.purchase_count} {customer.purchase_count === 1 ? 'compra' : 'compras'} aprovadas
                   </span>
-                  <span className="tabular-nums text-ink-900 dark:text-white">
+                  <span className="tabular-nums text-white text-white">
                     {formatCurrency(customer.total_purchased)}
                   </span>
                 </div>
                 {customer.last_purchase_at && (
-                  <div className="flex items-center justify-between rounded-lg bg-ink-50 px-3 py-2.5 text-sm dark:bg-ink-800/60">
-                    <span className="text-ink-600 dark:text-ink-300">Última compra</span>
-                    <span className="text-ink-900 dark:text-white">
+                  <div className="flex items-center justify-between rounded-lg bg-white/[0.04] px-3 py-2.5 text-sm bg-white/[0.08]/60">
+                    <span className="text-white/60 text-white/70">Última compra</span>
+                    <span className="text-white text-white">
                       {formatDate(customer.last_purchase_at)}
                     </span>
                   </div>
@@ -215,8 +215,8 @@ function CustomerModal({
 
 function ContactRow({ icon, value }: { icon: React.ReactNode; value: string }) {
   return (
-    <div className="flex items-center gap-2.5 text-sm text-ink-600 dark:text-ink-300">
-      <span className={cn('text-ink-400')}>{icon}</span>
+    <div className="flex items-center gap-2.5 text-sm text-white/60 text-white/70">
+      <span className={cn('text-white/50')}>{icon}</span>
       {value}
     </div>
   )

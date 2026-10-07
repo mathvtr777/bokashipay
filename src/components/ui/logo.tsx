@@ -1,50 +1,47 @@
+import Image from 'next/image'
 import { cn } from '@/lib/utils'
-import * as Icons from './icons'
 
 /**
- * Marca do BokashiPay. Um losango (o "b" da Bokashi) com gradiente da marca —
- * geometria própria, sem imitar identidade de terceiros.
+ * Logo da BokashiPay.
+ *
+ * Renderiza o símbolo "B" roxo/branco/preto (`/public/logo.png`) — sem
+ * wordmark. O PNG já vem com fundo transparente (processado em
+ * `scripts/process-logo.cjs`). Usamos `priority` apenas no lockup principal do
+ * shell para evitar flash no primeiro paint; nas outras instâncias fica sem
+ * priority para não pesar o LCP.
  */
-export function Logo({ className, size = 32 }: { className?: string; size?: number }) {
+export function Logo({
+  className,
+  size = 32,
+  priority = false,
+}: {
+  className?: string
+  size?: number
+  priority?: boolean
+}) {
   return (
     <span
-      className={cn('brand-gradient flex shrink-0 items-center justify-center rounded-xl shadow-sm', className)}
+      className={cn('relative inline-block shrink-0', className)}
       style={{ width: size, height: size }}
-      aria-hidden="true"
+      aria-label="BokashiPay"
     >
-      <svg viewBox="0 0 24 24" fill="none" style={{ width: size * 0.58, height: size * 0.58 }}>
-        <path
-          d="M12 2.6 21.4 12 12 21.4 2.6 12Z"
-          stroke="white"
-          strokeWidth="1.7"
-          strokeLinejoin="round"
-          opacity="0.55"
-        />
-        <path
-          d="M9.6 15.4V8.6h2.9a2.05 2.05 0 0 1 1.32 3.63A2.15 2.15 0 0 1 12.7 15.4Z"
-          stroke="white"
-          strokeWidth="1.8"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        />
-      </svg>
+      <Image
+        src="/logo.png"
+        alt=""
+        width={size}
+        height={size}
+        priority={priority}
+        className="object-contain"
+      />
     </span>
   )
 }
 
-export function Wordmark({ className }: { className?: string }) {
-  return (
-    <span className={cn('text-[15px] font-semibold tracking-tight text-ink-900 dark:text-white', className)}>
-      Bokashi<span className="text-brand-600 dark:text-brand-400">Pay</span>
-    </span>
-  )
-}
-
+/**
+ * Lockup: símbolo sozinho, no tamanho pedido.
+ * Mantido por retrocompatibilidade — `LogoLockup` ainda é importado em
+ * `app-shell.tsx` e na landing.
+ */
 export function LogoLockup({ size = 32 }: { size?: number }) {
-  return (
-    <div className="flex items-center gap-2.5">
-      <Logo size={size} />
-      <Wordmark />
-    </div>
-  )
+  return <Logo size={size} priority />
 }

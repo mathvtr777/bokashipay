@@ -75,7 +75,7 @@ export function SalesFiltersTable({
   return (
     <div className="surface overflow-hidden">
       {/* Filtros */}
-      <div className="border-b border-ink-100 p-5 dark:border-ink-800">
+      <div className="border-b border-white/[0.06] p-5 border-white/[0.08]">
         <div className="flex flex-wrap items-center gap-3">
           <div className="min-w-[200px] flex-1">
             <Input
@@ -180,8 +180,8 @@ export function SalesFiltersTable({
 
       {/* Paginação */}
       {totalPages > 1 && (
-        <div className="flex items-center justify-between gap-4 border-t border-ink-100 px-5 py-4 dark:border-ink-800">
-          <p className="text-sm text-ink-500 dark:text-ink-400">
+        <div className="flex items-center justify-between gap-4 border-t border-white/[0.06] px-5 py-4 border-white/[0.08]">
+          <p className="text-sm text-white/50 text-white/50">
             Página {page} de {totalPages} · {total} vendas
           </p>
           <div className="flex items-center gap-2">

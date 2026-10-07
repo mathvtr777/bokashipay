@@ -75,7 +75,7 @@ export function SettingsTabs({
   return (
     <div className="surface overflow-hidden">
       {/* Navegação das seções */}
-      <div className="flex gap-1 overflow-x-auto border-b border-ink-100 p-2 dark:border-ink-800">
+      <div className="flex gap-1 overflow-x-auto border-b border-white/[0.06] p-2 border-white/[0.08]">
         {TABS.map((item) => {
           const IconComponent = item.icon
           const active = tab === item.key
@@ -86,8 +86,8 @@ export function SettingsTabs({
               className={cn(
                 'flex shrink-0 items-center gap-2 rounded-xl px-3.5 py-2 text-sm font-medium transition-all duration-200',
                 active
-                  ? 'bg-brand-50 text-brand-700 dark:bg-brand-500/10 dark:text-brand-300'
-                  : 'text-ink-600 hover:bg-ink-100 dark:text-ink-400 dark:hover:bg-ink-800',
+                  ? 'bg-brand-50 text-brand-700 bg-brand-500/10 text-brand-300'
+                  : 'text-white/60 hover:bg-white/[0.04] text-white/50 hover:bg-white/[0.08]',
               )}
             >
               <IconComponent className="h-4 w-4" />
@@ -100,10 +100,10 @@ export function SettingsTabs({
       <div className="p-6">
         {tab === 'notificacoes' && (
           <section>
-            <h2 className="text-base font-semibold text-ink-900 dark:text-white">
+            <h2 className="text-base font-semibold text-white text-white">
               Notificações
             </h2>
-            <p className="mt-1.5 text-sm text-ink-500 dark:text-ink-400">
+            <p className="mt-1.5 text-sm text-white/50 text-white/50">
               Escolha o que quer ser avisado.
             </p>
 
@@ -115,7 +115,7 @@ export function SettingsTabs({
               <Checkbox label="Enviar também por e-mail" checked={prefs.notify_email} onChange={toggle('notify_email')} />
             </div>
 
-            <div className="mt-6 border-t border-ink-100 pt-5 dark:border-ink-800">
+            <div className="mt-6 border-t border-white/[0.06] pt-5 border-white/[0.08]">
               <Button onClick={save} loading={saving}>
                 Salvar preferências
               </Button>
@@ -125,11 +125,11 @@ export function SettingsTabs({
 
         {tab === 'conta' && (
           <section>
-            <h2 className="text-base font-semibold text-ink-900 dark:text-white">Conta</h2>
-            <p className="mt-1.5 text-sm text-ink-500 dark:text-ink-400">
+            <h2 className="text-base font-semibold text-white text-white">Conta</h2>
+            <p className="mt-1.5 text-sm text-white/50 text-white/50">
               Dados de identificação do seu negócio. Nome, e-mail e documento ficam na aba Perfil.
             </p>
-            <p className="mt-5 text-sm text-ink-500 dark:text-ink-400">
+            <p className="mt-5 text-sm text-white/50 text-white/50">
               Razão social e dados de faturamento serão exibidos aqui quando forem configurados.
             </p>
           </section>
@@ -137,19 +137,19 @@ export function SettingsTabs({
 
         {tab === 'integracoes' && (
           <section>
-            <h2 className="text-base font-semibold text-ink-900 dark:text-white">Integrações</h2>
-            <p className="mt-1.5 text-sm text-ink-500 dark:text-ink-400">
+            <h2 className="text-base font-semibold text-white text-white">Integrações</h2>
+            <p className="mt-1.5 text-sm text-white/50 text-white/50">
               Serviços conectados à sua conta.
             </p>
 
-            <div className="mt-6 flex items-center justify-between gap-4 rounded-xl border border-ink-200 p-4 dark:border-ink-700">
+            <div className="mt-6 flex items-center justify-between gap-4 rounded-xl border border-white/[0.08] p-4 border-white/[0.14]">
               <div className="flex items-center gap-3">
                 <span className="brand-gradient flex h-10 w-10 items-center justify-center rounded-xl text-sm font-bold text-white">
                   U
                 </span>
                 <div>
-                  <p className="text-sm font-semibold text-ink-900 dark:text-white">UTMFY</p>
-                  <p className="text-xs text-ink-500 dark:text-ink-400">
+                  <p className="text-sm font-semibold text-white text-white">UTMFY</p>
+                  <p className="text-xs text-white/50 text-white/50">
                     Rastreamento de vendas
                   </p>
                 </div>
@@ -172,8 +172,8 @@ export function SettingsTabs({
 
         {tab === 'aparencia' && (
           <section>
-            <h2 className="text-base font-semibold text-ink-900 dark:text-white">Aparência</h2>
-            <p className="mt-1.5 text-sm text-ink-500 dark:text-ink-400">
+            <h2 className="text-base font-semibold text-white text-white">Aparência</h2>
+            <p className="mt-1.5 text-sm text-white/50 text-white/50">
               O tema segue o seu sistema por padrão.
             </p>
             <div className="mt-6 flex gap-3">
@@ -188,7 +188,7 @@ export function SettingsTabs({
                       tone: 'info',
                     })
                   }}
-                  className="rounded-xl border border-ink-200 px-4 py-3 text-sm font-medium text-ink-700 transition-all hover:border-brand-300 hover:bg-brand-50/40 dark:border-ink-700 dark:text-ink-200 dark:hover:border-brand-700"
+                  className="rounded-xl border border-white/[0.08] px-4 py-3 text-sm font-medium text-white/70 transition-all hover:border-brand-300 hover:bg-brand-50/40 border-white/[0.14] text-white/80 hover:border-brand-700"
                 >
                   {theme === 'light' ? 'Claro' : theme === 'dark' ? 'Escuro' : 'Sistema'}
                 </button>
@@ -199,8 +199,8 @@ export function SettingsTabs({
 
         {tab === 'seguranca' && (
           <section>
-            <h2 className="text-base font-semibold text-ink-900 dark:text-white">Segurança</h2>
-            <p className="mt-1.5 text-sm text-ink-500 dark:text-ink-400">
+            <h2 className="text-base font-semibold text-white text-white">Segurança</h2>
+            <p className="mt-1.5 text-sm text-white/50 text-white/50">
               Senha, sessões e dispositivos conectados ficam na aba Perfil.
             </p>
             <Button variant="outline" className="mt-5" onClick={() => router.push('/perfil')}>

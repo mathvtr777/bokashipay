@@ -39,7 +39,7 @@ export function PeriodSelector({ className }: { className?: string }) {
       <div
         role="tablist"
         aria-label="Selecionar período"
-        className="inline-flex flex-wrap items-center gap-1 rounded-xl border border-ink-200 bg-white p-1 dark:border-ink-700 dark:bg-ink-900"
+        className="inline-flex flex-wrap items-center gap-1 rounded-xl border border-white/[0.08] bg-white/[0.04] p-1"
       >
         {PERIOD_LABELS.filter((p) => p.value !== 'custom').map((preset) => {
           const active = current === preset.value
@@ -53,7 +53,7 @@ export function PeriodSelector({ className }: { className?: string }) {
                 'rounded-lg px-3 py-1.5 text-xs font-medium transition-all duration-200 ease-premium',
                 active
                   ? 'bg-brand-600 text-white shadow-sm'
-                  : 'text-ink-600 hover:bg-ink-100 hover:text-ink-900 dark:text-ink-400 dark:hover:bg-ink-800 dark:hover:text-white',
+                  : 'text-white/60 hover:bg-white/[0.06] hover:text-white',
               )}
             >
               {preset.label}
@@ -64,24 +64,24 @@ export function PeriodSelector({ className }: { className?: string }) {
 
       {/* Intervalo manual, revelado ao escolher "Personalizado". */}
       {current === 'custom' && (
-        <div className="flex animate-fade-in items-center gap-2 rounded-xl border border-ink-200 bg-white px-3 py-1.5 dark:border-ink-700 dark:bg-ink-900">
-          <Calendar className="h-3.5 w-3.5 text-ink-400" />
+        <div className="flex animate-fade-in items-center gap-2 rounded-xl border border-white/[0.08] bg-white/[0.04] px-3 py-1.5">
+          <Calendar className="h-3.5 w-3.5 text-white/40" />
           <input
             type="date"
             value={from}
             max={to || undefined}
             onChange={(e) => update({ de: e.target.value })}
             aria-label="Data inicial"
-            className="bg-transparent text-xs text-ink-700 outline-none dark:text-ink-200"
+            className="bg-transparent text-xs text-white outline-none"
           />
-          <span className="text-ink-400">–</span>
+          <span className="text-white/30">–</span>
           <input
             type="date"
             value={to}
             min={from || undefined}
             onChange={(e) => update({ ate: e.target.value })}
             aria-label="Data final"
-            className="bg-transparent text-xs text-ink-700 outline-none dark:text-ink-200"
+            className="bg-transparent text-xs text-white outline-none"
           />
         </div>
       )}

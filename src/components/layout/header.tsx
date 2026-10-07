@@ -11,12 +11,12 @@ import { Bell, Check, Menu, Search } from '@/components/ui/icons'
 import { useToast } from '@/components/ui/toast'
 
 const TYPE_DOT: Record<string, string> = {
-  payment: 'bg-emerald-500',
-  pix: 'bg-brand-500',
-  withdrawal: 'bg-amber-500',
-  sale: 'bg-sky-500',
-  error: 'bg-red-500',
-  info: 'bg-ink-400',
+  payment: 'bg-white',
+  pix: 'bg-brand-400',
+  withdrawal: 'bg-white/50',
+  sale: 'bg-brand-300',
+  error: 'bg-red-400',
+  info: 'bg-white/30',
 }
 
 /**
@@ -108,7 +108,7 @@ export function NotificationBell({ initialCount }: { initialCount: number }) {
         onClick={openPanel}
         aria-label={`Notificações${count > 0 ? ` (${count} não lidas)` : ''}`}
         aria-expanded={open}
-        className="relative rounded-xl p-2 text-ink-500 transition-all duration-200 hover:bg-ink-100 hover:text-ink-900 dark:hover:bg-ink-800 dark:hover:text-white"
+        className="relative rounded-xl p-2 text-white/50 transition-all duration-200 hover:bg-white/[0.05] hover:text-white"
       >
         <Bell className="h-[19px] w-[19px]" />
         {count > 0 && (
@@ -119,13 +119,15 @@ export function NotificationBell({ initialCount }: { initialCount: number }) {
       </button>
 
       {open && (
-        <div className="absolute right-0 top-full z-50 mt-2 w-[340px] animate-slide-up overflow-hidden rounded-2xl border border-ink-200 bg-white shadow-xl dark:border-ink-700 dark:bg-ink-800">
-          <div className="flex items-center justify-between border-b border-ink-100 px-4 py-3 dark:border-ink-700">
-            <h3 className="text-sm font-semibold text-ink-900 dark:text-ink-50">Notificações</h3>
+        <div
+          className="absolute right-0 top-full z-50 mt-2 w-[340px] animate-slide-up overflow-hidden rounded-2xl border border-white/[0.08] bg-surface shadow-xl"
+        >
+          <div className="flex items-center justify-between border-b border-white/[0.06] px-4 py-3">
+            <h3 className="text-sm font-semibold text-white">Notificações</h3>
             {count > 0 && (
               <button
                 onClick={markAllRead}
-                className="flex items-center gap-1 text-xs font-medium text-brand-600 transition-colors hover:text-brand-700 dark:text-brand-400"
+                className="flex items-center gap-1 text-xs font-medium text-brand-300 transition-colors hover:text-brand-200"
               >
                 <Check className="h-3.5 w-3.5" />
                 Marcar todas como lidas
@@ -141,17 +143,17 @@ export function NotificationBell({ initialCount }: { initialCount: number }) {
                 ))}
               </div>
             ) : items.length === 0 ? (
-              <p className="px-4 py-10 text-center text-sm text-ink-500 dark:text-ink-400">
+              <p className="px-4 py-10 text-center text-sm text-white/50">
                 Nenhuma notificação por aqui.
               </p>
             ) : (
-              <ul className="divide-y divide-ink-100 dark:divide-ink-700">
+              <ul className="divide-y divide-white/[0.06]">
                 {items.map((item) => {
                   const body = (
                     <div
                       className={cn(
-                        'flex gap-3 px-4 py-3 transition-colors hover:bg-ink-50 dark:hover:bg-ink-700/50',
-                        !item.read && 'bg-brand-50/40 dark:bg-brand-500/5',
+                        'flex gap-3 px-4 py-3 transition-colors hover:bg-white/[0.04]',
+                        !item.read && 'bg-brand-500/[0.08]',
                       )}
                     >
                       <span
@@ -163,18 +165,18 @@ export function NotificationBell({ initialCount }: { initialCount: number }) {
                       <div className="min-w-0 flex-1">
                         <p
                           className={cn(
-                            'truncate text-sm text-ink-900 dark:text-ink-50',
+                            'truncate text-sm text-white',
                             !item.read && 'font-medium',
                           )}
                         >
                           {item.title}
                         </p>
                         {item.body && (
-                          <p className="mt-0.5 line-clamp-2 text-xs text-ink-500 dark:text-ink-400">
+                          <p className="mt-0.5 line-clamp-2 text-xs text-white/50">
                             {item.body}
                           </p>
                         )}
-                        <p className="mt-1 text-xs text-ink-400">{formatRelative(item.created_at)}</p>
+                        <p className="mt-1 text-xs text-white/30">{formatRelative(item.created_at)}</p>
                       </div>
                     </div>
                   )
@@ -230,7 +232,7 @@ export function GlobalSearch() {
 
   return (
     <form onSubmit={submit} className="relative hidden md:block">
-      <span className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-ink-400">
+      <span className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-white/30">
         <Search className="h-4 w-4" />
       </span>
       <input
@@ -240,9 +242,9 @@ export function GlobalSearch() {
         onChange={(e) => setQuery(e.target.value)}
         placeholder="Buscar vendas, clientes…"
         aria-label="Buscar"
-        className="h-9 w-64 rounded-xl border border-ink-200 bg-white pl-9 pr-12 text-sm text-ink-900 transition-all duration-200 placeholder:text-ink-400 focus:border-brand-500 focus:outline-none focus:ring-4 focus:ring-brand-500/12 lg:w-80 dark:border-ink-700 dark:bg-ink-900 dark:text-ink-50"
+        className="h-9 w-64 rounded-xl border border-white/[0.08] bg-white/[0.04] pl-9 pr-12 text-sm text-white transition-all duration-200 placeholder:text-white/30 focus:border-brand-500 focus:outline-none focus:ring-4 focus:ring-brand-500/15 lg:w-80"
       />
-      <kbd className="pointer-events-none absolute right-2.5 top-1/2 hidden -translate-y-1/2 rounded border border-ink-200 px-1.5 py-0.5 text-[10px] font-medium text-ink-400 lg:block dark:border-ink-700">
+      <kbd className="pointer-events-none absolute right-2.5 top-1/2 hidden -translate-y-1/2 rounded border border-white/[0.08] bg-white/[0.04] px-1.5 py-0.5 text-[10px] font-medium text-white/40 lg:block">
         /
       </kbd>
     </form>
@@ -254,7 +256,7 @@ export function MobileMenuButton({ onClick }: { onClick: () => void }) {
     <button
       onClick={onClick}
       aria-label="Abrir menu"
-      className="rounded-xl p-2 text-ink-500 transition-colors hover:bg-ink-100 hover:text-ink-900 md:hidden dark:hover:bg-ink-800 dark:hover:text-white"
+      className="rounded-xl p-2 text-white/50 transition-colors hover:bg-white/[0.05] hover:text-white md:hidden"
     >
       <Menu className="h-5 w-5" />
     </button>

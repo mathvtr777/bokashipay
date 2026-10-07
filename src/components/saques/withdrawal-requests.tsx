@@ -28,11 +28,11 @@ const SAQUE_LABELS: Record<string, string> = {
   rejected: 'Recusado',
 }
 
-const SAQUE_TONES: Record<string, 'warning' | 'info' | 'positive' | 'negative'> = {
-  pending: 'warning',
-  approved: 'info',
+const SAQUE_TONES: Record<string, 'positive' | 'neutral' | 'muted' | 'brand'> = {
+  pending: 'neutral',
+  approved: 'brand',
   completed: 'positive',
-  rejected: 'negative',
+  rejected: 'muted',
 }
 
 export function WithdrawalRequests({
@@ -114,13 +114,13 @@ export function WithdrawalRequests({
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
         {cards.map((card) => (
           <div key={card.label} className="surface p-5">
-            <p className="text-xs font-medium uppercase tracking-wider text-ink-500 dark:text-ink-400">
+            <p className="text-xs font-medium uppercase tracking-wider text-white/50 text-white/50">
               {card.label}
             </p>
-            <p className="mt-2.5 text-2xl font-semibold tracking-tight text-ink-900 dark:text-white">
+            <p className="mt-2.5 text-2xl font-semibold tracking-tight text-white text-white">
               {formatCurrency(card.value)}
             </p>
-            <p className="mt-1 text-xs text-ink-500 dark:text-ink-400">{card.hint}</p>
+            <p className="mt-1 text-xs text-white/50 text-white/50">{card.hint}</p>
           </div>
         ))}
       </div>
@@ -128,10 +128,10 @@ export function WithdrawalRequests({
       <div className="grid gap-6 xl:grid-cols-5">
         <div className="xl:col-span-2">
           <div className="surface p-6">
-            <h2 className="text-base font-semibold tracking-tight text-ink-900 dark:text-white">
+            <h2 className="text-base font-semibold tracking-tight text-white text-white">
               Solicitar saque
             </h2>
-            <p className="mt-1.5 text-sm leading-relaxed text-ink-500 dark:text-ink-400">
+            <p className="mt-1.5 text-sm leading-relaxed text-white/50 text-white/50">
               Envie o pedido para análise. O pagamento é feito manualmente após a aprovação.
             </p>
 
@@ -173,11 +173,11 @@ export function WithdrawalRequests({
                 hint="Deve corresponder ao titular da chave PIX."
               />
 
-              <div className="rounded-xl bg-ink-50 p-3.5 text-sm dark:bg-ink-800/60">
-                <p className="font-medium text-ink-800 dark:text-ink-100">
+              <div className="rounded-xl bg-white/[0.04] p-3.5 text-sm bg-white/[0.08]/60">
+                <p className="font-medium text-white/80 text-white/90">
                   O saque não é automático
                 </p>
-                <p className="mt-1 text-ink-500 dark:text-ink-400">
+                <p className="mt-1 text-white/50 text-white/50">
                   Sua solicitação entra em análise. Nada é transferido antes da aprovação.
                 </p>
               </div>
@@ -193,10 +193,10 @@ export function WithdrawalRequests({
         <div className="xl:col-span-3">
           <div className="surface overflow-hidden">
             <div className="p-5 pb-4">
-              <h2 className="text-base font-semibold tracking-tight text-ink-900 dark:text-white">
+              <h2 className="text-base font-semibold tracking-tight text-white text-white">
                 Minhas solicitações
               </h2>
-              <p className="mt-1 text-sm text-ink-500 dark:text-ink-400">
+              <p className="mt-1 text-sm text-white/50 text-white/50">
                 Acompanhe o andamento de cada pedido
               </p>
             </div>
@@ -208,15 +208,15 @@ export function WithdrawalRequests({
                 description="Quando você solicitar um saque, o histórico aparece nesta lista."
               />
             ) : (
-              <ul className="divide-y divide-ink-100 dark:divide-ink-800">
+              <ul className="divide-y divide-white/[0.06] divide-white/[0.06]">
                 {initialRequests.map((request) => (
                   <li key={request.id} className="px-5 py-4">
                     <div className="flex items-start justify-between gap-4">
                       <div className="min-w-0">
-                        <p className="font-semibold tabular-nums text-ink-900 dark:text-white">
+                        <p className="font-semibold tabular-nums text-white text-white">
                           {formatCurrency(request.amount_brl)}
                         </p>
-                        <p className="mt-0.5 text-xs text-ink-500 dark:text-ink-400">
+                        <p className="mt-0.5 text-xs text-white/50 text-white/50">
                           {formatDateTime(request.created_at)}
                         </p>
                       </div>
@@ -225,16 +225,16 @@ export function WithdrawalRequests({
                       </Badge>
                     </div>
 
-                    <div className="mt-2.5 space-y-1 text-xs text-ink-500 dark:text-ink-400">
+                    <div className="mt-2.5 space-y-1 text-xs text-white/50 text-white/50">
                       <p>
                         Chave {pixKeyTypeLabel(request.pix_key_type).toLowerCase()}:{' '}
-                        <span className="font-mono text-ink-700 dark:text-ink-200">
+                        <span className="font-mono text-white/70 text-white/80">
                           {request.pix_key}
                         </span>
                       </p>
                       <p>Titular: {request.holder_name}</p>
                       {request.rejection_reason && (
-                        <p className="text-red-600 dark:text-red-400">
+                        <p className="text-red-600 text-red-400">
                           Motivo: {request.rejection_reason}
                         </p>
                       )}

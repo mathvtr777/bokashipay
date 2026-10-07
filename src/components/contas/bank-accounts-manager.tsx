@@ -201,14 +201,14 @@ export function BankAccountsManager({ initialAccounts }: { initialAccounts: Bank
             <div key={account.id} className="surface surface-hover p-5">
               <div className="flex items-start justify-between gap-3">
                 <div className="flex items-center gap-3">
-                  <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-brand-50 text-brand-600 dark:bg-brand-500/10 dark:text-brand-400">
+                  <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-brand-50 text-brand-600 bg-brand-500/10 text-brand-400">
                     <Bank className="h-5 w-5" />
                   </span>
                   <div>
-                    <p className="text-sm font-semibold text-ink-900 dark:text-white">
+                    <p className="text-sm font-semibold text-white text-white">
                       {account.bank_name}
                     </p>
-                    <p className="text-xs text-ink-500 dark:text-ink-400">
+                    <p className="text-xs text-white/50 text-white/50">
                       Código {account.bank_code}
                     </p>
                   </div>
@@ -221,7 +221,7 @@ export function BankAccountsManager({ initialAccounts }: { initialAccounts: Bank
                 )}
               </div>
 
-              <dl className="mt-4 space-y-2 border-t border-ink-100 pt-4 text-sm dark:border-ink-800">
+              <dl className="mt-4 space-y-2 border-t border-white/[0.06] pt-4 text-sm border-white/[0.08]">
                 <Row label="Agência" value={account.agency} />
                 <Row
                   label="Conta"
@@ -238,7 +238,7 @@ export function BankAccountsManager({ initialAccounts }: { initialAccounts: Bank
                 {account.pix_key && <Row label="Chave PIX" value={account.pix_key} />}
               </dl>
 
-              <div className="mt-4 flex items-center gap-2 border-t border-ink-100 pt-4 dark:border-ink-800">
+              <div className="mt-4 flex items-center gap-2 border-t border-white/[0.06] pt-4 border-white/[0.08]">
                 <StatusBadge status={account.status} />
                 <div className="ml-auto flex items-center gap-1">
                   {!account.is_primary && (
@@ -255,7 +255,7 @@ export function BankAccountsManager({ initialAccounts }: { initialAccounts: Bank
                     size="icon"
                     onClick={() => setRemoving(account)}
                     aria-label="Remover conta"
-                    className="text-red-500 hover:bg-red-50 hover:text-red-600 dark:hover:bg-red-500/10"
+                    className="text-red-500 hover:bg-red-50 hover:text-red-600 hover:bg-red-500/10"
                   >
                     <Trash className="h-4 w-4" />
                   </Button>
@@ -379,8 +379,8 @@ export function BankAccountsManager({ initialAccounts }: { initialAccounts: Bank
 function Row({ label, value }: { label: string; value: string }) {
   return (
     <div className="flex items-center justify-between gap-3">
-      <dt className="shrink-0 text-ink-500 dark:text-ink-400">{label}</dt>
-      <dd className={cn('truncate text-right font-medium text-ink-900 dark:text-ink-50')}>{value}</dd>
+      <dt className="shrink-0 text-white/50 text-white/50">{label}</dt>
+      <dd className={cn('truncate text-right font-medium text-white text-white')}>{value}</dd>
     </div>
   )
 }

@@ -23,16 +23,16 @@ export function GoalProgress({
       <div
         role="status"
         aria-label="Carregando meta"
-        className="flex h-9 w-52 animate-pulse items-center gap-2 rounded-lg border border-ink-200 bg-white px-2.5 dark:border-ink-700 dark:bg-ink-900"
+        className="flex h-9 w-52 animate-pulse items-center gap-2 rounded-lg border border-white/[0.08] bg-white/[0.04] px-2.5"
       >
         <div className="flex flex-1 flex-col gap-1">
-          <div className="h-1.5 w-10 rounded bg-ink-100 dark:bg-ink-800" />
-          <div className="h-2 w-14 rounded bg-ink-100 dark:bg-ink-800" />
+          <div className="h-1.5 w-10 rounded bg-white/[0.08]" />
+          <div className="h-2 w-14 rounded bg-white/[0.08]" />
         </div>
-        <div className="h-1 flex-1 rounded-full bg-ink-100 dark:bg-ink-800" />
+        <div className="h-1 flex-1 rounded-full bg-white/[0.08]" />
         <div className="flex flex-1 flex-col items-end gap-1">
-          <div className="h-1.5 w-10 rounded bg-ink-100 dark:bg-ink-800" />
-          <div className="h-2 w-14 rounded bg-ink-100 dark:bg-ink-800" />
+          <div className="h-1.5 w-10 rounded bg-white/[0.08]" />
+          <div className="h-2 w-14 rounded bg-white/[0.08]" />
         </div>
       </div>
     )
@@ -43,7 +43,7 @@ export function GoalProgress({
 
   return (
     <div
-      className="inline-flex items-center gap-2 rounded-lg border border-ink-200 bg-white px-2.5 py-1 dark:border-ink-700 dark:bg-ink-900"
+      className="inline-flex items-center gap-2 rounded-lg border border-white/[0.08] bg-white/[0.04] px-2.5 py-1"
       title={
         goal.isLastTier
           ? `Você ultrapassou ${tierLabel}`
@@ -52,10 +52,10 @@ export function GoalProgress({
     >
       {/* Coluna esquerda: o que já fez */}
       <div className="flex min-w-0 flex-col">
-        <span className="text-[9px] font-semibold uppercase tracking-wider text-ink-500 dark:text-ink-400">
+        <span className="text-[9px] font-semibold uppercase tracking-wider text-white/40">
           Faturamento
         </span>
-        <span className="text-[11px] font-semibold tabular-nums text-ink-900 dark:text-white">
+        <span className="text-[11px] font-semibold tabular-nums text-white">
           {currentLabel}
         </span>
       </div>
@@ -67,20 +67,20 @@ export function GoalProgress({
         aria-valuemax={100}
         aria-valuenow={goal.percent}
         aria-label={`Progresso da meta: ${goal.percent}%`}
-        className="h-1 w-20 shrink-0 overflow-hidden rounded-full bg-ink-100 dark:bg-ink-800 sm:w-28"
+        className="h-1 w-20 shrink-0 overflow-hidden rounded-full bg-white/[0.08] sm:w-28"
       >
         <div
-          className="h-full rounded-full bg-brand-500 transition-all duration-500 ease-premium"
+          className="h-full rounded-full bg-brand-400 transition-all duration-500 ease-premium"
           style={{ width: `${goal.percent}%` }}
         />
       </div>
 
       {/* Coluna direita: a meta */}
       <div className="flex min-w-0 flex-col items-end">
-        <span className="text-[9px] font-semibold uppercase tracking-wider text-ink-500 dark:text-ink-400">
+        <span className="text-[9px] font-semibold uppercase tracking-wider text-white/40">
           Sua meta
         </span>
-        <span className="text-[11px] font-semibold tabular-nums text-ink-900 dark:text-white">
+        <span className="text-[11px] font-semibold tabular-nums text-white">
           {tierLabel}
         </span>
       </div>

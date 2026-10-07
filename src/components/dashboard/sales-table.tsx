@@ -65,24 +65,24 @@ export function SalesTable({
           {transactions.map((transaction) => {
             const row = (
               <>
-                <td className="font-mono text-xs text-ink-500 dark:text-ink-400">
+                <td className="font-mono text-xs text-white/40">
                   {shortId(transaction.id)}
                 </td>
 
                 {showCustomer && (
                   <td>
-                    <span className="block max-w-[180px] truncate font-medium text-ink-900 dark:text-ink-50">
+                    <span className="block max-w-[180px] truncate font-medium text-white">
                       {transaction.customer?.name ?? transaction.payer_name ?? 'Não informado'}
                     </span>
                   </td>
                 )}
 
-                <td className="font-semibold tabular-nums text-ink-900 dark:text-ink-50">
+                <td className="font-semibold tabular-nums text-white">
                   {formatCurrency(transaction.amount)}
                 </td>
 
                 {showFee && (
-                  <td className="tabular-nums text-ink-500 dark:text-ink-400">
+                  <td className="tabular-nums text-white/40">
                     {formatCurrency(transaction.fee)}
                   </td>
                 )}
@@ -96,14 +96,14 @@ export function SalesTable({
                 </td>
 
                 {!compact && (
-                  <td className="whitespace-nowrap text-ink-500 dark:text-ink-400">
+                  <td className="whitespace-nowrap text-white/40">
                     {formatRelative(transaction.created_at)}
                   </td>
                 )}
 
                 {onSelect && (
                   <td>
-                    <ChevronRight className="h-4 w-4 text-ink-300 dark:text-ink-600" />
+                    <ChevronRight className="h-4 w-4 text-white/20" />
                   </td>
                 )}
               </>
@@ -129,7 +129,7 @@ const METHOD_LABELS: Record<string, string> = { pix: 'PIX', card: 'Cartão', bol
 
 export function MethodPill({ method }: { method: string }) {
   return (
-    <Badge tone={method === 'pix' ? 'brand' : method === 'card' ? 'info' : 'neutral'}>
+    <Badge tone={method === 'pix' ? 'brand' : 'neutral'}>
       {METHOD_LABELS[method] ?? method}
     </Badge>
   )
@@ -154,35 +154,35 @@ export function TopProducts({
 
   return (
     <div className="surface p-5">
-      <h2 className="text-base font-semibold tracking-tight text-ink-900 dark:text-white">
+      <h2 className="text-base font-semibold tracking-tight text-white">
         Mais vendidos
       </h2>
-      <p className="mt-1 text-sm text-ink-500 dark:text-ink-400">Por volume no período</p>
+      <p className="mt-1 text-sm text-white/50">Por volume no período</p>
 
       <ul className="mt-5 space-y-4">
         {products.map((product, index) => (
           <li key={product.name}>
             <div className="mb-1.5 flex items-baseline justify-between gap-3">
               <span className="flex min-w-0 items-center gap-2">
-                <span className="w-4 shrink-0 text-xs font-semibold tabular-nums text-ink-400">
+                <span className="w-4 shrink-0 text-xs font-semibold tabular-nums text-white/30">
                   {index + 1}
                 </span>
-                <span className="truncate text-sm font-medium text-ink-800 dark:text-ink-100">
+                <span className="truncate text-sm font-medium text-white">
                   {product.name}
                 </span>
               </span>
-              <span className="shrink-0 text-sm font-semibold tabular-nums text-ink-900 dark:text-white">
+              <span className="shrink-0 text-sm font-semibold tabular-nums text-white">
                 {formatCurrency(product.amount)}
               </span>
             </div>
 
-            <div className="ml-6 h-1.5 overflow-hidden rounded-full bg-ink-100 dark:bg-ink-800">
+            <div className="ml-6 h-1.5 overflow-hidden rounded-full bg-white/[0.06]">
               <div
                 className="brand-gradient h-full rounded-full transition-all duration-500 ease-premium"
                 style={{ width: `${(product.amount / max) * 100}%` }}
               />
             </div>
-            <p className="ml-6 mt-1 text-xs text-ink-500 dark:text-ink-400">
+            <p className="ml-6 mt-1 text-xs text-white/40">
               {product.count} {product.count === 1 ? 'venda' : 'vendas'}
             </p>
           </li>

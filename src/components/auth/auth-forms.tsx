@@ -30,14 +30,14 @@ export function AuthLayout({
             <LogoLockup size={34} />
           </Link>
 
-          <h1 className="mt-10 text-2xl font-semibold tracking-tight text-ink-900 dark:text-white">
+          <h1 className="mt-10 text-2xl font-semibold tracking-tight text-white text-white">
             {title}
           </h1>
-          <p className="mt-2 text-sm text-ink-500 dark:text-ink-400">{subtitle}</p>
+          <p className="mt-2 text-sm text-white/50 text-white/50">{subtitle}</p>
 
           <div className="mt-8">{children}</div>
 
-          {footer && <div className="mt-8 text-center text-sm text-ink-500 dark:text-ink-400">{footer}</div>}
+          {footer && <div className="mt-8 text-center text-sm text-white/50 text-white/50">{footer}</div>}
         </div>
       </div>
 
@@ -111,7 +111,7 @@ export function PasswordInput({
           type="button"
           onClick={() => setVisible((v) => !v)}
           aria-label={visible ? 'Ocultar senha' : 'Mostrar senha'}
-          className="rounded p-1 text-ink-400 transition-colors hover:text-ink-700 dark:hover:text-ink-100"
+          className="rounded p-1 text-white/50 transition-colors hover:text-white/70 hover:text-white/90"
         >
           {visible ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
         </button>
@@ -174,7 +174,7 @@ export function LoginForm() {
           Ainda não tem conta?{' '}
           <Link
             href="/register"
-            className="font-medium text-brand-600 transition-colors hover:text-brand-700 dark:text-brand-400"
+            className="font-medium text-brand-600 transition-colors hover:text-brand-700 text-brand-400"
           >
             Criar conta
           </Link>
@@ -210,7 +210,7 @@ export function LoginForm() {
           />
           <Link
             href="/forgot-password"
-            className="text-sm font-medium text-brand-600 transition-colors hover:text-brand-700 dark:text-brand-400"
+            className="text-sm font-medium text-brand-600 transition-colors hover:text-brand-700 text-brand-400"
           >
             Esqueci minha senha
           </Link>
@@ -306,7 +306,7 @@ export function RegisterForm() {
           Já tem conta?{' '}
           <Link
             href="/login"
-            className="font-medium text-brand-600 transition-colors hover:text-brand-700 dark:text-brand-400"
+            className="font-medium text-brand-600 transition-colors hover:text-brand-700 text-brand-400"
           >
             Entrar
           </Link>
@@ -369,20 +369,20 @@ export function RegisterForm() {
             label={
               <span>
                 Aceito os{' '}
-                <span className="text-brand-600 dark:text-brand-400">termos de uso</span> e a{' '}
-                <span className="text-brand-600 dark:text-brand-400">política de privacidade</span>
+                <span className="text-brand-600 text-brand-400">termos de uso</span> e a{' '}
+                <span className="text-brand-600 text-brand-400">política de privacidade</span>
               </span>
             }
             checked={accepted}
             onChange={(e) => setAccepted(e.target.checked)}
           />
           {errors.accepted && (
-            <p className="mt-1.5 text-xs text-red-600 dark:text-red-400">{errors.accepted}</p>
+            <p className="mt-1.5 text-xs text-red-600 text-red-400">{errors.accepted}</p>
           )}
         </div>
 
         {formError && (
-          <p className="rounded-xl bg-red-50 px-3.5 py-2.5 text-sm text-red-700 dark:bg-red-500/10 dark:text-red-400">
+          <p className="rounded-xl bg-red-50 px-3.5 py-2.5 text-sm text-red-700 bg-red-500/10 text-red-400">
             {formError}
           </p>
         )}
@@ -431,18 +431,18 @@ export function ForgotPasswordForm() {
       footer={
         <Link
           href="/login"
-          className="font-medium text-brand-600 transition-colors hover:text-brand-700 dark:text-brand-400"
+          className="font-medium text-brand-600 transition-colors hover:text-brand-700 text-brand-400"
         >
           Voltar para o login
         </Link>
       }
     >
       {sent ? (
-        <div className="rounded-2xl border border-emerald-200 bg-emerald-50 p-5 dark:border-emerald-500/25 dark:bg-emerald-500/10">
-          <h2 className="text-sm font-semibold text-emerald-800 dark:text-emerald-300">
+        <div className="rounded-2xl border border-emerald-200 bg-white/[0.05] p-5 border-emerald-500/25 bg-white/[0.08]/10">
+          <h2 className="text-sm font-semibold text-emerald-800 text-emerald-300">
             Verifique seu e-mail
           </h2>
-          <p className="mt-1.5 text-sm text-emerald-700 dark:text-emerald-400/90">
+          <p className="mt-1.5 text-sm text-white text-white/90">
             Se houver uma conta com <strong>{email}</strong>, você receberá o link em instantes.
             Confira também a pasta de spam.
           </p>
@@ -517,18 +517,18 @@ export function ResetPasswordForm() {
       footer={
         <Link
           href="/login"
-          className="font-medium text-brand-600 transition-colors hover:text-brand-700 dark:text-brand-400"
+          className="font-medium text-brand-600 transition-colors hover:text-brand-700 text-brand-400"
         >
           Voltar para o login
         </Link>
       }
     >
       {done ? (
-        <div className="rounded-2xl border border-emerald-200 bg-emerald-50 p-5 dark:border-emerald-500/25 dark:bg-emerald-500/10">
-          <h2 className="text-sm font-semibold text-emerald-800 dark:text-emerald-300">
+        <div className="rounded-2xl border border-emerald-200 bg-white/[0.05] p-5 border-emerald-500/25 bg-white/[0.08]/10">
+          <h2 className="text-sm font-semibold text-emerald-800 text-emerald-300">
             Senha atualizada
           </h2>
-          <p className="mt-1.5 text-sm text-emerald-700 dark:text-emerald-400/90">
+          <p className="mt-1.5 text-sm text-white text-white/90">
             Levando você para o painel…
           </p>
         </div>

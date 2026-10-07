@@ -26,10 +26,15 @@ export function useToast(): ToastContextValue {
   return context
 }
 
+/**
+ * Toasts — paleta única roxo/branco. `success` = check branco (sem cor
+ * verde); `error` = triângulo vermelho (única exceção destrutiva); `info` =
+ * ícone roxo da marca.
+ */
 const TONE_STYLES: Record<ToastTone, { icon: React.ReactNode; accent: string }> = {
-  success: { icon: <CheckCircle className="h-4 w-4 text-emerald-500" />, accent: 'bg-emerald-500' },
-  error: { icon: <AlertTriangle className="h-4 w-4 text-red-500" />, accent: 'bg-red-500' },
-  info: { icon: <Info className="h-4 w-4 text-brand-500" />, accent: 'bg-brand-500' },
+  success: { icon: <CheckCircle className="h-4 w-4 text-white" />, accent: 'bg-white' },
+  error: { icon: <AlertTriangle className="h-4 w-4 text-red-400" />, accent: 'bg-red-400' },
+  info: { icon: <Info className="h-4 w-4 text-brand-400" />, accent: 'bg-brand-400' },
 }
 
 export function ToastProvider({ children }: { children: React.ReactNode }) {
@@ -66,19 +71,19 @@ export function ToastProvider({ children }: { children: React.ReactNode }) {
               <div
                 key={item.id}
                 role="status"
-                className="pointer-events-auto relative flex w-full max-w-sm animate-slide-up items-start gap-3 overflow-hidden rounded-xl border border-ink-200 bg-white p-4 shadow-lg dark:border-ink-700 dark:bg-ink-800"
+                className="pointer-events-auto relative flex w-full max-w-sm animate-slide-up items-start gap-3 overflow-hidden rounded-xl border border-white/[0.08] bg-surface p-4 shadow-lg"
               >
                 <span className="mt-0.5 shrink-0">{TONE_STYLES[item.tone].icon}</span>
                 <div className="min-w-0 flex-1">
-                  <p className="text-sm font-medium text-ink-900 dark:text-ink-50">{item.title}</p>
+                  <p className="text-sm font-medium text-white">{item.title}</p>
                   {item.description && (
-                    <p className="mt-0.5 text-sm text-ink-500 dark:text-ink-400">{item.description}</p>
+                    <p className="mt-0.5 text-sm text-white/50">{item.description}</p>
                   )}
                 </div>
                 <button
                   onClick={() => dismiss(item.id)}
                   aria-label="Fechar"
-                  className="shrink-0 rounded p-1 text-ink-400 transition-colors hover:bg-ink-100 hover:text-ink-700 dark:hover:bg-ink-700"
+                  className="shrink-0 rounded p-1 text-white/40 transition-colors hover:bg-white/[0.06] hover:text-white"
                 >
                   <X className="h-3.5 w-3.5" />
                 </button>

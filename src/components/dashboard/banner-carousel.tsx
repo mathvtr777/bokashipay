@@ -7,7 +7,7 @@ import type { Banner } from '@/lib/types'
 import { ChevronLeft, ChevronRight } from '@/components/ui/icons'
 
 /**
- * Carrossel de banners.
+ * Carrossel de banners — dark-first.
  *
  * Os banners vêm da tabela `banners` — nada de conteúdo fixo no código. Para
  * trocar os banners, o admin insere/atualiza linhas (ou envia imagens para o
@@ -130,7 +130,7 @@ function BannerSlide({ banner }: { banner: Banner }) {
       className="absolute inset-0"
       style={{
         background:
-          'radial-gradient(700px 400px at 78% 20%, #6d28d9 0%, transparent 62%), radial-gradient(600px 400px at 12% 88%, #2e1065 0%, transparent 58%)',
+          'radial-gradient(700px 400px at 100% 0%, #6d28d9 0%, transparent 62%), radial-gradient(600px 400px at 0% 100%, #2e1065 0%, transparent 58%)',
       }}
     />
   )

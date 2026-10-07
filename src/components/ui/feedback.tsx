@@ -3,7 +3,7 @@ import { cn } from '@/lib/utils'
 import { Spinner } from './button'
 
 // -----------------------------------------------------------------------------
-// Skeleton
+// Skeleton — tema único escuro.
 // -----------------------------------------------------------------------------
 
 export function Skeleton({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) {
@@ -36,7 +36,7 @@ export function SkeletonCard({ className }: { className?: string }) {
 
 export function SkeletonTable({ rows = 5, columns = 5 }: { rows?: number; columns?: number }) {
   return (
-    <div className="divide-y divide-ink-100 dark:divide-ink-800">
+    <div className="divide-y divide-white/[0.06]">
       {Array.from({ length: rows }).map((_, r) => (
         <div key={r} className="flex items-center gap-4 px-5 py-4">
           {Array.from({ length: columns }).map((_, c) => (
@@ -49,7 +49,7 @@ export function SkeletonTable({ rows = 5, columns = 5 }: { rows?: number; column
 }
 
 // -----------------------------------------------------------------------------
-// Empty state
+// Empty state — tema único escuro.
 // -----------------------------------------------------------------------------
 
 export function EmptyState({
@@ -68,13 +68,13 @@ export function EmptyState({
   return (
     <div className={cn('flex flex-col items-center justify-center px-6 py-14 text-center', className)}>
       {icon && (
-        <div className="brand-glow mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-brand-50 text-brand-600 dark:bg-brand-500/10 dark:text-brand-400 [&>svg]:h-6 [&>svg]:w-6">
+        <div className="brand-glow mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-brand-500/15 text-brand-300 [&>svg]:h-6 [&>svg]:w-6">
           {icon}
         </div>
       )}
-      <h3 className="text-base font-semibold text-ink-900 dark:text-ink-50">{title}</h3>
+      <h3 className="text-base font-semibold text-white">{title}</h3>
       {description && (
-        <p className="mt-1.5 max-w-sm text-sm leading-relaxed text-ink-500 dark:text-ink-400">
+        <p className="mt-1.5 max-w-sm text-sm leading-relaxed text-white/50">
           {description}
         </p>
       )}
@@ -98,17 +98,17 @@ export function ErrorState({
 }) {
   return (
     <div className="flex flex-col items-center justify-center px-6 py-12 text-center">
-      <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-2xl bg-red-50 text-red-600 dark:bg-red-500/10 dark:text-red-400">
+      <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-2xl bg-red-500/10 text-red-300">
         <svg viewBox="0 0 24 24" fill="none" className="h-6 w-6" aria-hidden="true">
-          <path stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" d="M12 9v4m0 4h.01M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0Z" />
+          <path stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" d="M12 9v4m0 4h.01M10.29 3.86 1.82 18a2 2 0  0 1.71 3h16.94a2 2 0  0 1.71-3L13.71 3.86a2 2 0  0-3.42 0Z" />
         </svg>
       </div>
-      <h3 className="text-base font-semibold text-ink-900 dark:text-ink-50">{title}</h3>
-      {message && <p className="mt-1.5 max-w-sm text-sm text-ink-500 dark:text-ink-400">{message}</p>}
+      <h3 className="text-base font-semibold text-white">{title}</h3>
+      {message && <p className="mt-1.5 max-w-sm text-sm text-white/50">{message}</p>}
       {onRetry && (
         <button
           onClick={onRetry}
-          className="mt-5 text-sm font-medium text-brand-600 transition-colors hover:text-brand-700 dark:text-brand-400"
+          className="mt-5 text-sm font-medium text-brand-300 transition-colors hover:text-brand-200"
         >
           Tentar novamente
         </button>
@@ -123,8 +123,8 @@ export function ErrorState({
 
 export function LoadingState({ label = 'Carregando…' }: { label?: string }) {
   return (
-    <div className="flex flex-col items-center justify-center gap-3 py-16 text-ink-500">
-      <Spinner className="h-6 w-6 text-brand-600" />
+    <div className="flex flex-col items-center justify-center gap-3 py-16 text-white/50">
+      <Spinner className="h-6 w-6 text-brand-400" />
       <p className="text-sm">{label}</p>
     </div>
   )

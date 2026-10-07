@@ -4,7 +4,8 @@ import * as React from 'react'
 import { cn } from '@/lib/utils'
 
 // -----------------------------------------------------------------------------
-// Button
+// Button — tema único escuro. Sem cor semântica fora da marca: a única
+// exceção é o "danger", reservado para erro destrutivo (vermelho).
 // -----------------------------------------------------------------------------
 
 type Variant = 'primary' | 'secondary' | 'outline' | 'ghost' | 'danger'
@@ -12,14 +13,15 @@ type Size = 'sm' | 'md' | 'lg' | 'icon'
 
 const VARIANTS: Record<Variant, string> = {
   primary:
-    'brand-gradient text-white shadow-sm hover:shadow-md hover:brightness-[1.06] active:brightness-95',
+    'brand-gradient text-white shadow-sm hover:brightness-[1.08] active:brightness-95',
   secondary:
-    'bg-ink-100 text-ink-900 hover:bg-ink-200 dark:bg-ink-800 dark:text-ink-50 dark:hover:bg-ink-700',
+    'bg-white/[0.06] text-white hover:bg-white/[0.10] border border-white/[0.08]',
   outline:
-    'border border-ink-200 bg-white text-ink-700 hover:border-ink-300 hover:bg-ink-50 dark:border-ink-700 dark:bg-ink-900 dark:text-ink-200 dark:hover:bg-ink-800',
+    'border border-white/[0.10] bg-transparent text-white hover:bg-white/[0.05] hover:border-white/[0.18]',
   ghost:
-    'text-ink-600 hover:bg-ink-100 hover:text-ink-900 dark:text-ink-300 dark:hover:bg-ink-800 dark:hover:text-white',
-  danger: 'bg-red-600 text-white shadow-sm hover:bg-red-700 active:bg-red-800',
+    'text-white/70 hover:bg-white/[0.05] hover:text-white',
+  danger:
+    'bg-red-500/90 text-white shadow-sm hover:bg-red-500 active:bg-red-600 border border-red-400/30',
 }
 
 const SIZES: Record<Size, string> = {
@@ -60,7 +62,7 @@ export function Spinner({ className }: { className?: string }) {
   return (
     <svg className={cn('animate-spin', className)} viewBox="0 0 24 24" fill="none" aria-hidden="true">
       <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="3" className="opacity-20" />
-      <path d="M22 12a10 10 0 0 1-10 10" stroke="currentColor" strokeWidth="3" strokeLinecap="round" />
+      <path d="M22 12a10 10 0  1-10 10" stroke="currentColor" strokeWidth="3" strokeLinecap="round" />
     </svg>
   )
 }
@@ -81,11 +83,11 @@ export function CardHeader({ className, ...props }: React.HTMLAttributes<HTMLDiv
 }
 
 export function CardTitle({ className, ...props }: React.HTMLAttributes<HTMLHeadingElement>) {
-  return <h3 className={cn('text-base font-semibold tracking-tight', className)} {...props} />
+  return <h3 className={cn('text-base font-semibold tracking-tight text-white', className)} {...props} />
 }
 
 export function CardDescription({ className, ...props }: React.HTMLAttributes<HTMLParagraphElement>) {
-  return <p className={cn('mt-1 text-sm text-ink-500 dark:text-ink-400', className)} {...props} />
+  return <p className={cn('mt-1 text-sm text-white/50', className)} {...props} />
 }
 
 export function CardContent({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) {
@@ -93,5 +95,5 @@ export function CardContent({ className, ...props }: React.HTMLAttributes<HTMLDi
 }
 
 export function CardFooter({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) {
-  return <div className={cn('flex items-center gap-3 border-t border-ink-100 p-5 dark:border-ink-800', className)} {...props} />
+  return <div className={cn('flex items-center gap-3 border-t border-white/[0.08] p-5', className)} {...props} />
 }

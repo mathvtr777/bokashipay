@@ -32,20 +32,20 @@ export default async function IntegrationsPage() {
 
       <Link
         href="/integracoes/api"
-        className="surface flex items-center justify-between gap-4 p-5 transition-colors hover:bg-ink-50 dark:hover:bg-ink-900"
+        className="surface flex items-center justify-between gap-4 p-5 transition-colors hover:bg-white/[0.04] hover:bg-white/[0.06]"
       >
         <div className="flex items-center gap-3">
-          <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-brand-50 text-brand-600 dark:bg-brand-500/10 dark:text-brand-400">
+          <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-brand-50 text-brand-600 bg-brand-500/10 text-brand-400">
             <Icons.Barcode />
           </span>
           <div>
-            <p className="font-medium text-ink-900 dark:text-white">API & Webhooks</p>
-            <p className="text-xs text-ink-500 dark:text-ink-400">
+            <p className="font-medium text-white text-white">API & Webhooks</p>
+            <p className="text-xs text-white/50 text-white/50">
               Gere API keys e cadastre webhooks de saída
             </p>
           </div>
         </div>
-        <Icons.ArrowRight className="h-4 w-4 text-ink-400" />
+        <Icons.ArrowRight className="h-4 w-4 text-white/50" />
       </Link>
 
       <UtmfyIntegration

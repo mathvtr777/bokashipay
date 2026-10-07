@@ -24,10 +24,12 @@ export function SalesChart({
   data,
   height = 300,
   className,
+  dateLabel = 'hoje',
 }: {
   data: SalesPoint[]
   height?: number
   className?: string
+  dateLabel?: string
 }) {
   const [metric, setMetric] = React.useState<'volume' | 'count'>('volume')
 
@@ -40,15 +42,15 @@ export function SalesChart({
     <div className={cn('surface p-5', className)}>
       <div className="mb-5 flex flex-wrap items-start justify-between gap-3">
         <div>
-          <h2 className="text-base font-semibold tracking-tight text-ink-900 dark:text-white">
-            Resumo das transações
+          <h2 className="text-base font-semibold tracking-tight text-white">
+            Receita por hora
           </h2>
-          <p className="mt-1 text-sm text-ink-500 dark:text-ink-400">
-            Volume recebido e número de transações no período
+          <p className="mt-1 text-sm text-white/50">
+            Últimas horas · {dateLabel}
           </p>
         </div>
 
-        <div className="inline-flex items-center gap-1 rounded-lg bg-ink-100 p-0.5 dark:bg-ink-800">
+        <div className="inline-flex items-center gap-1 rounded-lg border border-white/[0.08] bg-white/[0.04] p-0.5">
           {(
             [
               { key: 'volume', label: 'Volume' },
@@ -61,8 +63,8 @@ export function SalesChart({
               className={cn(
                 'rounded-md px-2.5 py-1.5 text-xs font-medium transition-all duration-200',
                 metric === option.key
-                  ? 'bg-white text-ink-900 shadow-sm dark:bg-ink-900 dark:text-white'
-                  : 'text-ink-500 hover:text-ink-800 dark:text-ink-400 dark:hover:text-ink-200',
+                  ? 'bg-white/[0.10] text-white'
+                  : 'text-white/50 hover:text-white',
               )}
             >
               {option.label}
@@ -76,7 +78,7 @@ export function SalesChart({
           className="flex flex-col items-center justify-center text-center"
           style={{ height }}
         >
-          <p className="text-sm text-ink-500 dark:text-ink-400">
+          <p className="text-sm text-white/50">
             Ainda não há transações neste período.
           </p>
         </div>
@@ -86,16 +88,15 @@ export function SalesChart({
             <AreaChart data={data} margin={{ top: 4, right: 4, left: -12, bottom: 0 }}>
               <defs>
                 <linearGradient id="salesFill" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="0%" stopColor="#8b5cf6" stopOpacity={0.28} />
-                  <stop offset="100%" stopColor="#8b5cf6" stopOpacity={0} />
+                  <stop offset="0%" stopColor="#a78bfa" stopOpacity={0.35} />
+                  <stop offset="100%" stopColor="#a78bfa" stopOpacity={0} />
                 </linearGradient>
               </defs>
 
               <CartesianGrid
                 strokeDasharray="3 3"
                 vertical={false}
-                stroke="currentColor"
-                className="text-ink-200 dark:text-ink-800"
+                stroke="rgba(255,255,255,0.06)"
               />
 
               <XAxis
@@ -103,8 +104,7 @@ export function SalesChart({
                 tickLine={false}
                 axisLine={false}
                 interval={tickInterval}
-                tick={{ fontSize: 11, fill: 'currentColor' }}
-                className="text-ink-500 dark:text-ink-400"
+                tick={{ fontSize: 11, fill: 'rgba(255,255,255,0.5)' }}
                 dy={8}
               />
 
@@ -112,8 +112,7 @@ export function SalesChart({
                 tickLine={false}
                 axisLine={false}
                 width={64}
-                tick={{ fontSize: 11, fill: 'currentColor' }}
-                className="text-ink-500 dark:text-ink-400"
+                tick={{ fontSize: 11, fill: 'rgba(255,255,255,0.5)' }}
                 tickFormatter={(value: number) =>
                   metric === 'volume'
                     ? value >= 1000
@@ -123,21 +122,33 @@ export function SalesChart({
                 }
               />
 
-              <Tooltip content={<ChartTooltip metric={metric} />} cursor={{ stroke: '#8b5cf6', strokeWidth: 1, strokeDasharray: '4 4' }} />
+              <Tooltip content={<ChartTooltip metric={metric} />} cursor={{ stroke: '#a78bfa', strokeWidth: 1, strokeDasharray: '4 4' }} />
 
               <Area
                 type="monotone"
                 dataKey={metric}
-                stroke="#7c3aed"
+                stroke="#a78bfa"
                 strokeWidth={2}
                 fill="url(#salesFill)"
                 dot={false}
-                activeDot={{ r: 4, fill: '#7c3aed', stroke: '#fff', strokeWidth: 2 }}
+                activeDot={{ r: 4, fill: '#a78bfa', stroke: '#14171f', strokeWidth: 2 }}
               />
             </AreaChart>
           </ResponsiveContainer>
         </div>
       )}
+
+      {/* Rodapé de horas (estilo Laranjinha). */}
+      <div className="mt-3 flex items-center justify-between text-[10px] text-white/30">
+        <span>00h</span>
+        <span>03h</span>
+        <span>06h</span>
+        <span>09h</span>
+        <span>12h</span>
+        <span>15h</span>
+        <span>18h</span>
+        <span>21h</span>
+      </div>
     </div>
   )
 }
@@ -158,12 +169,12 @@ function ChartTooltip({
   const point = payload[0].payload
 
   return (
-    <div className="rounded-xl border border-ink-200 bg-white px-3.5 py-2.5 shadow-lg dark:border-ink-700 dark:bg-ink-800">
-      <p className="text-xs font-medium text-ink-500 dark:text-ink-400">{label}</p>
-      <p className="mt-1 text-sm font-semibold text-ink-900 dark:text-white">
+    <div className="rounded-xl border border-white/[0.08] bg-surface px-3.5 py-2.5 shadow-lg">
+      <p className="text-xs font-medium text-white/50">{label}</p>
+      <p className="mt-1 text-sm font-semibold text-white">
         {formatCurrency(point.volume)}
       </p>
-      <p className="mt-0.5 text-xs text-ink-500 dark:text-ink-400">
+      <p className="mt-0.5 text-xs text-white/40">
         {point.count} {point.count === 1 ? 'transação' : 'transações'}
       </p>
     </div>

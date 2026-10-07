@@ -22,23 +22,23 @@ export function FinanceSummary({ metrics }: { metrics: DashboardMetrics }) {
               <span
                 className={
                   item.tone === 'brand'
-                    ? 'flex h-8 w-8 items-center justify-center rounded-lg bg-brand-50 text-brand-600 dark:bg-brand-500/10 dark:text-brand-400'
+                    ? 'flex h-8 w-8 items-center justify-center rounded-lg bg-brand-50 text-brand-600 bg-brand-500/10 text-brand-400'
                     : item.tone === 'positive'
-                      ? 'flex h-8 w-8 items-center justify-center rounded-lg bg-emerald-50 text-emerald-600 dark:bg-emerald-500/10 dark:text-emerald-400'
+                      ? 'flex h-8 w-8 items-center justify-center rounded-lg bg-white/[0.05] text-white bg-white/[0.08]/10 text-white'
                       : item.tone === 'warning'
-                        ? 'flex h-8 w-8 items-center justify-center rounded-lg bg-amber-50 text-amber-600 dark:bg-amber-500/10 dark:text-amber-400'
+                        ? 'flex h-8 w-8 items-center justify-center rounded-lg bg-white/[0.05] text-white/70 bg-white/[0.10]/10 text-white/70'
                         : item.tone === 'negative'
-                          ? 'flex h-8 w-8 items-center justify-center rounded-lg bg-red-50 text-red-600 dark:bg-red-500/10 dark:text-red-400'
-                          : 'flex h-8 w-8 items-center justify-center rounded-lg bg-ink-100 text-ink-600 dark:bg-ink-800 dark:text-ink-300'
+                          ? 'flex h-8 w-8 items-center justify-center rounded-lg bg-red-50 text-red-600 bg-red-500/10 text-red-400'
+                          : 'flex h-8 w-8 items-center justify-center rounded-lg bg-white/[0.04] text-white/60 bg-white/[0.08] text-white/70'
                 }
               >
                 <IconComponent className="h-4 w-4" />
               </span>
-              <p className="text-xs font-medium uppercase tracking-wider text-ink-500 dark:text-ink-400">
+              <p className="text-xs font-medium uppercase tracking-wider text-white/50 text-white/50">
                 {item.label}
               </p>
             </div>
-            <p className="mt-3 text-xl font-semibold tracking-tight text-ink-900 dark:text-white">
+            <p className="mt-3 text-xl font-semibold tracking-tight text-white text-white">
               {formatCurrency(item.value)}
             </p>
           </div>

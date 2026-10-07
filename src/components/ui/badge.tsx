@@ -1,21 +1,28 @@
 import * as React from 'react'
 import { cn } from '@/lib/utils'
 
-/** Badges de status — tom semântico sem poluir a paleta. */
-type Tone = 'positive' | 'warning' | 'negative' | 'neutral' | 'brand' | 'info'
+/**
+ * Badges — paleta roxo/preto/branco.
+ *
+ * Sem cor semântica: status se diferenciam por **shape** e **opacidade**, não
+ * por hue. Tons disponíveis:
+ *   - `brand`     → fundo brand-500/15, texto brand-300
+ *   - `solid`     → fundo branco sólido, texto preto (alto contraste)
+ *   - `positive`  → fundo branco/10, texto branco (aprovado/pago)
+ *   - `neutral`   → fundo branco/5, texto branco/70 (genérico)
+ *   - `muted`     → fundo branco/5, texto branco/40 (inativo/expirado)
+ *
+ * `danger` continua existindo para erro destrutivo (vermelho).
+ */
+type Tone = 'brand' | 'solid' | 'positive' | 'neutral' | 'muted' | 'danger'
 
 const TONES: Record<Tone, string> = {
-  positive:
-    'bg-emerald-50 text-emerald-700 ring-emerald-600/20 dark:bg-emerald-500/10 dark:text-emerald-400 dark:ring-emerald-400/20',
-  warning:
-    'bg-amber-50 text-amber-700 ring-amber-600/20 dark:bg-amber-500/10 dark:text-amber-400 dark:ring-amber-400/20',
-  negative:
-    'bg-red-50 text-red-700 ring-red-600/20 dark:bg-red-500/10 dark:text-red-400 dark:ring-red-400/20',
-  neutral:
-    'bg-ink-100 text-ink-600 ring-ink-500/20 dark:bg-ink-800 dark:text-ink-300 dark:ring-ink-600/40',
-  brand:
-    'bg-brand-50 text-brand-700 ring-brand-600/20 dark:bg-brand-500/10 dark:text-brand-400 dark:ring-brand-400/20',
-  info: 'bg-sky-50 text-sky-700 ring-sky-600/20 dark:bg-sky-500/10 dark:text-sky-400 dark:ring-sky-400/20',
+  brand: 'bg-brand-500/15 text-brand-300 ring-brand-400/30',
+  solid: 'bg-white text-ink-950 ring-white/20',
+  positive: 'bg-white/10 text-white ring-white/15',
+  neutral: 'bg-white/[0.06] text-white/70 ring-white/10',
+  muted: 'bg-white/[0.04] text-white/40 ring-white/10',
+  danger: 'bg-red-500/10 text-red-300 ring-red-400/30',
 }
 
 export function Badge({
@@ -37,7 +44,14 @@ export function Badge({
         className,
       )}
     >
-      {dot && <span className="h-1.5 w-1.5 rounded-full bg-current" />}
+      {dot && (
+        <span
+          className={cn(
+            'h-1.5 w-1.5 rounded-full bg-current',
+            tone === 'muted' && 'bg-transparent ring-1 ring-current ring-inset',
+          )}
+        />
+      )}
       {children}
     </span>
   )
@@ -69,27 +83,38 @@ export const STATUS_LABELS: Record<string, string> = {
   failed: 'Falhou',
 }
 
+/**
+ * Tons por status. Sem cor semântica — diferenciação por shape/opacidade:
+ *   - positivo (aprovado/pago/concluído) → fundo branco/10 (texto branco)
+ *   - neutro (pendente/processando/recebido) → fundo branco/5 (texto branco/70)
+ *   - negativo (cancelado/estornado/rejeitado) → neutro com dot vazado
+ *   - ignorado/expirado/inativo → muted com dot vazado
+ *   - falhou → danger (vermelho, único caso)
+ */
 export const STATUS_TONES: Record<string, Tone> = {
   approved: 'positive',
   paid: 'positive',
   completed: 'positive',
   processed: 'positive',
   active: 'positive',
-  pending: 'warning',
-  processing: 'warning',
-  received: 'info',
-  canceled: 'negative',
-  refunded: 'negative',
-  rejected: 'negative',
-  failed: 'negative',
-  expired: 'neutral',
-  ignored: 'neutral',
-  inactive: 'neutral',
+  pending: 'neutral',
+  processing: 'neutral',
+  received: 'neutral',
+  canceled: 'muted',
+  refunded: 'muted',
+  rejected: 'muted',
+  failed: 'danger',
+  expired: 'muted',
+  ignored: 'muted',
+  inactive: 'muted',
 }
 
 export function StatusBadge({ status, className }: { status: string; className?: string }) {
+  const tone = STATUS_TONES[status] ?? 'neutral'
+  // Para status negativos, dot vazado para diferenciar.
+  const outlined = tone === 'muted'
   return (
-    <Badge tone={STATUS_TONES[status] ?? 'neutral'} dot className={className}>
+    <Badge tone={tone} dot={!outlined} className={className}>
       {STATUS_LABELS[status] ?? status}
     </Badge>
   )

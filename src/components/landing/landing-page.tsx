@@ -57,7 +57,7 @@ const rates: { icon: IconComponent; name: string; price: string; perks: string[]
 function Brand({ asLink = false }: { asLink?: boolean }) {
   const content = (
     <>
-      <img src="/landing/logo.png" alt="Bokashi" width={42} height={42} />
+      <img src="/logo.png" alt="Bokashi" width={42} height={42} />
       <span>
         bokashi<span className="brand-dot">.</span>
       </span>

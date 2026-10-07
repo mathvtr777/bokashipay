@@ -3,14 +3,14 @@
 @tailwind utilities;
 
 @layer base {
-  /* Variáveis em formato HSL sem vírgula, para que o Tailwind possa aplicar
-     opacidade via <alpha-value> (ex.: border-border/60). */
+  /* Tema único: dark. Não há toggle — todas as variáveis abaixo são fixas.
+     Os componentes não usam mais `dark:` (que está em desuso no projeto). */
   :root {
-    color-scheme: light;
+    color-scheme: dark;
 
-    --border: 220 13% 91%;
+    --border: 0 0% 100% / 0.08;
 
-    /* Tokens da landing page (adaptados de oklch para HSL). */
+    /* Tokens da landing page (mantidos para não reescrever aquele CSS). */
     --electric: 268 95% 76%;       /* ~brand-400, glow roxo claro */
     --primary-purple: 262 83% 58%; /* ~brand-600, cor primária da landing */
     --ink-muted: 270 12% 75%;
@@ -23,10 +23,11 @@
     --header-shadow: 0 14px 44px hsl(0 0% 0% / 0.55);
   }
 
+  /* O bloco `.dark` é mantido vazio apenas por retrocompatibilidade de
+     classes que ainda usam `dark:` no código antigo. Com `color-scheme: dark`
+     no `:root`, ele não tem mais efeito visual. */
   .dark {
     color-scheme: dark;
-
-    --border: 222 17% 18%;
   }
 
   * {
@@ -38,27 +39,17 @@
   }
 
   body {
-    @apply bg-ink-50 text-ink-900 antialiased dark:bg-ink-950 dark:text-ink-50;
+    @apply bg-ink-950 text-ink-50 antialiased;
     font-feature-settings: 'cv11', 'ss01';
-  }
-
-  /* Quando a landing page está ativa (data-landing no <html>), força fundo
-     escuro para combinar com o visual institucional. */
-  html[data-landing] {
-    color-scheme: dark;
-  }
-  html[data-landing] body {
-    background-color: #0e1016; /* ink-950 */
-    color: #f6f7f9; /* ink-50 */
   }
 
   /* Foco visível e consistente em todo o teclado. */
   :focus-visible {
-    @apply outline-none ring-2 ring-brand-500 ring-offset-2 ring-offset-white dark:ring-offset-ink-950;
+    @apply outline-none ring-2 ring-brand-500 ring-offset-2 ring-offset-ink-950;
   }
 
   ::selection {
-    @apply bg-brand-500/20;
+    @apply bg-brand-500/30 text-white;
   }
 
   /* Scrollbar discreto — não deve competir com o conteúdo. */
@@ -70,27 +61,26 @@
     @apply bg-transparent;
   }
   ::-webkit-scrollbar-thumb {
-    @apply rounded-full bg-ink-300/60 dark:bg-ink-700;
+    @apply rounded-full bg-white/10;
   }
   ::-webkit-scrollbar-thumb:hover {
-    @apply bg-ink-400 dark:bg-ink-600;
+    @apply bg-white/20;
   }
 }
 
 @layer components {
-  /* Superfície padrão de cards e painéis. */
+  /* Superfície padrão de cards e painéis. Tema único: escuro. */
   .surface {
-    @apply rounded-2xl border border-ink-200/80 bg-white shadow-card
-           dark:border-ink-800 dark:bg-ink-900 dark:shadow-none;
+    @apply rounded-2xl border border-white/[0.08] bg-surface shadow-card;
   }
 
   .surface-hover {
-    @apply transition-all duration-200 ease-premium hover:border-brand-300 hover:shadow-card-hover dark:hover:border-brand-800;
+    @apply transition-all duration-200 ease-premium hover:border-white/[0.14] hover:shadow-card-hover;
   }
 
   /* Rótulo de seção, discreto e consistente. */
   .label {
-    @apply text-xs font-medium uppercase tracking-wider text-ink-500 dark:text-ink-400;
+    @apply text-xs font-medium uppercase tracking-wider text-white/40;
   }
 
   /* Gradiente da marca — usado no botão primário e em detalhes de destaque. */
@@ -109,26 +99,26 @@
 
   /* Shimmer do skeleton. */
   .skeleton {
-    @apply relative overflow-hidden bg-ink-200/70 dark:bg-ink-800;
+    @apply relative overflow-hidden bg-white/[0.04];
   }
   .skeleton::after {
-    @apply absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/50 to-transparent dark:via-white/5;
+    @apply absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/[0.06] to-transparent;
     animation: shimmer 1.6s infinite;
     content: '';
   }
 
-  /* Tabela densa e legível. */
+  /* Tabela densa e legível. Tema único: escuro. */
   .data-table {
     @apply w-full text-left text-sm;
   }
   .data-table thead th {
-    @apply whitespace-nowrap border-b border-ink-200 px-4 py-3 text-xs font-medium uppercase tracking-wider text-ink-500 dark:border-ink-800 dark:text-ink-400;
+    @apply whitespace-nowrap border-b border-white/[0.08] bg-white/[0.02] px-4 py-3 text-xs font-medium uppercase tracking-wider text-white/40;
   }
   .data-table tbody td {
-    @apply border-b border-ink-100 px-4 py-3.5 dark:border-ink-800/70;
+    @apply border-b border-white/[0.06] px-4 py-3.5;
   }
   .data-table tbody tr {
-    @apply transition-colors duration-150 hover:bg-ink-50 dark:hover:bg-ink-800/40;
+    @apply transition-colors duration-150 hover:bg-white/[0.03];
   }
 
   /* =========================================================================

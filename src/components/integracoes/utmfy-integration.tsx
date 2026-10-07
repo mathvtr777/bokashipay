@@ -137,8 +137,8 @@ export function UtmfyIntegration({
                 U
               </span>
               <div>
-                <h2 className="text-base font-semibold text-ink-900 dark:text-white">UTMFY</h2>
-                <p className="text-xs text-ink-500 dark:text-ink-400">
+                <h2 className="text-base font-semibold text-white text-white">UTMFY</h2>
+                <p className="text-xs text-white/50 text-white/50">
                   Rastreamento e atribuição de vendas
                 </p>
               </div>
@@ -149,9 +149,9 @@ export function UtmfyIntegration({
           </div>
 
           {!serverConfigured && (
-            <div className="mt-5 flex gap-3 rounded-xl border border-amber-200 bg-amber-50 p-3.5 dark:border-amber-500/25 dark:bg-amber-500/10">
-              <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0 text-amber-600 dark:text-amber-400" />
-              <p className="text-sm text-amber-800 dark:text-amber-300">
+            <div className="mt-5 flex gap-3 rounded-xl border border-amber-200 bg-white/[0.05] p-3.5 border-amber-500/25 bg-white/[0.10]/10">
+              <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0 text-white/70 text-white/70" />
+              <p className="text-sm text-amber-800 text-amber-300">
                 Integração não configurada no servidor. Defina{' '}
                 <code className="font-mono text-xs">UTMFY_API_URL</code> para habilitar o teste de
                 conexão.
@@ -180,7 +180,7 @@ export function UtmfyIntegration({
                   variant="outline"
                   onClick={disconnect}
                   loading={disconnecting}
-                  className="text-red-600 hover:bg-red-50 dark:text-red-400 dark:hover:bg-red-500/10"
+                  className="text-red-600 hover:bg-red-50 text-red-400 hover:bg-red-500/10"
                 >
                   <Unlink className="h-4 w-4" />
                   Desconectar
@@ -216,25 +216,25 @@ export function UtmfyIntegration({
 
         {/* Webhook */}
         <div className="surface p-6">
-          <h2 className="text-base font-semibold text-ink-900 dark:text-white">Webhook</h2>
-          <p className="mt-1.5 text-sm text-ink-500 dark:text-ink-400">
+          <h2 className="text-base font-semibold text-white text-white">Webhook</h2>
+          <p className="mt-1.5 text-sm text-white/50 text-white/50">
             Cadastre esta URL na UTMFY para receber eventos de venda.
           </p>
 
-          <div className="mt-4 flex items-start gap-2 rounded-xl border border-ink-200 bg-ink-50 p-3 dark:border-ink-700 dark:bg-ink-800">
-            <p className="min-w-0 flex-1 break-all font-mono text-[11px] text-ink-600 dark:text-ink-300">
+          <div className="mt-4 flex items-start gap-2 rounded-xl border border-white/[0.08] bg-white/[0.04] p-3 border-white/[0.14] bg-white/[0.08]">
+            <p className="min-w-0 flex-1 break-all font-mono text-[11px] text-white/60 text-white/70">
               {webhookUrl}
             </p>
             <button
               onClick={copyWebhook}
               aria-label="Copiar URL do webhook"
-              className="shrink-0 rounded-lg bg-white p-2 text-ink-500 shadow-sm transition-colors hover:text-brand-600 dark:bg-ink-700 dark:text-ink-300"
+              className="shrink-0 rounded-lg bg-white p-2 text-white/50 shadow-sm transition-colors hover:text-brand-600 bg-white/[0.2] text-white/70"
             >
-              {copied ? <Check className="h-4 w-4 text-emerald-500" /> : <Copy className="h-4 w-4" />}
+              {copied ? <Check className="h-4 w-4 text-white" /> : <Copy className="h-4 w-4" />}
             </button>
           </div>
 
-          <p className="mt-3 text-xs text-ink-500 dark:text-ink-400">
+          <p className="mt-3 text-xs text-white/50 text-white/50">
             Se você definir <code className="font-mono">UTMFY_WEBHOOK_SECRET</code>, as requisições
             serão validadas por assinatura HMAC.
           </p>
@@ -245,10 +245,10 @@ export function UtmfyIntegration({
       <div className="xl:col-span-3">
         <div className="surface overflow-hidden">
           <div className="p-5 pb-4">
-            <h2 className="text-base font-semibold tracking-tight text-ink-900 dark:text-white">
+            <h2 className="text-base font-semibold tracking-tight text-white text-white">
               Eventos recebidos
             </h2>
-            <p className="mt-1 text-sm text-ink-500 dark:text-ink-400">
+            <p className="mt-1 text-sm text-white/50 text-white/50">
               Tudo que chegou pelos webhooks
             </p>
           </div>
@@ -260,24 +260,24 @@ export function UtmfyIntegration({
               description="Conecte a integração e cadastre o webhook para começar a receber eventos."
             />
           ) : (
-            <ul className="divide-y divide-ink-100 dark:divide-ink-800">
+            <ul className="divide-y divide-white/[0.06] divide-white/[0.06]">
               {events.map((event) => (
                 <li key={event.id} className="flex items-center justify-between gap-4 px-5 py-4">
                   <div className="min-w-0">
-                    <p className="truncate font-medium text-ink-900 dark:text-ink-50">
+                    <p className="truncate font-medium text-white text-white">
                       {event.event}
                     </p>
-                    <p className="mt-0.5 text-xs text-ink-500 dark:text-ink-400">
+                    <p className="mt-0.5 text-xs text-white/50 text-white/50">
                       {formatDateTime(event.created_at)} · {formatRelative(event.created_at)}
                     </p>
                     {event.error_message && (
-                      <p className="mt-1 text-xs text-red-600 dark:text-red-400">
+                      <p className="mt-1 text-xs text-red-600 text-red-400">
                         {event.error_message}
                       </p>
                     )}
                   </div>
                   <div className="flex shrink-0 items-center gap-3">
-                    <span className="hidden font-mono text-[10px] text-ink-400 sm:block">
+                    <span className="hidden font-mono text-[10px] text-white/50 sm:block">
                       {event.id.slice(0, 8)}
                     </span>
                     <StatusBadge status={event.status} />
@@ -296,7 +296,7 @@ function Field({ label, value }: { label: string; value: string }) {
   return (
     <div>
       <p className="label">{label}</p>
-      <p className="mt-1 text-sm font-medium text-ink-900 dark:text-ink-50">{value}</p>
+      <p className="mt-1 text-sm font-medium text-white text-white">{value}</p>
     </div>
   )
 }

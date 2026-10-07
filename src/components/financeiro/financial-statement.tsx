@@ -65,12 +65,12 @@ export function FinancialStatement({
       </div>
 
       <div className="surface overflow-hidden">
-        <div className="flex flex-col gap-4 border-b border-ink-100 p-5 dark:border-ink-800 sm:flex-row sm:items-center sm:justify-between">
+        <div className="flex flex-col gap-4 border-b border-white/[0.06] p-5 border-white/[0.08] sm:flex-row sm:items-center sm:justify-between">
           <div>
-            <h2 className="text-base font-semibold tracking-tight text-ink-900 dark:text-white">
+            <h2 className="text-base font-semibold tracking-tight text-white text-white">
               Extrato
             </h2>
-            <p className="mt-1 text-sm text-ink-500 dark:text-ink-400">
+            <p className="mt-1 text-sm text-white/50 text-white/50">
               Todas as movimentações da conta
             </p>
           </div>
@@ -114,11 +114,11 @@ export function FinancialStatement({
                   const negative = isNegative(entry.type)
                   return (
                     <tr key={entry.id}>
-                      <td className="whitespace-nowrap text-ink-500 dark:text-ink-400">
+                      <td className="whitespace-nowrap text-white/50 text-white/50">
                         {formatDateTime(entry.created_at)}
                       </td>
                       <td className="max-w-[280px]">
-                        <span className="block truncate font-medium text-ink-900 dark:text-ink-50">
+                        <span className="block truncate font-medium text-white text-white">
                           {entry.description}
                         </span>
                       </td>
@@ -127,8 +127,8 @@ export function FinancialStatement({
                           className={cn(
                             'inline-flex rounded-full px-2.5 py-1 text-xs font-medium',
                             negative
-                              ? 'bg-red-50 text-red-700 dark:bg-red-500/10 dark:text-red-400'
-                              : 'bg-emerald-50 text-emerald-700 dark:bg-emerald-500/10 dark:text-emerald-400',
+                              ? 'bg-red-50 text-red-700 bg-red-500/10 text-red-400'
+                              : 'bg-white/[0.05] text-white bg-white/[0.08]/10 text-white',
                           )}
                         >
                           {TYPE_LABELS[entry.type] ?? entry.type}
@@ -138,14 +138,14 @@ export function FinancialStatement({
                         className={cn(
                           'text-right font-semibold tabular-nums',
                           negative
-                            ? 'text-red-600 dark:text-red-400'
-                            : 'text-emerald-600 dark:text-emerald-400',
+                            ? 'text-red-600 text-red-400'
+                            : 'text-white text-white',
                         )}
                       >
                         {negative ? '− ' : '+ '}
                         {formatCurrency(entry.amount)}
                       </td>
-                      <td className="text-right font-medium tabular-nums text-ink-900 dark:text-ink-50">
+                      <td className="text-right font-medium tabular-nums text-white text-white">
                         {formatCurrency(entry.balance_after)}
                       </td>
                     </tr>
@@ -157,8 +157,8 @@ export function FinancialStatement({
         )}
 
         {totalPages > 1 && (
-          <div className="flex items-center justify-between gap-4 border-t border-ink-100 px-5 py-4 dark:border-ink-800">
-            <p className="text-sm text-ink-500 dark:text-ink-400">
+          <div className="flex items-center justify-between gap-4 border-t border-white/[0.06] px-5 py-4 border-white/[0.08]">
+            <p className="text-sm text-white/50 text-white/50">
               Página {page} de {totalPages} · {total} movimentações
             </p>
             <div className="flex items-center gap-2">
