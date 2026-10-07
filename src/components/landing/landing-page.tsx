@@ -115,7 +115,7 @@ export default function LandingPage() {
   const closeMenu = () => setMenuOpen(false)
 
   return (
-    <>
+    <div className="min-h-screen bg-ink-950 text-white">
       <header className="site-header">
         <Brand asLink />
         <nav className={menuOpen ? 'main-nav is-open' : 'main-nav'} aria-label="Navegação principal">
@@ -394,7 +394,7 @@ export default function LandingPage() {
           <span>GATEWAY DE PAGAMENTO</span>
         </div>
       </footer>
-    </>
+    </div>
   )
 }
 

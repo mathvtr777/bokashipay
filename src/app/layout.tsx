@@ -1,4 +1,5 @@
 import type { Metadata, Viewport } from 'next'
+import { headers } from 'next/headers'
 import { Manrope, Sora } from 'next/font/google'
 import { ToastProvider } from '@/components/ui/toast'
 import './globals.css'
@@ -36,9 +37,16 @@ export const viewport: Viewport = {
   themeColor: '#7c3aed',
 }
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default async function RootLayout({ children }: { children: React.ReactNode }) {
+  // O middleware seta `x-route-theme=landing` na rota '/'. Quando ativo,
+  // forçamos um atributo no <html> para o CSS pintar o body com o tema
+  // escuro institucional, independente da preferência do usuário.
+  const h = await headers()
+  const routeTheme = h.get('x-route-theme')
+  const isLanding = routeTheme === 'landing'
+
   return (
-    <html lang="pt-BR" suppressHydrationWarning>
+    <html lang="pt-BR" suppressHydrationWarning data-landing={isLanding ? 'true' : undefined}>
       <body
         className={`${manrope.variable} ${sora.variable} font-sans antialiased`}
         style={{ ['--font-sans' as never]: `var(${manrope.variable})`, ['--font-display' as never]: `var(${sora.variable})` }}

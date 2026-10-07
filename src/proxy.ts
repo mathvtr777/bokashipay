@@ -11,6 +11,10 @@ import { createServerClient } from '@supabase/ssr'
  *  2. Bloquear /dashboard e demais páginas privadas quando não há sessão,
  *     redirecionando para /login. Isso é UX, não segurança: a segurança real
  *     está no RLS, que vale mesmo se alguém forçar a URL.
+ *
+ * Também injeta `x-route-theme` no request para que o layout saiba se deve
+ * forçar o tema escuro (caso da landing '/') ou respeitar a preferência do
+ * usuário.
  */
 
 const PUBLIC_ROUTES = ['/login', '/register', '/forgot-password', '/reset-password', '/auth']
@@ -22,7 +26,18 @@ const PROTECTED_PREFIXES = [
 ]
 
 export async function proxy(request: NextRequest) {
-  let response = NextResponse.next({ request })
+  const { pathname } = request.nextUrl
+
+  // Repassa os headers do request acrescido de x-route-theme, para que
+  // Server Components consigam ler o tema decidido aqui.
+  const requestHeaders = new Headers(request.headers)
+  if (pathname === '/') {
+    requestHeaders.set('x-route-theme', 'landing')
+  } else {
+    requestHeaders.set('x-route-theme', 'default')
+  }
+
+  let response = NextResponse.next({ request: { headers: requestHeaders } })
 
   const supabase = createServerClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -37,7 +52,7 @@ export async function proxy(request: NextRequest) {
           // (Server Component) não tem como escrever cookies, então o refresh
           // de sessão precisa acontecer neste arquivo.
           cookiesToSet.forEach(({ name, value }) => request.cookies.set(name, value))
-          response = NextResponse.next({ request })
+          response = NextResponse.next({ request: { headers: requestHeaders } })
           cookiesToSet.forEach(({ name, value, options }) => {
             response.cookies.set(name, value, {
               ...options,
@@ -58,7 +73,6 @@ export async function proxy(request: NextRequest) {
     data: { user },
   } = await supabase.auth.getUser()
 
-  const { pathname } = request.nextUrl
   const isProtected = PROTECTED_PREFIXES.some(
     (prefix) => pathname === prefix || pathname.startsWith(`${prefix}/`),
   )
