@@ -16,6 +16,7 @@ import { firstName } from '@/lib/format'
 import { resolveRange } from '@/lib/date-range'
 import type { DateRangePreset } from '@/lib/types'
 import {
+  getBankAccounts,
   getDashboardMetrics,
   getProfile,
   getSalesSeries,
@@ -67,7 +68,6 @@ export default async function DashboardPage({
 
   // Chave PIX do merchant (conta primária) + status do provedor — lidos
   // server-side para o BalanceHero abrir o modal já populado.
-  const { getBankAccounts } = await import('@/lib/queries')
   const bankAccounts = await getBankAccounts()
   const primaryAccount = bankAccounts.find((a) => a.is_primary) ?? bankAccounts[0]
   const pixKey = primaryAccount?.pix_key ?? null
