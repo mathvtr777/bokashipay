@@ -6,23 +6,18 @@ import { StatCards } from '@/components/dashboard/stat-cards'
 import { GoalProgress } from '@/components/dashboard/goal-progress'
 import { SalesChart } from '@/components/dashboard/sales-chart'
 import { PeriodSelector } from '@/components/dashboard/period-selector'
-import { PaymentMethods } from '@/components/dashboard/payment-methods'
-import { SalesTable, TopProducts } from '@/components/dashboard/sales-table'
-import { RecentSalesCard } from '@/components/dashboard/recent-sales-card'
+import { TopProducts } from '@/components/dashboard/sales-table'
 import { StatusDonut } from '@/components/dashboard/status-donut'
 import { ProducerRanking } from '@/components/dashboard/producer-ranking'
 import { PixConversion } from '@/components/dashboard/pix-conversion'
 import { ConversionFunnel } from '@/components/dashboard/conversion-funnel'
 import { PaymentVelocity } from '@/components/dashboard/payment-velocity'
-import { Card, CardHeader, CardTitle, CardDescription } from '@/components/ui/card'
 import { firstName } from '@/lib/format'
 import { resolveRange } from '@/lib/date-range'
 import type { DateRangePreset } from '@/lib/types'
 import {
   getDashboardMetrics,
-  getPaymentMethodStats,
   getProfile,
-  getRecentTransactions,
   getSalesSeries,
   getStatusDonut,
   getTopProducts,
@@ -51,8 +46,6 @@ export default async function DashboardPage({
     profile,
     metrics,
     series,
-    recent,
-    methods,
     products,
     statusDonut,
     producerRanking,
@@ -63,8 +56,6 @@ export default async function DashboardPage({
     getProfile(),
     getDashboardMetrics(range),
     getSalesSeries(range),
-    getRecentTransactions(5),
-    getPaymentMethodStats(),
     getTopProducts(5),
     getStatusDonut(range),
     getProducerRanking(range, 5),
@@ -95,7 +86,7 @@ export default async function DashboardPage({
         actions={<GoalProgress goal={metrics?.goal ?? null} />}
       />
 
-      {/* Hero de saldo (substitui o antigo carrossel) + card lateral de pendente. */}
+      {/* Hero de saldo + card lateral de pendente. */}
       <div className="grid gap-4 lg:grid-cols-[1fr_320px]">
         <BalanceHero availableBalance={metrics?.availableBalance ?? 0} />
         <PendingBalanceCard value={metrics?.pendingBalance ?? 0} />
@@ -103,107 +94,86 @@ export default async function DashboardPage({
 
       <StatCards metrics={metrics} />
 
-      {/* Gráfico de receita + seletor de período na mesma linha. */}
-      <div className="flex flex-col gap-3">
-        <div className="flex items-center justify-between gap-3">
-          <PeriodSelector />
-        </div>
-        <SalesChart data={series} dateLabel={dateLabel} />
+      {/* Período de análise + seletor */}
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <p className="text-xs text-white/40">Período de análise</p>
+        <PeriodSelector />
       </div>
 
-      {/* Grid principal: 2 colunas no xl. */}
-      <div className="grid grid-cols-1 gap-6 xl:grid-cols-3">
-        {/* Coluna esquerda (2/3): Conversão de PIX + Funil de Conversão */}
-        <div className="space-y-6 xl:col-span-2">
-          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
-            <Card>
-              <CardHeader>
-                <div>
-                  <CardTitle>Conversão de PIX</CardTitle>
-                  <CardDescription>Pedidos gerados vs pagos</CardDescription>
-                </div>
-              </CardHeader>
-              <PixConversion
-                generated={pixConversion.generated}
-                paid={pixConversion.paid}
-              />
-            </Card>
-
-            <Card>
-              <CardHeader>
-                <div>
-                  <CardTitle>Funil de conversão</CardTitle>
-                  <CardDescription>PIX gerado → pago</CardDescription>
-                </div>
-              </CardHeader>
-              <ConversionFunnel
-                generated={conversionFunnel.generated}
-                paid={conversionFunnel.paid}
-              />
-            </Card>
+      {/* Gráfico de receita + Status dos pedidos */}
+      <div className="grid grid-cols-1 gap-4 xl:grid-cols-3">
+        <div className="xl:col-span-2">
+          <SalesChart data={series} dateLabel={dateLabel} />
+        </div>
+        <div className="surface flex flex-col">
+          <div className="border-b border-white/[0.06] p-5 pb-4">
+            <h2 className="text-base font-semibold tracking-tight text-white">Status dos pedidos</h2>
+            <p className="mt-1 text-sm text-white/50">Aprovadas vs pendentes</p>
           </div>
+          <div className="flex-1 px-5 py-6">
+            <StatusDonut approved={statusDonut.approved} pending={statusDonut.pending} />
+          </div>
+        </div>
+      </div>
 
-          {/* Últimas vendas */}
-          <Card className="overflow-hidden p-0">
-            <div className="flex items-center justify-between gap-4 p-5 pb-4">
-              <div>
-                <h2 className="text-base font-semibold tracking-tight text-white">
-                  Últimas vendas
-                </h2>
-                <p className="mt-1 text-sm text-white/50">
-                  As transações mais recentes da sua conta
-                </p>
-              </div>
+      {/* Ranking de produtores (2/3) + Conversão de PIX (1/3) */}
+      <div className="grid grid-cols-1 gap-4 xl:grid-cols-3">
+        <div className="surface xl:col-span-2">
+          <div className="flex items-start justify-between gap-4 p-5 pb-4">
+            <div>
+              <h2 className="text-base font-semibold tracking-tight text-white">Ranking de produtores</h2>
+              <p className="mt-1 text-sm text-white/50">Top 5 do mês · atualizado agora</p>
             </div>
-            <RecentSalesCard transactions={recent} />
-          </Card>
+            <span className="rounded-full bg-white/[0.06] px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-brand-300">
+              Ao vivo
+            </span>
+          </div>
+          <div className="px-5 pb-5">
+            <ProducerRanking producers={producerRanking} live />
+          </div>
         </div>
 
-        {/* Coluna direita (1/3): Status dos pedidos + Ranking + Métodos + Velocidade. */}
-        <div className="space-y-6">
-          <Card>
-            <CardHeader>
-              <div>
-                <CardTitle>Status dos pedidos</CardTitle>
-                <CardDescription>Aprovadas vs pendentes</CardDescription>
-              </div>
-            </CardHeader>
-            <StatusDonut approved={statusDonut.approved} pending={statusDonut.pending} />
-          </Card>
+        <div className="surface flex flex-col">
+          <div className="border-b border-white/[0.06] p-5 pb-4">
+            <h2 className="text-base font-semibold tracking-tight text-white">Conversão de PIX</h2>
+            <p className="mt-1 text-sm text-white/50">Pedidos gerados vs pagos</p>
+          </div>
+          <div className="flex-1 px-5 py-6">
+            <PixConversion generated={pixConversion.generated} paid={pixConversion.paid} />
+          </div>
+        </div>
+      </div>
 
-          <Card>
-            <CardHeader>
-              <div className="flex w-full items-start justify-between gap-2">
-                <div>
-                  <CardTitle>Ranking de produtores</CardTitle>
-                  <CardDescription>Top 5 do mês · atualizado agora</CardDescription>
-                </div>
-                <span className="rounded-full bg-white/[0.06] px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-brand-300">
-                  Ao vivo
-                </span>
-              </div>
-            </CardHeader>
-            <ProducerRanking producers={producerRanking} live />
-          </Card>
+      {/* Funil de conversão (2/3) + Velocidade de pagamento (1/3) */}
+      <div className="grid grid-cols-1 gap-4 xl:grid-cols-3">
+        <div className="surface xl:col-span-2">
+          <div className="border-b border-white/[0.06] p-5 pb-4">
+            <h2 className="text-base font-semibold tracking-tight text-white">Funil de conversão</h2>
+            <p className="mt-1 text-sm text-white/50">PIX gerado → pago</p>
+          </div>
+          <div className="px-5 py-5">
+            <ConversionFunnel
+              generated={conversionFunnel.generated}
+              paid={conversionFunnel.paid}
+            />
+          </div>
+        </div>
 
-          <PaymentMethods stats={methods} />
-
-          <Card>
-            <CardHeader>
-              <div>
-                <CardTitle>Velocidade de pagamento</CardTitle>
-                <CardDescription>Tempo médio até a confirmação</CardDescription>
-              </div>
-            </CardHeader>
+        <div className="surface flex flex-col">
+          <div className="border-b border-white/[0.06] p-5 pb-4">
+            <h2 className="text-base font-semibold tracking-tight text-white">Velocidade de pagamento</h2>
+            <p className="mt-1 text-sm text-white/50">Tempo médio até a confirmação</p>
+          </div>
+          <div className="flex-1 px-5 py-6">
             <PaymentVelocity
               series={paymentVelocity.series}
               medianSeconds={paymentVelocity.medianSeconds}
             />
-          </Card>
+          </div>
         </div>
       </div>
 
-      {/* Ranking de produtos (mantido embaixo) */}
+      {/* Top produtos no fim. */}
       <TopProducts products={products} />
     </div>
   )
