@@ -243,3 +243,6 @@ export const UploadCloud = (p: IconProps) => (
 export const Link2 = (p: IconProps) => (
   <Icon {...p}><path d="M9 17H7a5 5 0 0 1 0-10h2" /><path d="M15 7h2a5 5 0 1 1 0 10h-2" /><path d="M8 12h8" /></Icon>
 )
+export const At = (p: IconProps) => (
+  <Icon {...p}><circle cx="12" cy="12" r="4" /><path d="M16 8v5a3 3 0 0 0 6 0v-1a10 10 0 1 0-4 8" /></Icon>
+)

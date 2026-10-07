@@ -1,7 +1,7 @@
 'use client'
 
 import * as React from 'react'
-import { Link2, Link as LinkIcon, User, Plus, UploadCloud } from '@/components/ui/icons'
+import { At, User, Plus, UploadCloud } from '@/components/ui/icons'
 import { cn } from '@/lib/utils'
 import { useToast } from '@/components/ui/toast'
 
@@ -111,7 +111,7 @@ export function BioLinksEditor({
             tab === 'bio' ? 'brand-gradient text-white shadow-sm' : 'text-white/60 hover:text-white',
           )}
         >
-          <LinkIcon className="h-3.5 w-3.5" />
+          <At className="h-3.5 w-3.5" />
           Bio Link
         </button>
         <button
@@ -122,7 +122,7 @@ export function BioLinksEditor({
             tab === 'private' ? 'brand-gradient text-white shadow-sm' : 'text-white/60 hover:text-white',
           )}
         >
-          <Link2 className="h-3.5 w-3.5" />
+          <At className="h-3.5 w-3.5" />
           Link Privado
           <span className="ml-1 rounded-full bg-brand-500/30 px-2 py-0.5 text-[9px] font-semibold uppercase tracking-wider text-brand-200">
             Novo
@@ -141,7 +141,7 @@ export function BioLinksEditor({
             <div className="surface flex flex-col gap-4 p-5 sm:flex-row sm:items-center sm:justify-between">
               <div className="flex items-start gap-3">
                 <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-brand-500/15 text-brand-300">
-                  <LinkIcon className="h-[18px] w-[18px]" />
+                  <At className="h-[18px] w-[18px]" />
                 </span>
                 <div>
                   <p className="text-sm font-semibold text-white">Suas páginas</p>
@@ -167,7 +167,7 @@ export function BioLinksEditor({
 
             {/* Endereço da página */}
             <Card
-              icon={<Link2 className="h-4 w-4" />}
+              icon={<At className="h-4 w-4" />}
               title="Escolha o endereço da sua página"
               hint="Esse é o link que você vai compartilhar (no bio do Instagram, TikTok, etc.)."
             >
@@ -271,7 +271,7 @@ export function BioLinksEditor({
                   'hover:brightness-110 active:scale-[0.98] disabled:opacity-50 disabled:pointer-events-none',
                 )}
               >
-                <LinkIcon className="h-4 w-4" />
+                <At className="h-4 w-4" />
                 {saving ? 'Salvando…' : 'Criar Bio Link'}
               </button>
             </div>
