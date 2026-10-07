@@ -114,15 +114,6 @@ export function Sidebar({
     }
   }
 
-  // Iniciais para o avatar.
-  const initials = (user?.name ?? '')
-    .split(/\s+/)
-    .slice(0, 2)
-    .map((part) => part[0])
-    .join('')
-    .toUpperCase() || 'B'
-  const hasUnread = (unreadCount ?? 0) > 0
-
   return (
     <>
       {/* Backdrop, só no mobile. */}
@@ -176,30 +167,6 @@ export function Sidebar({
           </div>
 
           {/* Avatar com notificação (somente lg — em md fica só o ícone). */}
-          {user && (
-            <div className="mt-4 hidden border-y border-white/[0.06] px-3 py-3 lg:block">
-              <Link
-                href="/perfil"
-                className="group relative flex items-center gap-3 rounded-xl p-2 transition-colors hover:bg-white/[0.04]"
-              >
-                <span className="relative inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-brand-500 to-brand-700 text-xs font-semibold text-white">
-                  {initials}
-                  {hasUnread && (
-                    <span
-                      aria-label="Notificações não lidas"
-                      className="absolute -right-0.5 -top-0.5 h-2.5 w-2.5 rounded-full bg-white ring-2 ring-ink-900"
-                    />
-                  )}
-                </span>
-                <span className="min-w-0">
-                  <span className="block truncate text-sm font-medium text-white">
-                    {user.name || 'Conta'}
-                  </span>
-                  <span className="block truncate text-xs text-white/40">{user.email}</span>
-                </span>
-              </Link>
-            </div>
-          )}
 
           {/* Menu */}
           <Section label="Menu" pathname={pathname} items={NAV_ITEMS.slice(0, 6)} />
