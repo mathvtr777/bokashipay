@@ -1,7 +1,7 @@
 import * as React from 'react'
 import type { Metadata } from 'next'
 import { PageHeader } from '@/components/layout/app-shell'
-import { BalanceHero } from '@/components/dashboard/balance-hero'
+import { BalanceHero, PendingBalanceCard } from '@/components/dashboard/balance-hero'
 import { StatCards } from '@/components/dashboard/stat-cards'
 import { GoalProgress } from '@/components/dashboard/goal-progress'
 import { SalesChart } from '@/components/dashboard/sales-chart'
@@ -95,11 +95,11 @@ export default async function DashboardPage({
         actions={<GoalProgress goal={metrics?.goal ?? null} />}
       />
 
-      {/* Hero de saldo (substitui o antigo carrossel) */}
-      <BalanceHero
-        availableBalance={metrics?.availableBalance ?? 0}
-        pendingBalance={metrics?.pendingBalance ?? 0}
-      />
+      {/* Hero de saldo (substitui o antigo carrossel) + card lateral de pendente. */}
+      <div className="grid gap-4 lg:grid-cols-[1fr_320px]">
+        <BalanceHero availableBalance={metrics?.availableBalance ?? 0} />
+        <PendingBalanceCard value={metrics?.pendingBalance ?? 0} />
+      </div>
 
       <StatCards metrics={metrics} />
 
