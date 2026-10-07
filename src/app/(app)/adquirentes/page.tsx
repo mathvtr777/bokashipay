@@ -126,9 +126,10 @@ function AcquirentesView({
           )}
         >
           <span
+            aria-hidden="true"
             className={cn(
-              'absolute top-0.5 h-5 w-5 rounded-full bg-white shadow transition-transform duration-200',
-              autoSwap ? 'translate-x-[22px]' : 'translate-x-0.5',
+              'absolute top-0.5 h-5 w-5 rounded-full bg-white shadow transition-all duration-200 ease-premium',
+              autoSwap ? 'left-[22px]' : 'left-0.5',
             )}
           />
         </button>
