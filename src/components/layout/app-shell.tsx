@@ -6,7 +6,7 @@ import { cn } from '@/lib/utils'
 import { firstName } from '@/lib/format'
 import { Sidebar } from './sidebar'
 import { GlobalSearch, MobileMenuButton, NotificationBell } from './header'
-import { Wordmark } from '@/components/ui/logo'
+import { LogoLockup } from '@/components/ui/logo'
 
 /**
  * Shell autenticado. Monta sidebar + header e centraliza o conteúdo.
@@ -39,9 +39,10 @@ export function AppShell({
           <div className="flex h-full items-center gap-3 px-4 sm:px-6">
             <MobileMenuButton onClick={() => setMenuOpen(true)} />
 
-            {/* Logo só no mobile — no desktop a sidebar já tem a marca. */}
-            <Link href="/dashboard" className="md:hidden" aria-label="BokashiPay">
-              <Wordmark />
+            {/* Marca em todos os tamanhos: no tablet/desktop reforça a identidade
+                que também aparece na sidebar; no mobile substitui o texto solto. */}
+            <Link href="/dashboard" aria-label="BokashiPay">
+              <LogoLockup />
             </Link>
 
             <div className="flex-1">

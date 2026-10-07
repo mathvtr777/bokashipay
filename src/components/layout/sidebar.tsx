@@ -6,7 +6,7 @@ import { usePathname, useRouter } from 'next/navigation'
 import { cn } from '@/lib/utils'
 import { ADMIN_ITEMS, FOOTER_ITEMS, NAV_ITEMS, isActive } from '@/lib/nav'
 import { createClient } from '@/lib/supabase/client'
-import { LogoLockup } from '@/components/ui/logo'
+import { Logo, LogoLockup } from '@/components/ui/logo'
 import { Logout, X } from '@/components/ui/icons'
 import { useToast } from '@/components/ui/toast'
 
@@ -96,7 +96,8 @@ export function Sidebar({
         {/* Topo */}
         <div className="flex h-16 shrink-0 items-center justify-between border-b border-ink-100 px-5 dark:border-ink-800 md:justify-center md:px-0 lg:justify-start lg:px-5">
           <Link href="/dashboard" className="hidden md:block lg:hidden" aria-label="BokashiPay">
-            <LogoLockup />
+            {/* No tablet a sidebar tem só 76px: só o Logo (sem texto) para não estourar. */}
+            <Logo />
           </Link>
           <Link href="/dashboard" className="md:hidden" aria-label="BokashiPay">
             <LogoLockup />
