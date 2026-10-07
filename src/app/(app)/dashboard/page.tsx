@@ -26,6 +26,7 @@ import {
   getConversionFunnel,
   getPaymentVelocity,
 } from '@/lib/queries'
+import { getPixProvider } from '@/services/pix'
 
 export const metadata: Metadata = { title: 'Dashboard' }
 
@@ -64,6 +65,14 @@ export default async function DashboardPage({
     getPaymentVelocity(range),
   ])
 
+  // Chave PIX do merchant (conta primária) + status do provedor — lidos
+  // server-side para o BalanceHero abrir o modal já populado.
+  const { getBankAccounts } = await import('@/lib/queries')
+  const bankAccounts = await getBankAccounts()
+  const primaryAccount = bankAccounts.find((a) => a.is_primary) ?? bankAccounts[0]
+  const pixKey = primaryAccount?.pix_key ?? null
+  const providerConfigured = getPixProvider().isConfigured()
+
   const name = firstName(profile?.full_name)
 
   // Rótulo do eixo do gráfico, dinâmico pelo período.
@@ -88,7 +97,11 @@ export default async function DashboardPage({
 
       {/* Hero de saldo + card lateral de pendente. */}
       <div className="grid gap-4 lg:grid-cols-[1fr_320px]">
-        <BalanceHero availableBalance={metrics?.availableBalance ?? 0} />
+        <BalanceHero
+          availableBalance={metrics?.availableBalance ?? 0}
+          pixKey={pixKey}
+          providerConfigured={providerConfigured}
+        />
         <PendingBalanceCard value={metrics?.pendingBalance ?? 0} />
       </div>
 

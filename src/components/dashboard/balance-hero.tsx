@@ -1,28 +1,28 @@
 import * as React from 'react'
 import { cn } from '@/lib/utils'
 import { formatCurrency } from '@/lib/format'
-import { ArrowDownToLine, Settings } from '@/components/ui/icons'
+import { Zap, Settings } from '@/components/ui/icons'
 import Link from 'next/link'
+import { QuickPaymentModal } from './quick-payment-modal'
 
 /**
- * Hero de saldo — substitui o antigo BannerCarousel.
- *
- * Visual (baseado na referência Laranjinha, adaptado para a paleta roxa da
- * BokashiPay): card escuro com gradiente roxo sutil no fundo, título
- * "SALDO DISPONÍVEL" pequeno + legenda, valor em destaque, e dois CTAs
- * grandes inline — "Solicitar saque" (primário, brand-gradient) e
- * "Personalizar" (secundário, transparente). Sem card lateral aqui — o
- * saldo pendente vai em card separado fora do hero.
- *
- * Recebe `availableBalance` de `getDashboardMetrics()`. Nenhuma query nova.
+ * Hero de saldo — visual da referência adaptado para a paleta roxa.
+ * O botão primário é "Pagamento rápido" — abre um modal que gera
+ * cobrança PIX (QR Code + código copia-e-cola) na hora.
  */
 export function BalanceHero({
   availableBalance,
+  pixKey,
+  providerConfigured,
   className,
 }: {
   availableBalance: number
+  pixKey: string | null
+  providerConfigured: boolean
   className?: string
 }) {
+  const [open, setOpen] = React.useState(false)
+
   return (
     <section
       className={cn(
@@ -30,7 +30,7 @@ export function BalanceHero({
         className,
       )}
     >
-      {/* Ilustração de fundo — gradiente roxo no canto direito + halo. */}
+      {/* Ilustração de fundo — gradiente roxo + halo. */}
       <div
         aria-hidden="true"
         className="pointer-events-none absolute inset-0"
@@ -58,13 +58,16 @@ export function BalanceHero({
         </p>
 
         <div className="mt-5 flex flex-wrap items-center gap-3">
-          <Link
-            href="/saques"
-            className="inline-flex items-center gap-2 rounded-2xl bg-gradient-to-br from-brand-500 to-brand-700 px-5 py-3 text-sm font-semibold text-white shadow-glow transition-all duration-200 hover:brightness-110 active:scale-[0.98]"
+          <button
+            type="button"
+            onClick={() => setOpen(true)}
+            disabled={!pixKey}
+            className="inline-flex items-center gap-2 rounded-2xl bg-gradient-to-br from-brand-500 to-brand-700 px-5 py-3 text-sm font-semibold text-white shadow-glow transition-all duration-200 hover:brightness-110 active:scale-[0.98] disabled:opacity-50 disabled:pointer-events-none"
+            title={pixKey ? undefined : 'Cadastre uma chave PIX em Contas Bancárias'}
           >
-            <ArrowDownToLine className="h-[18px] w-[18px]" />
-            Solicitar saque
-          </Link>
+            <Zap className="h-[18px] w-[18px]" />
+            Pagamento rápido
+          </button>
           <Link
             href="/contas-bancarias"
             className="inline-flex items-center gap-2 rounded-2xl border border-white/15 bg-white/[0.06] px-5 py-3 text-sm font-semibold text-white backdrop-blur-md transition-all duration-200 hover:bg-white/[0.10] hover:border-white/25"
@@ -74,6 +77,13 @@ export function BalanceHero({
           </Link>
         </div>
       </div>
+
+      <QuickPaymentModal
+        open={open}
+        onClose={() => setOpen(false)}
+        pixKey={pixKey}
+        providerConfigured={providerConfigured}
+      />
     </section>
   )
 }

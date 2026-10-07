@@ -16,8 +16,8 @@ const SIZES = {
 export interface ModalProps {
   open: boolean
   onClose: () => void
-  title?: string
-  description?: string
+  title?: React.ReactNode
+  description?: React.ReactNode
   size?: keyof typeof SIZES
   footer?: React.ReactNode
   children: React.ReactNode
@@ -74,7 +74,7 @@ export function Modal({
         ref={panelRef}
         role="dialog"
         aria-modal="true"
-        aria-label={title}
+        aria-label={typeof title === 'string' ? title : undefined}
         tabIndex={-1}
         className={cn(
           'relative flex max-h-[92vh] w-full flex-col animate-slide-up rounded-t-2xl bg-surface shadow-2xl outline-none ring-1 ring-white/[0.08] sm:rounded-2xl',
