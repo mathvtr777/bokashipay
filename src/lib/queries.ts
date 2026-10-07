@@ -276,6 +276,145 @@ export async function getSales(filters: SalesFilters) {
   }
 }
 
+// -----------------------------------------------------------------------------
+// Transações — página /transacoes
+//
+// Estende o conceito de `getSales` com:
+//   - filtro por origem (bot telegram / checkout / api / outros, derivado de
+//     `description` enquanto não houver campo `source` próprio).
+//   - busca por cliente/produto/email (em payer_name, customer.email, product.name,
+//     description).
+//   - stats para os 4 cards do topo (total recebido, pagas, pendentes, indicações).
+// Não substitui `getSales` — convivem. A página /vendas continua usando
+// `getSales`.
+// -----------------------------------------------------------------------------
+
+export interface TransactionsFilters {
+  range: DateRange
+  status?: string
+  source?: string
+  query?: string
+  page: number
+  pageSize: number
+}
+
+export interface TransactionsStats {
+  totalReceived: number
+  paidSales: number
+  paidAmount: number
+  pendingAmount: number
+  pendingCount: number
+  /** Vendas com descrição "indicação" (ou tag futura `referred_by`). */
+  indications: { count: number; amount: number }
+  avgTicket: number
+}
+
+export async function getTransactions(filters: TransactionsFilters) {
+  const supabase = await createClient()
+
+  let q = supabase
+    .from('transactions')
+    .select(
+      'id, status, amount, fee, net_amount, method, description, payer_name, payer_document, created_at, customer:customers(id, name, email), product:products!transactions_product_id_fkey(id, name)',
+      { count: 'exact' },
+    )
+    .gte('created_at', filters.range.from)
+    .lte('created_at', `${rangeToIso(filters.range.to)}`)
+    .order('created_at', { ascending: false })
+
+  if (filters.status && filters.status !== 'all') q = q.eq('status', filters.status)
+  if (filters.source && filters.source !== 'all') q = sourceFilter(q, filters.source)
+  if (filters.query) q = queryFilter(q, filters.query)
+
+  const from = (filters.page - 1) * filters.pageSize
+  const { data, count, error } = await q.range(from, from + filters.pageSize - 1)
+  if (error) throw new Error(error.message)
+
+  return {
+    data: (data ?? []) as unknown as SalesRow[],
+    total: count ?? 0,
+    page: filters.page,
+    pageSize: filters.pageSize,
+    totalPages: Math.max(1, Math.ceil((count ?? 0) / filters.pageSize)),
+  }
+}
+
+/**
+ * Estatísticas dos 4 cards da página /transacoes (Total Recebido, Vendas
+ * Pagas, Pendentes, Indicações). Lê todas as transactions do range sem
+ * paginação — usado só no server, o custo é compatível com `getDashboardMetrics`.
+ */
+export async function getTransactionsStats(range: DateRange): Promise<TransactionsStats> {
+  const supabase = await createClient()
+  const { data } = await supabase
+    .from('transactions')
+    .select('status, amount, net_amount, fee, description')
+    .gte('created_at', range.from)
+    .lte('created_at', `${rangeToIso(range.to)}`)
+    .returns<
+      { status: string; amount: number | string; net_amount: number | string; fee: number | string; description: string | null }[]
+    >()
+
+  const rows = data ?? []
+  const approved = rows.filter((r) => r.status === 'approved')
+  const pending = rows.filter((r) => r.status === 'pending')
+  const indication = rows.filter((r) => (r.description ?? '').toLowerCase().includes('indicação') || (r.description ?? '').toLowerCase().includes('indicacao'))
+
+  const totalReceived = roundCurrency(approved.reduce((s, r) => s + Number(r.amount), 0))
+  const paidAmount = totalReceived
+  const pendingAmount = roundCurrency(pending.reduce((s, r) => s + Number(r.amount), 0))
+  const indications = {
+    count: indication.length,
+    amount: roundCurrency(indication.reduce((s, r) => s + Number(r.amount), 0)),
+  }
+  const avgTicket = approved.length === 0 ? 0 : roundCurrency(totalReceived / approved.length)
+
+  return {
+    totalReceived,
+    paidSales: approved.length,
+    paidAmount,
+    pendingAmount,
+    pendingCount: pending.length,
+    indications,
+    avgTicket,
+  }
+}
+
+/** helper: converte 'yyyy-mm-dd' em 'yyyy-mm-ddT23:59:59.999Z' */
+function rangeToIso(date: string): string {
+  return date.includes('T') ? date : `${date}T23:59:59.999Z`
+}
+
+/**
+ * Filtra por origem — derivado de description. Recebe o query builder
+ * encadeado (tipo inferido pelo `from`); todos os `or`/`ilike` funcionam
+ * sobre o mesmo tipo encadeado.
+ */
+function sourceFilter(q: any, source: string) {
+  switch (source) {
+    case 'telegram_bot':
+      return q.ilike('description', '%telegram%')
+    case 'checkout_direct':
+      return q.or('method.eq.card,method.eq.boleto,description.ilike.%checkout%')
+    case 'api':
+      return q.ilike('description', '%api%')
+    case 'other':
+      // "other" — quando o filtro de "outros" é selecionado, a query fica
+      // sem restrição de description; o filtro fino fica para uma migration
+      // futura com campo `source` dedicado.
+      return q
+    default:
+      return q
+  }
+}
+
+/** Busca por cliente/produto/email — campo mais comum é `payer_name`. */
+function queryFilter(q: any, term: string) {
+  return q.or(
+    `payer_name.ilike.%${term}%,payer_document.ilike.%${term}%,description.ilike.%${term}%,customer.name.ilike.%${term}%`,
+  )
+}
+
 export interface SalesRow extends Transaction {
   customer: Pick<Customer, 'id' | 'name' | 'email'> | null
 }

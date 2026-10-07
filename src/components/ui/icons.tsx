@@ -231,3 +231,9 @@ export const Code2 = (p: IconProps) => (
 export const Layers = (p: IconProps) => (
   <Icon {...p}><path d="M12 3 2 8l10 5 10-5z" /><path d="m2 13 10 5 10-5M2 18l10 5 10-5" /></Icon>
 )
+export const ShoppingBag = (p: IconProps) => (
+  <Icon {...p}><path d="M3 8h18l-1.5 11.5a2 2 0 0 1-2 1.5H6.5a2 2 0 0 1-2-1.5z" /><path d="M8 8V6a4 4 0 0 1 8 0v2" /></Icon>
+)
+export const CreditCard = (p: IconProps) => (
+  <Icon {...p}><rect x="2" y="6" width="20" height="13" rx="2" /><path d="M2 10h20M6 15h4" /></Icon>
+)

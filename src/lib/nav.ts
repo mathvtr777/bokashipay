@@ -19,9 +19,10 @@ export const NAV_ITEMS: NavItem[] = [
   { href: '/adquirentes', label: 'Adquirentes', icon: Icons.Bank, activePath: '/adquirentes' },
   // Análises é o painel de métricas; fica ativo em /analises.
   { href: '/analises', label: 'Análises', icon: Icons.ChartBar, activePath: '/analises' },
-  { href: '/pix', label: 'Transações', icon: Icons.Wallet, activePath: '/pix' },
+  // Transações tem rota própria; é o item canônico que fica ativo nela.
+  { href: '/transacoes', label: 'Transações', icon: Icons.Wallet, activePath: '/transacoes' },
   // Infrações é placeholder por enquanto; rota ainda não criada.
-  { href: '/pix', label: 'Infrações', icon: Icons.ShieldAlert },
+  { href: '/transacoes', label: 'Infrações', icon: Icons.ShieldAlert },
   { href: '/clientes', label: 'Clientes', icon: Icons.Customers },
   { href: '/financeiro', label: 'Financeiro', icon: Icons.Finance },
   { href: '/produtos', label: 'Produtos', icon: Icons.Sales },
