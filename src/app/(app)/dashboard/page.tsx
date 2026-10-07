@@ -67,10 +67,10 @@ export default async function DashboardPage({
     getPaymentMethodStats(),
     getTopProducts(5),
     getStatusDonut(range),
-    getProducerRanking(5),
-    getPixConversion(),
+    getProducerRanking(range, 5),
+    getPixConversion(range),
     getConversionFunnel(),
-    getPaymentVelocity(),
+    getPaymentVelocity(range),
   ])
 
   const name = firstName(profile?.full_name)

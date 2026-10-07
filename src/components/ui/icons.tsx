@@ -216,3 +216,18 @@ export const ChartBar = (p: IconProps) => (
 export const ShieldAlert = (p: IconProps) => (
   <Icon {...p}><path d="M12 3l8 3v6c0 4.5-3.2 8.2-8 9.5-4.8-1.3-8-5-8-9.5V6Z" /><path d="M12 8v4M12 15h.01" /></Icon>
 )
+export const DollarSign = (p: IconProps) => (
+  <Icon {...p}><path d="M12 3v18M16.5 6.5A3.5 3.5 0 0 0 12.7 5H10a2.5 2.5 0 0 0 0 5h4a2.5 2.5 0 0 1 0 5h-2.7a3.5 3.5 0 0 1-3.8-1.5" /></Icon>
+)
+export const Cart = (p: IconProps) => (
+  <Icon {...p}><path d="M3 4h2l2.5 12h11l2-8H6" /><circle cx="9" cy="20" r="1" /><circle cx="17" cy="20" r="1" /></Icon>
+)
+export const Globe = (p: IconProps) => (
+  <Icon {...p}><circle cx="12" cy="12" r="9" /><path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18" /></Icon>
+)
+export const Code2 = (p: IconProps) => (
+  <Icon {...p}><path d="m8 8-4 4 4 4M16 8l4 4-4 4M14 4l-4 16" /></Icon>
+)
+export const Layers = (p: IconProps) => (
+  <Icon {...p}><path d="M12 3 2 8l10 5 10-5z" /><path d="m2 13 10 5 10-5M2 18l10 5 10-5" /></Icon>
+)

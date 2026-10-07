@@ -17,8 +17,8 @@ export const NAV_ITEMS: NavItem[] = [
   { href: '/dashboard', label: 'Dashboard', icon: Icons.Dashboard },
   // Adquirentes tem rota própria; é o item canônico que fica ativo nela.
   { href: '/adquirentes', label: 'Adquirentes', icon: Icons.Bank, activePath: '/adquirentes' },
-  // Análises é o alias de /vendas — fica ativo quando o pathname é /vendas.
-  { href: '/vendas', label: 'Análises', icon: Icons.ChartBar, activePath: '/vendas' },
+  // Análises é o painel de métricas; fica ativo em /analises.
+  { href: '/analises', label: 'Análises', icon: Icons.ChartBar, activePath: '/analises' },
   { href: '/pix', label: 'Transações', icon: Icons.Wallet, activePath: '/pix' },
   // Infrações é placeholder por enquanto; rota ainda não criada.
   { href: '/pix', label: 'Infrações', icon: Icons.ShieldAlert },

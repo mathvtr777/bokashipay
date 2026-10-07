@@ -165,6 +165,52 @@ export interface PaymentVelocity {
   medianSeconds: number | null
 }
 
+/**
+ * Funil de 3 etapas: PIX gerado → aguardando pagamento → pago. Cada etapa tem
+ * valor absoluto e percent em relação ao total gerado (a primeira é sempre
+ * 100%). Usado na página de Análises.
+ */
+export interface ConversionFunnelSteps {
+  generated: number
+  awaiting: number
+  paid: number
+  approvalRate: number // paid / generated
+  medianSecondsToPay: number | null
+}
+
+/**
+ * Heatmap de quando os clientes compram: 7 dias da semana × 4 faixas
+ * (manhã, manhã, tarde, noite). Cada célula é o total de vendas aprovadas
+ * no período. Usado na página de Análises.
+ */
+export interface ConversionHeatmapCell {
+  weekday: number // 0=Dom, 1=Seg, ..., 6=Sáb
+  bucket: 0 | 1 | 2 | 3 // 0=manhã(0-6), 1=manhã(6-12), 2=tarde(12-18), 3=noite(18-24)
+  count: number
+}
+
+export interface ConversionHeatmap {
+  cells: ConversionHeatmapCell[]
+  max: number
+}
+
+/**
+ * Breakdown por fonte/origem. Derivado de `transactions.method` +
+ * `transactions.description` no momento — quando houver campo `source`
+ * próprio, o cálculo fica mais preciso. Cada item tem uma `key` estável
+ * para mapear ícone/label.
+ */
+export interface SourceBreakdownItem {
+  key: 'telegram_bot' | 'checkout_direct' | 'api' | 'other'
+  label: string
+  count: number
+  amount: number
+}
+
+export interface SourceBreakdown {
+  items: SourceBreakdownItem[]
+}
+
 // -----------------------------------------------------------------------------
 // Resultado padrão das chamadas de serviço
 // -----------------------------------------------------------------------------

@@ -649,60 +649,250 @@ export type { Json, Database }
 export type { CustomerWithStats } from '@/lib/types'
 
 // -----------------------------------------------------------------------------
-// Dashboard — queries stub (visual Laranjinha)
+// Dashboard — queries (ligadas às tabelas `transactions` e `pix_transactions`)
 //
-// Estas funções alimentam os novos blocos da home (Status Donut, Ranking de
-// Produtores, Conversão de PIX, Funil de Conversão, Velocidade de
-// Pagamento). Por enquanto retornam mocks vazios/zeros para que a UI já
-// renderize a forma final. Quando forem integradas, basta substituir o corpo
-// preservando a assinatura. Não alteram nem dependem de nenhuma query
-// existente.
+// Estas funções alimentam os blocos da home e da página de Análises.
+// Lêem o range do merchant; a primeira execução (sem dados) retorna zeros e
+// os componentes já tratam o caso vazio via `EmptyState`.
 // -----------------------------------------------------------------------------
 
 import type {
   ConversionFunnel,
+  ConversionFunnelSteps,
+  ConversionHeatmap,
+  ConversionHeatmapCell,
   PaymentVelocity,
   Producer,
+  SourceBreakdown,
+  SourceBreakdownItem,
   StatusDonut,
 } from '@/lib/types'
 
+/** Busca as transações de PIX em um range (sem aplicar RLS além do auth). */
+async function fetchPixInRange(range: DateRange) {
+  const supabase = await createClient()
+  return supabase
+    .from('pix_transactions')
+    .select('status, amount, created_at, paid_at')
+    .gte('created_at', range.from)
+    .lte('created_at', `${range.to}T23:59:59.999Z`)
+    .returns<
+      { status: string; amount: number | string; created_at: string; paid_at: string | null }[]
+    >()
+}
+
 /**
  * Status dos pedidos no período — aprovados vs pendentes.
- * @todo integrar com dados reais quando a feature for ligada.
+ * `approved` = transactions com status='approved'.
+ * `pending` = transactions com status='pending' (não canceladas/refunded).
  */
-export async function getStatusDonut(_range?: DateRange): Promise<StatusDonut> {
-  return { approved: 0, pending: 0 }
+export async function getStatusDonut(range: DateRange): Promise<StatusDonut> {
+  const supabase = await createClient()
+  const { data } = await supabase
+    .from('transactions')
+    .select('status')
+    .gte('created_at', range.from)
+    .lte('created_at', `${range.to}T23:59:59.999Z`)
+    .returns<{ status: string }[]>()
+  const rows = data ?? []
+  return {
+    approved: rows.filter((r) => r.status === 'approved').length,
+    pending: rows.filter((r) => r.status === 'pending').length,
+  }
 }
 
 /**
- * Ranking dos top produtores que mais venderam no período.
- * @todo integrar com dados reais quando a feature for ligada.
+ * Ranking dos top produtores no período. Derivado de `transactions.payer_name`
+ * — cada nome distinto é tratado como um produtor anônimo, e agregamos
+ * contagem + valor aprovado. Quando o nome é vazio/igual, fica agrupado
+ * sob "Não informado".
  */
-export async function getProducerRanking(_limit = 5): Promise<Producer[]> {
-  return []
+export async function getProducerRanking(
+  range: DateRange,
+  limit = 5,
+): Promise<Producer[]> {
+  const supabase = await createClient()
+  const { data } = await supabase
+    .from('transactions')
+    .select('payer_name, amount, status, created_at')
+    .gte('created_at', range.from)
+    .lte('created_at', `${range.to}T23:59:59.999Z`)
+    .eq('status', 'approved')
+    .returns<{ payer_name: string | null; amount: number | string; status: string; created_at: string }[]>()
+
+  const buckets = new Map<string, { id: string; name: string; count: number; amount: number }>()
+  for (const t of data ?? []) {
+    const name = (t.payer_name ?? '').trim() || 'Não informado'
+    const cur = buckets.get(name) ?? { id: name, name, count: 0, amount: 0 }
+    cur.count += 1
+    cur.amount = roundCurrency(cur.amount + Number(t.amount))
+    buckets.set(name, cur)
+  }
+  return [...buckets.values()].sort((a, b) => b.amount - a.amount).slice(0, limit)
 }
 
 /**
- * Conversão de PIX: total gerado vs pago (e percent derivado).
- * @todo integrar com dados reais quando a feature for ligada.
+ * Conversão de PIX: total gerado vs pago (e percent derivado). Mantida para
+ * o dashboard — `getConversionFunnelSteps` é a versão de 3 etapas usada
+ * pela página de Análises.
  */
-export async function getPixConversion(): Promise<ConversionFunnel> {
-  return { generated: 0, paid: 0, percent: 0 }
+export async function getPixConversion(range: DateRange): Promise<ConversionFunnel> {
+  const { data } = await fetchPixInRange(range)
+  const rows = data ?? []
+  const generated = rows.length
+  const paid = rows.filter((r) => r.status === 'paid').length
+  return {
+    generated,
+    paid,
+    percent: generated === 0 ? 0 : paid / generated,
+  }
 }
 
 /**
- * Funil de conversão: PIX gerados → pagos. Mantém duas structs com a mesma
- * forma para evitar duplicação com `getPixConversion`.
- * @todo integrar com dados reais quando a feature for ligada.
+ * Funil de 3 etapas usado na página de Análises: PIX gerado → aguardando →
+ * pago. Inclui taxa de aprovação e mediana do tempo até pagar.
  */
+export async function getConversionFunnelSteps(
+  range: DateRange,
+): Promise<ConversionFunnelSteps> {
+  const { data } = await fetchPixInRange(range)
+  const rows = data ?? []
+  const generated = rows.length
+  const paidRows = rows.filter((r) => r.status === 'paid' && r.paid_at)
+  const awaiting = rows.filter((r) => r.status === 'pending' || r.status === 'created').length
+  const paid = paidRows.length
+
+  // Mediana de segundos entre created_at e paid_at para os pagos.
+  const seconds = paidRows
+    .map((r) => {
+      const a = new Date(r.created_at).getTime()
+      const b = new Date(r.paid_at as string).getTime()
+      return Math.max(0, Math.round((b - a) / 1000))
+    })
+    .sort((x, y) => x - y)
+
+  const median = seconds.length === 0 ? null : seconds[Math.floor(seconds.length / 2)]
+
+  return {
+    generated,
+    awaiting,
+    paid,
+    approvalRate: generated === 0 ? 0 : paid / generated,
+    medianSecondsToPay: median,
+  }
+}
+
+/** Mantida para retrocompatibilidade com a home (versão 2 etapas). */
 export async function getConversionFunnel(): Promise<ConversionFunnel> {
   return { generated: 0, paid: 0, percent: 0 }
 }
 
 /**
  * Velocidade de pagamento: série por hora + mediana em segundos.
- * @todo integrar com dados reais quando a feature for ligada.
+ * Agrega por hora do created_at para os pagos no período.
  */
-export async function getPaymentVelocity(): Promise<PaymentVelocity> {
-  return { series: [], medianSeconds: null }
+export async function getPaymentVelocity(range: DateRange): Promise<PaymentVelocity> {
+  const { data } = await fetchPixInRange(range)
+  const rows = (data ?? []).filter((r) => r.status === 'paid' && r.paid_at)
+  const buckets = new Array(24).fill(0).map(() => [] as number[])
+  for (const r of rows) {
+    const created = new Date(r.created_at)
+    const paid = new Date(r.paid_at as string)
+    const hour = created.getHours()
+    const seconds = Math.max(0, Math.round((paid.getTime() - created.getTime()) / 1000))
+    buckets[hour].push(seconds)
+  }
+  const series = buckets.map((arr, hour) => ({
+    hour: `${hour.toString().padStart(2, '0')}h`,
+    seconds: arr.length === 0 ? 0 : Math.round(arr.reduce((s, x) => s + x, 0) / arr.length),
+  }))
+  const all = series.flatMap((s) => (s.seconds > 0 ? [s.seconds] : []))
+  const median =
+    all.length === 0
+      ? null
+      : [...all].sort((a, b) => a - b)[Math.floor(all.length / 2)]
+  return { series, medianSeconds: median }
+}
+
+/**
+ * Heatmap "quando seus clientes compram": agrupa as vendas aprovadas por
+ * dia da semana × faixa horária. Faixas: 0-6, 6-12, 12-18, 18-24.
+ */
+export async function getConversionHeatmap(
+  range: DateRange,
+): Promise<ConversionHeatmap> {
+  const supabase = await createClient()
+  const { data } = await supabase
+    .from('transactions')
+    .select('created_at, status')
+    .gte('created_at', range.from)
+    .lte('created_at', `${range.to}T23:59:59.999Z`)
+    .eq('status', 'approved')
+    .returns<{ created_at: string; status: string }[]>()
+
+  const counts = new Map<string, number>()
+  for (const r of data ?? []) {
+    const d = new Date(r.created_at)
+    // getDay(): 0=Dom, 6=Sáb
+    const weekday = d.getDay()
+    const h = d.getHours()
+    const bucket = (h < 6 ? 0 : h < 12 ? 1 : h < 18 ? 2 : 3) as 0 | 1 | 2 | 3
+    const key = `${weekday}-${bucket}`
+    counts.set(key, (counts.get(key) ?? 0) + 1)
+  }
+
+  const cells: ConversionHeatmapCell[] = []
+  let max = 0
+  for (let wd = 0; wd < 7; wd++) {
+    for (let b = 0 as 0 | 1 | 2 | 3; b < 4; b++) {
+      const count = counts.get(`${wd}-${b}`) ?? 0
+      cells.push({ weekday: wd, bucket: b, count })
+      if (count > max) max = count
+    }
+  }
+  return { cells, max }
+}
+
+/**
+ * Breakdown por "fonte de tráfego" — derivado de `transactions.method` +
+ * `transactions.description` enquanto não houver campo `source` dedicado.
+ *   - `telegram_bot`: descrição contém "telegram" (case-insensitive)
+ *   - `checkout_direct`: method=card|boleto OU descrição contém "checkout"
+ *   - `api`: descrição contém "api"
+ *   - `other`: resto
+ */
+export async function getSourceBreakdown(
+  range: DateRange,
+): Promise<SourceBreakdown> {
+  const supabase = await createClient()
+  const { data } = await supabase
+    .from('transactions')
+    .select('amount, status, method, description, created_at')
+    .gte('created_at', range.from)
+    .lte('created_at', `${range.to}T23:59:59.999Z`)
+    .eq('status', 'approved')
+    .returns<
+      { amount: number | string; status: string; method: string; description: string | null; created_at: string }[]
+    >()
+
+  const buckets: Record<SourceBreakdownItem['key'], SourceBreakdownItem> = {
+    telegram_bot: { key: 'telegram_bot', label: 'Bot Telegram', count: 0, amount: 0 },
+    checkout_direct: { key: 'checkout_direct', label: 'Checkout direto', count: 0, amount: 0 },
+    api: { key: 'api', label: 'API', count: 0, amount: 0 },
+    other: { key: 'other', label: 'Outros', count: 0, amount: 0 },
+  }
+
+  for (const t of data ?? []) {
+    const desc = (t.description ?? '').toLowerCase()
+    let key: SourceBreakdownItem['key'] = 'other'
+    if (desc.includes('telegram')) key = 'telegram_bot'
+    else if (desc.includes('checkout') || t.method === 'card' || t.method === 'boleto')
+      key = 'checkout_direct'
+    else if (desc.includes('api')) key = 'api'
+
+    buckets[key].count += 1
+    buckets[key].amount = roundCurrency(buckets[key].amount + Number(t.amount))
+  }
+
+  return { items: Object.values(buckets) }
 }

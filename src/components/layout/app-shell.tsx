@@ -97,11 +97,13 @@ export function PageHeader({
   title,
   description,
   actions,
+  icon,
   className,
 }: {
   title: string
   description?: string
   actions?: React.ReactNode
+  icon?: React.ReactNode
   className?: string
 }) {
   return (
@@ -111,13 +113,20 @@ export function PageHeader({
         className,
       )}
     >
-      <div>
-        <h1 className="text-xl font-semibold tracking-tight text-white sm:text-2xl">
-          {title}
-        </h1>
-        {description && (
-          <p className="mt-1.5 text-sm text-white/50">{description}</p>
+      <div className="flex items-start gap-3">
+        {icon && (
+          <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-white/[0.04] text-white/70 ring-1 ring-white/[0.08]">
+            {icon}
+          </span>
         )}
+        <div>
+          <h1 className="text-xl font-semibold tracking-tight text-white sm:text-2xl">
+            {title}
+          </h1>
+          {description && (
+            <p className="mt-1.5 text-sm text-white/50">{description}</p>
+          )}
+        </div>
       </div>
       {actions && <div className="flex shrink-0 items-center gap-3">{actions}</div>}
     </div>
