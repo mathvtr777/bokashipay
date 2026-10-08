@@ -21,8 +21,8 @@ export const NAV_ITEMS: NavItem[] = [
   { href: '/analises', label: 'Análises', icon: Icons.ChartBar, activePath: '/analises' },
   // Transações tem rota própria; é o item canônico que fica ativo nela.
   { href: '/transacoes', label: 'Transações', icon: Icons.Wallet, activePath: '/transacoes' },
-  // Infrações é placeholder por enquanto; rota ainda não criada.
-  { href: '/transacoes', label: 'Infrações', icon: Icons.ShieldAlert },
+  // Infrações tem rota própria; é o item canônico que fica ativo nela.
+  { href: '/infracoes', label: 'Infrações', icon: Icons.ShieldAlert, activePath: '/infracoes' },
   { href: '/clientes', label: 'Clientes', icon: Icons.Customers },
   { href: '/financeiro', label: 'Financeiro', icon: Icons.Finance },
   { href: '/produtos', label: 'Produtos', icon: Icons.Sales },

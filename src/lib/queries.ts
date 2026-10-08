@@ -492,6 +492,119 @@ export async function countBioPages(): Promise<number> {
   return count ?? 0
 }
 
+// -----------------------------------------------------------------------------
+// Infrações (chargebacks / disputes / contestações) — página /infracoes
+//
+// A tabela `infracoes` é criada pela migration 0009. Até rodar a migration,
+// as queries retornam listas vazias / zeros e a UI mostra empty-state.
+// -----------------------------------------------------------------------------
+
+export interface InfracoesFilters {
+  range?: DateRange
+  status?: string
+  query?: string
+  page: number
+  pageSize: number
+}
+
+export interface InfracoesStats {
+  total: number
+  analyzing: number
+  inDispute: number // soma de amount de status=open ou lost (ainda em risco)
+  defended: number
+}
+
+/** Lista de infrações do merchant. Filtra por status, range e busca textual. */
+export async function getInfracoes(filters: InfracoesFilters): Promise<InfracoesRow[]> {
+  try {
+    const supabase = await createClient()
+    const { data: { user } } = await supabase.auth.getUser()
+    if (!user) return []
+
+    let q = supabase
+      .from('infracoes')
+      .select(
+        'id, status, type, amount, reason, opened_at, resolved_at, transaction_id, created_at',
+        { count: 'exact' },
+      )
+      .eq('user_id', user.id)
+      .order('opened_at', { ascending: false })
+
+    if (filters.range) {
+      q = q.gte('opened_at', filters.range.from).lte('opened_at', `${filters.range.to}T23:59:59.999Z`)
+    }
+    if (filters.status && filters.status !== 'all') q = q.eq('status', filters.status)
+    if (filters.query) q = q.or(`reason.ilike.%${filters.query}%,defense_notes.ilike.%${filters.query}%`)
+
+    const from = (filters.page - 1) * filters.pageSize
+    const { data, count, error } = await q.range(from, from + filters.pageSize - 1)
+    if (error) return []
+
+    return ((data ?? []) as unknown as InfracoesRow[])
+  } catch {
+    return []
+  }
+}
+
+/** Estatísticas dos 4 cards do topo da página /infracoes. */
+export async function getInfracoesStats(range?: DateRange): Promise<InfracoesStats> {
+  try {
+    const supabase = await createClient()
+    const { data: { user } } = await supabase.auth.getUser()
+    if (!user) return { total: 0, analyzing: 0, inDispute: 0, defended: 0 }
+
+    let q = supabase
+      .from('infracoes')
+      .select('status, amount')
+      .eq('user_id', user.id)
+
+    if (range) {
+      q = q.gte('opened_at', range.from).lte('opened_at', `${range.to}T23:59:59.999Z`)
+    }
+
+    const { data } = await q
+    const rows = (data ?? []) as { status: string; amount: number | string }[]
+
+    let total = 0
+    let analyzing = 0
+    let inDispute = 0
+    let defended = 0
+    for (const r of rows) {
+      total += 1
+      const amount = Number(r.amount)
+      if (r.status === 'open') inDispute += amount
+      if (r.status === 'analyzing') {
+        analyzing += 1
+        inDispute += amount
+      }
+      if (r.status === 'lost') inDispute += amount
+      if (r.status === 'defended' || r.status === 'won') defended += 1
+    }
+
+    return {
+      total,
+      analyzing,
+      inDispute: roundCurrency(inDispute),
+      defended,
+    }
+  } catch {
+    return { total: 0, analyzing: 0, inDispute: 0, defended: 0 }
+  }
+}
+
+/** Row de infração que volta pro client (lista + busca). */
+export interface InfracoesRow {
+  id: string
+  status: string
+  type: string
+  amount: number
+  reason: string | null
+  opened_at: string
+  resolved_at: string | null
+  transaction_id: string | null
+  created_at: string
+}
+
 export interface SalesRow extends Transaction {
   customer: Pick<Customer, 'id' | 'name' | 'email'> | null
 }

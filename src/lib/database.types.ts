@@ -739,6 +739,51 @@ export interface Database {
         }
         Relationships: []
       }
+      infracoes: {
+        Row: {
+          id: string
+          user_id: string
+          transaction_id: string | null
+          type: string
+          status: string
+          amount: number
+          reason: string | null
+          defense_notes: string | null
+          opened_at: string
+          resolved_at: string | null
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          user_id: string
+          transaction_id?: string | null
+          type?: string
+          status?: string
+          amount?: number
+          reason?: string | null
+          defense_notes?: string | null
+          opened_at?: string
+          resolved_at?: string | null
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          user_id?: string
+          transaction_id?: string | null
+          type?: string
+          status?: string
+          amount?: number
+          reason?: string | null
+          defense_notes?: string | null
+          opened_at?: string
+          resolved_at?: string | null
+          created_at?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       integrations_safe: {
