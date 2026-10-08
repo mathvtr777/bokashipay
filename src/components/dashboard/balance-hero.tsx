@@ -60,25 +60,14 @@ export function BalanceHero({
         </p>
 
         <div className="mt-5 flex flex-wrap items-center gap-3">
-          {pixKey ? (
-            <button
-              type="button"
-              onClick={() => setOpen(true)}
-              className="inline-flex items-center gap-2 rounded-2xl bg-gradient-to-br from-brand-500 to-brand-700 px-5 py-3 text-sm font-semibold text-white shadow-glow transition-all duration-200 hover:brightness-110 active:scale-[0.98]"
-            >
-              <Zap className="h-[18px] w-[18px]" />
-              Pagamento rápido
-            </button>
-          ) : (
-            <Link
-              href="/contas-bancarias"
-              className="inline-flex items-center gap-2 rounded-2xl border border-amber-500/30 bg-amber-500/[0.10] px-5 py-3 text-sm font-semibold text-amber-200 transition-all duration-200 hover:bg-amber-500/[0.18]"
-              title="Cadastre uma conta com chave PIX para gerar cobranças"
-            >
-              <Zap className="h-[18px] w-[18px]" />
-              Cadastrar chave PIX para cobrar
-            </Link>
-          )}
+          <button
+            type="button"
+            onClick={() => setOpen(true)}
+            className="inline-flex items-center gap-2 rounded-2xl bg-gradient-to-br from-brand-500 to-brand-700 px-5 py-3 text-sm font-semibold text-white shadow-glow transition-all duration-200 hover:brightness-110 active:scale-[0.98]"
+          >
+            <Zap className="h-[18px] w-[18px]" />
+            Pagamento rápido
+          </button>
           <Link
             href="/contas-bancarias"
             className="inline-flex items-center gap-2 rounded-2xl border border-white/15 bg-white/[0.06] px-5 py-3 text-sm font-semibold text-white backdrop-blur-md transition-all duration-200 hover:bg-white/[0.10] hover:border-white/25"

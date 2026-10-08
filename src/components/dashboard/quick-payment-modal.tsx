@@ -172,7 +172,7 @@ export function QuickPaymentModal({
             type="submit"
             size="lg"
             loading={loading}
-            disabled={!valid || !pixKey}
+            disabled={!valid}
             className="w-full"
           >
             <Zap className="h-4 w-4" />
