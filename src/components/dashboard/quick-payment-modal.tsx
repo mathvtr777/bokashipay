@@ -134,12 +134,12 @@ export function QuickPaymentModal({
     >
       {!created ? (
         <form onSubmit={generate} className="space-y-5">
-          {/* Card laranjinha com o fluxo explicativo. */}
-          <div className="rounded-2xl border border-orange-500/30 bg-orange-500/[0.08] p-4">
-            <p className="text-sm font-semibold text-orange-200">
+          {/* Card roxo com o fluxo explicativo. */}
+          <div className="rounded-2xl border border-brand-500/30 bg-brand-500/[0.08] p-4">
+            <p className="text-sm font-semibold text-brand-200">
               Receba via PIX em segundos
             </p>
-            <ol className="mt-2 space-y-1 text-sm text-orange-100/85">
+            <ol className="mt-2 space-y-1 text-sm text-brand-100/85">
               <li>1. Escolha o valor a cobrar (mínimo R$ {MIN_PIX_VALUE.toFixed(2).replace('.', ',')}).</li>
               <li>2. Compartilhe o QR Code ou o copia-e-cola com o pagador.</li>
               <li>3. Assim que pagar, o valor cai automaticamente na sua conta.</li>
@@ -160,8 +160,8 @@ export function QuickPaymentModal({
                     className={
                       'rounded-xl border px-3 py-2.5 text-sm font-semibold transition-all duration-200 ease-premium ' +
                       (active
-                        ? 'border-orange-500 bg-orange-500 text-white shadow-sm'
-                        : 'border-white/[0.08] bg-white/[0.04] text-white/70 hover:border-orange-500/40 hover:text-white')
+                        ? 'border-brand-500 bg-brand-500 text-white shadow-sm'
+                        : 'border-white/[0.08] bg-white/[0.04] text-white/70 hover:border-brand-500/40 hover:text-white')
                     }
                   >
                     R$ {value}
@@ -183,7 +183,7 @@ export function QuickPaymentModal({
           />
 
           {providerConfigured === false && (
-            <p className="text-xs text-orange-300/80">
+            <p className="text-xs text-brand-300/80">
               Provedor PIX ainda não está conectado. A cobrança será registrada,
               mas o QR Code só sai após você configurar o{' '}
               <code className="font-mono text-[11px]">PUSHINPAY_API_TOKEN</code>.
@@ -199,7 +199,7 @@ export function QuickPaymentModal({
             disabled={loading || !valid}
             className={
               'inline-flex h-12 w-full items-center justify-center gap-2 rounded-2xl text-sm font-semibold text-white transition-all duration-200 ease-premium ' +
-              'bg-orange-500 shadow-glow hover:bg-orange-600 active:scale-[0.99] ' +
+              'bg-gradient-to-br from-brand-500 to-brand-700 shadow-glow hover:brightness-110 active:scale-[0.99] ' +
               'disabled:cursor-not-allowed disabled:bg-white/[0.08] disabled:text-white/30 disabled:shadow-none'
             }
           >
@@ -231,8 +231,8 @@ export function QuickPaymentModal({
                 {formatCurrency(created.amount)}
               </p>
             </div>
-            <span className="inline-flex items-center gap-1.5 rounded-full border border-orange-500/30 bg-orange-500/15 px-3 py-1 text-xs font-semibold text-orange-200">
-              <span className="h-1.5 w-1.5 rounded-full bg-orange-400" />
+            <span className="inline-flex items-center gap-1.5 rounded-full border border-brand-500/30 bg-brand-500/15 px-3 py-1 text-xs font-semibold text-brand-200">
+              <span className="h-1.5 w-1.5 rounded-full bg-brand-400" />
               Aguardando pagamento
             </span>
           </div>
