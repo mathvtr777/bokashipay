@@ -3,14 +3,20 @@
 import * as React from 'react'
 import { Link2, Plus, Workflow } from '@/components/ui/icons'
 import { useToast } from '@/components/ui/toast'
+import { NewFlowModal } from './new-flow-modal'
 
 /**
  * Conteúdo da aba "Fluxos" — mostra o conjunto de fluxos automatizados
  * do merchant. Por enquanto é apenas a estrutura visual (sem dados
- * reais, sem persistência). O botão "Criar Fluxo" abre placeholder.
+ * reais, sem persistência). O botão "Criar Fluxo" abre o modal de
+ * criação; o editor visual será feito em outro passo.
  */
 export function TelegramFluxos() {
   const { toast } = useToast()
+  const [modalOpen, setModalOpen] = React.useState(false)
+
+  const openModal = () => setModalOpen(true)
+  const closeModal = () => setModalOpen(false)
 
   return (
     <div className="space-y-6">
@@ -18,12 +24,7 @@ export function TelegramFluxos() {
         <p className="text-sm text-white/50">Automatize conversas do Telegram com fluxos</p>
         <button
           type="button"
-          onClick={() =>
-            toast({
-              title: 'Em breve',
-              description: 'A criação de fluxos será habilitada em breve.',
-            })
-          }
+          onClick={openModal}
           className="inline-flex items-center gap-1.5 rounded-xl bg-gradient-to-br from-brand-500 to-brand-700 px-4 py-2 text-sm font-semibold text-white shadow-glow transition-all duration-200 hover:brightness-110 active:scale-[0.98]"
         >
           <Plus className="h-4 w-4" />
@@ -43,12 +44,7 @@ export function TelegramFluxos() {
         </p>
         <button
           type="button"
-          onClick={() =>
-            toast({
-              title: 'Em breve',
-              description: 'A criação de fluxos será habilitada em breve.',
-            })
-          }
+          onClick={openModal}
           className="mt-2 inline-flex items-center gap-2 rounded-xl bg-gradient-to-br from-brand-500 to-brand-700 px-5 py-2.5 text-sm font-semibold text-white shadow-glow transition-all duration-200 hover:brightness-110 active:scale-[0.98]"
         >
           <Link2 className="h-4 w-4" />
@@ -90,6 +86,8 @@ export function TelegramFluxos() {
           ))}
         </ul>
       </div>
+
+      <NewFlowModal open={modalOpen} onClose={closeModal} />
     </div>
   )
 }
