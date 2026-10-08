@@ -329,6 +329,9 @@ export const CreditCard = (p: IconProps) => (
 export const Briefcase = (p: IconProps) => (
   <Icon {...p}><rect x="2" y="7" width="20" height="14" rx="2" /><path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" /></Icon>
 )
+export const Workflow = (p: IconProps) => (
+  <Icon {...p}><rect x="3" y="3" width="6" height="6" rx="1" /><rect x="15" y="3" width="6" height="6" rx="1" /><rect x="9" y="15" width="6" height="6" rx="1" /><path d="M6 9v3a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V9M12 14v1" /></Icon>
+)
 export const UploadCloud = (p: IconProps) => (
   <Icon {...p}><path d="M16 16l-4-4-4 4M12 12v9" /><path d="M20.4 14.5A5 5 0 0 0 18 5h-1.3A8 8 0 1 0 4 13.7" /></Icon>
 )
