@@ -172,6 +172,9 @@ export const ChevronRight = (p: IconProps) => (
 export const ChevronDown = (p: IconProps) => (
   <Icon {...p}><path d="m6 9 6 6 6-6" /></Icon>
 )
+export const ChevronUp = (p: IconProps) => (
+  <Icon {...p}><path d="m6 15 6-6 6 6" /></Icon>
+)
 export const Wallet = (p: IconProps) => (
   <Icon {...p}>
     <path d="M3 7a2 2 0 0 1 2-2h13a1 1 0 0 1 1 1v2" />
@@ -322,6 +325,9 @@ export const ShoppingBag = (p: IconProps) => (
 )
 export const CreditCard = (p: IconProps) => (
   <Icon {...p}><rect x="2" y="6" width="20" height="13" rx="2" /><path d="M2 10h20M6 15h4" /></Icon>
+)
+export const Briefcase = (p: IconProps) => (
+  <Icon {...p}><rect x="2" y="7" width="20" height="14" rx="2" /><path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" /></Icon>
 )
 export const UploadCloud = (p: IconProps) => (
   <Icon {...p}><path d="M16 16l-4-4-4 4M12 12v9" /><path d="M20.4 14.5A5 5 0 0 0 18 5h-1.3A8 8 0 1 0 4 13.7" /></Icon>

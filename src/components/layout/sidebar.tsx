@@ -176,7 +176,7 @@ export function Sidebar({
             label="Automações"
             pathname={pathname}
             items={[
-              { href: '/integracoes', label: 'Bot Telegram', icon: Bot },
+              { href: '/telegram', label: 'Bot Telegram', icon: Bot },
               { href: '/integracoes', label: 'Agent IA', icon: Sparkles, badge: 'EM BREVE' },
               { href: '/produtos', label: 'Produtos & Checkouts', icon: Box },
               { href: '/temas', label: 'Temas', icon: Sparkles, badge: 'NOVO' },
