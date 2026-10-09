@@ -4,11 +4,11 @@ import { cn } from '@/lib/utils'
 /**
  * Logo da BokashiPay.
  *
- * Renderiza o símbolo "B" roxo/branco/preto (`/public/logo.png`) — sem
- * wordmark. O PNG já vem com fundo transparente (processado em
- * `scripts/process-logo.cjs`). Usamos `priority` apenas no lockup principal do
- * shell para evitar flash no primeiro paint; nas outras instâncias fica sem
- * priority para não pesar o LCP.
+ * Renderiza o lockup oficial (`/public/logo.png`, proporção ~3:1) sem
+ * distorcer. Em containers pequenos (sidebar, auth) a imagem é
+ * `object-left` para enquadrar o ícone "B"; o wordmark só cabe em
+ * containers largos, que não usamos hoje — na landing a logo é servida
+ * direto de `/landing/logo.png` via `next/image`.
  */
 export function Logo({
   className,
@@ -28,10 +28,10 @@ export function Logo({
       <Image
         src="/logo.png"
         alt=""
-        width={size}
+        width={size * 3}
         height={size}
         priority={priority}
-        className="object-contain"
+        className="h-full w-auto max-w-none object-left object-contain"
       />
     </span>
   )
@@ -40,7 +40,7 @@ export function Logo({
 /**
  * Lockup: símbolo sozinho, no tamanho pedido.
  * Mantido por retrocompatibilidade — `LogoLockup` ainda é importado em
- * `app-shell.tsx` e na landing.
+ * `auth-forms.tsx` (tela de login/cadastro).
  */
 export function LogoLockup({ size = 32 }: { size?: number }) {
   return <Logo size={size} priority />
