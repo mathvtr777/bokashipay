@@ -138,7 +138,7 @@ export function Sidebar({
         <div className="flex h-16 shrink-0 items-center justify-between border-b border-white/[0.06] px-5 md:justify-center md:px-0 lg:justify-start lg:px-5">
           <Link href="/dashboard" aria-label="BokashiPay">
             {/* md: só ícone, lg: ícone no tamanho padrão. */}
-            <Logo size={32} className="md:!h-8 md:!w-8" />
+            <Logo size={44} className="md:!h-11 md:!w-11" />
           </Link>
           <button
             onClick={onClose}
