@@ -9,7 +9,8 @@ import type { Config } from 'tailwindcss'
  * um modo claro para alternar.
  *
  * Paleta restrita a:
- *   - `brand`   → gradiente roxo (única cor de destaque)
+ *   - `brand`   → gradiente roxo (única cor de destaque) — app logado
+ *   - `bp`      → escala roxa/preto/branca da landing pública
  *   - `ink`     → cinzas neutros para textos e superfícies
  *   - `surface` → cor única do card (#14171f, distinto do body)
  *   - `line`    → bordas translúcidas brancas
@@ -23,7 +24,7 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        // Roxo da marca. Tons progressivos para hierarquia sem poluir a interface.
+        // Roxo da marca (app logado). Tons progressivos para hierarquia.
         brand: {
           50:  '#f5f3ff',
           100: '#ede9fe',
@@ -36,6 +37,26 @@ const config: Config = {
           800: '#5b21b6',
           900: '#4c1d95',
           950: '#2e1065',
+        },
+        // Paleta da landing pública BokashiPay (bokashipay-site).
+        // Roxos: bp-50 (claro) → bp-900 (escuro). bp-500 é o roxo principal.
+        // Pretos/brancos: ink/panel/line (superfícies) e mist/snow (textos).
+        bp: {
+          50:  '#f5f1ff',
+          100: '#ede4ff',
+          200: '#d6c2ff',
+          300: '#b693ff',
+          400: '#9663ff',
+          500: '#7a3aff', // roxo principal
+          600: '#6422e6',
+          700: '#4f17b3',
+          800: '#3a0f80',
+          900: '#260a4d',
+          ink:   '#0a0612',
+          panel: '#110a1f',
+          line:  '#1f1432',
+          mist:  '#f4f1ff',
+          snow:  '#ffffff',
         },
         // Cinzas neutros. `ink-950` é o body. `ink-900` é a sidebar. `ink-800`
         // são superfícies elevadas (popovers, modais). Tons mais claros são
@@ -79,6 +100,14 @@ const config: Config = {
         glow: '0 0 0 1px rgb(124 58 237 / 0.10), 0 8px 32px -8px rgb(124 58 237 / 0.22)',
         focus: '0 0 0 3px rgb(139 92 246 / 0.28)',
       },
+      fontFamily: {
+        // Inter é exposto como --font-inter no layout raiz e usado pela
+        // landing pública (bokashipay-site). Manrope continua sendo o `sans`
+        // default do app logado.
+        sans: ['var(--font-sans)', 'system-ui', 'sans-serif'],
+        // Sora é a fonte de "display" da landing (headings).
+        display: ['var(--font-display)', 'system-ui', 'sans-serif'],
+      },
       keyframes: {
         'fade-in': {
           from: { opacity: '0' },
@@ -87,6 +116,19 @@ const config: Config = {
         'slide-up': {
           from: { opacity: '0', transform: 'translateY(6px)' },
           to: { opacity: '1', transform: 'translateY(0)' },
+        },
+        // === Landing pública (bokashipay-site) ===
+        'fade-up': {
+          '0%': { opacity: '0', transform: 'translateY(16px)' },
+          '100%': { opacity: '1', transform: 'translateY(0)' },
+        },
+        marquee: {
+          '0%': { transform: 'translateX(0)' },
+          '100%': { transform: 'translateX(-50%)' },
+        },
+        'pulse-glow': {
+          '0%, 100%': { boxShadow: '0 0 0 0 rgba(122,58,255,0.45)' },
+          '50%': { boxShadow: '0 0 0 14px rgba(122,58,255,0)' },
         },
         shimmer: {
           '100%': { transform: 'translateX(100%)' },
@@ -99,6 +141,10 @@ const config: Config = {
       animation: {
         'fade-in': 'fade-in 180ms ease-out',
         'slide-up': 'slide-up 220ms cubic-bezier(0.22, 1, 0.36, 1)',
+        // Landing pública
+        'fade-up': 'fade-up 0.6s ease-out both',
+        marquee: 'marquee 30s linear infinite',
+        'pulse-glow': 'pulse-glow 2.4s ease-out infinite',
       },
       transitionTimingFunction: {
         premium: 'cubic-bezier(0.22, 1, 0.36, 1)',

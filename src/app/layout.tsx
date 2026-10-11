@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from 'next'
-import { Manrope, Sora } from 'next/font/google'
+import { Inter, Manrope, Sora } from 'next/font/google'
 import { ToastProvider } from '@/components/ui/toast'
 import './globals.css'
 
@@ -12,6 +12,14 @@ const manrope = Manrope({
 const sora = Sora({
   subsets: ['latin'],
   variable: '--font-sora',
+  display: 'swap',
+})
+
+// Inter é a fonte "sans" da landing pública (bokashipay-site). Manrope
+// continua sendo a fonte default do app logado (mapeada em --font-sans).
+const inter = Inter({
+  subsets: ['latin'],
+  variable: '--font-inter',
   display: 'swap',
 })
 
@@ -41,8 +49,12 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="pt-BR" className="dark" suppressHydrationWarning>
       <body
-        className={`${manrope.variable} ${sora.variable} font-sans antialiased`}
-        style={{ ['--font-sans' as never]: `var(${manrope.variable})`, ['--font-display' as never]: `var(${sora.variable})` }}
+        className={`${manrope.variable} ${sora.variable} ${inter.variable} font-sans antialiased`}
+        style={{
+          ['--font-sans' as never]: `var(${manrope.variable})`,
+          ['--font-display' as never]: `var(${sora.variable})`,
+          ['--font-inter' as never]: `var(${inter.variable})`,
+        }}
       >
         <ToastProvider>{children}</ToastProvider>
       </body>
