@@ -1,0 +1,25 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "services": {
+    "app": {
+      "root": ".",
+      "framework": "nextjs"
+    },
+    "bokashipay-site": {
+      "root": "bokashipay-site",
+      "framework": "nextjs"
+    },
+    "landing": {
+      "root": "landing",
+      "framework": "tanstack-start-lovable"
+    }
+  },
+  "rewrites": [
+    {
+      "source": "/(.*)",
+      "destination": {
+        "service": "app"
+      }
+    }
+  ]
+}
