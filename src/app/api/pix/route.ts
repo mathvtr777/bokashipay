@@ -2,7 +2,7 @@ import { NextResponse, type NextRequest } from 'next/server'
 import { z } from 'zod'
 import { createClient } from '@/lib/supabase/server'
 import { calculateFee, calculateNet } from '@/services/payments/rules'
-import { getPixProvider, MIN_VALUE_CENTS } from '@/services/pix'
+import { getPixProvider, MIN_VALUE_CENTS, MAX_VALUE_CENTS } from '@/services/pix'
 import { createNotification } from '@/services/notifications'
 import { INTEGRATION_NOT_CONFIGURED } from '@/lib/types'
 
@@ -96,6 +96,14 @@ export async function POST(request: NextRequest) {
   if (amountCents < MIN_VALUE_CENTS) {
     return NextResponse.json(
       { error: 'O valor mínimo para cobrança PIX é R$ 0,50.' },
+      { status: 400 },
+    )
+  }
+
+  // Máximo da Pushin Pay (R$ 150,00).
+  if (amountCents > MAX_VALUE_CENTS) {
+    return NextResponse.json(
+      { error: 'O valor máximo para cobrança PIX é R$ 150,00.' },
       { status: 400 },
     )
   }

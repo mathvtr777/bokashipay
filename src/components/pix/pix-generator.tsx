@@ -16,6 +16,9 @@ import { INTEGRATION_NOT_CONFIGURED } from '@/lib/types'
 /** Mínimo aceito pela Pushin Pay, em reais. Espelha MIN_VALUE_CENTS no servidor. */
 const MIN_PIX_VALUE = 0.5
 
+/** Máximo aceito pela Pushin Pay para geração de QR Code, em reais. */
+const MAX_PIX_VALUE = 150
+
 /**
  * Tela de geração de PIX.
  *
@@ -43,6 +46,10 @@ export function PixGenerator({ initialItems, providerConfigured }: { initialItem
     }
     if (parsedAmount < MIN_PIX_VALUE) {
       toast({ title: 'O valor mínimo é R$ 0,50', tone: 'error' })
+      return
+    }
+    if (parsedAmount > MAX_PIX_VALUE) {
+      toast({ title: 'O valor máximo é R$ 150,00', tone: 'error' })
       return
     }
 

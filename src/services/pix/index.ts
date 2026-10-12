@@ -44,6 +44,9 @@ export interface PushinPayTransaction {
 /** Valor mínimo aceito pela Pushin Pay, em centavos. */
 export const MIN_VALUE_CENTS = 50
 
+/** Valor máximo aceito pela Pushin Pay para geração de QR Code, em centavos. */
+export const MAX_VALUE_CENTS = 150_00 // R$ 150,00
+
 /** Remove o prefixo de data URL, devolvendo base64 puro. */
 export function stripDataUrl(value: string | null | undefined): string {
   if (!value) return ''
@@ -103,6 +106,10 @@ export class PushinPayProvider implements PixProvider {
 
     if (valueCents < MIN_VALUE_CENTS) {
       throw new Error('O valor mínimo para cobrança PIX é R$ 0,50.')
+    }
+
+    if (valueCents > MAX_VALUE_CENTS) {
+      throw new Error('O valor máximo para cobrança PIX é R$ 150,00.')
     }
 
     const response = await fetch(`${this.baseUrl}/pix/cashIn`, {

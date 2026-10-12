@@ -11,8 +11,11 @@ import { useToast } from '@/components/ui/toast'
 /** Mínimo aceito pela Pushin Pay, em reais. */
 const MIN_PIX_VALUE = 0.5
 
-/** Valores pré-definidos do chip selector. */
-const PRESET_VALUES = [20, 50, 100, 200, 500, 1000] as const
+/** Máximo aceito pela Pushin Pay para geração de QR Code, em reais. */
+const MAX_PIX_VALUE = 150
+
+/** Valores pré-definidos do chip selector (limitados ao máximo da Pushin Pay). */
+const PRESET_VALUES = [20, 50, 100] as const
 
 /**
  * Modal "Gerar pagamento rápido" — disparado pelo botão no BalanceHero.
@@ -55,7 +58,7 @@ export function QuickPaymentModal({
   }, [open])
 
   const parsed = Number(amount.replace(/\./g, '').replace(',', '.'))
-  const valid = Number.isFinite(parsed) && parsed >= MIN_PIX_VALUE
+  const valid = Number.isFinite(parsed) && parsed >= MIN_PIX_VALUE && parsed <= MAX_PIX_VALUE
 
   const selectPreset = (value: number) => {
     setAmount(value.toFixed(2))
@@ -64,7 +67,7 @@ export function QuickPaymentModal({
   const generate = async (e: React.FormEvent) => {
     e.preventDefault()
     if (!valid) {
-      toast({ title: 'Informe um valor válido', tone: 'error' })
+      toast({ title: `Valor deve estar entre R$ ${MIN_PIX_VALUE.toFixed(2).replace('.', ',')} e R$ ${MAX_PIX_VALUE.toFixed(2).replace('.', ',')}`, tone: 'error' })
       return
     }
     setLoading(true)
@@ -140,7 +143,7 @@ export function QuickPaymentModal({
               Receba via PIX em segundos
             </p>
             <ol className="mt-2 space-y-1 text-sm text-brand-100/85">
-              <li>1. Escolha o valor a cobrar (mínimo R$ {MIN_PIX_VALUE.toFixed(2).replace('.', ',')}).</li>
+              <li>1. Escolha o valor a cobrar (R$ {MIN_PIX_VALUE.toFixed(2).replace('.', ',')} a R$ {MAX_PIX_VALUE.toFixed(2).replace('.', ',')}).</li>
               <li>2. Compartilhe o QR Code ou o copia-e-cola com o pagador.</li>
               <li>3. Assim que pagar, o valor cai automaticamente na sua conta.</li>
             </ol>
