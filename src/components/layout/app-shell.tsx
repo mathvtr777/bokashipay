@@ -36,7 +36,7 @@ export function AppShell({
       />
 
       {/* Main Content Area */}
-      <div className="flex-1 flex flex-col h-full overflow-hidden">
+      <div className="flex-1 flex flex-col h-full overflow-hidden md:ml-64">
         {/* Top Header */}
         <header className="h-16 glass-panel border-b border-surface-border px-6 flex items-center justify-between z-20">
           {/* Search Input */}
