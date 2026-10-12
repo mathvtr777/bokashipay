@@ -20,7 +20,7 @@
   }
 
   * {
-    @apply border-border;
+    @apply border-line;
   }
 
   html {
