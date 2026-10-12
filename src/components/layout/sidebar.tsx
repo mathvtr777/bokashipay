@@ -4,54 +4,17 @@ import * as React from 'react'
 import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
 import { cn } from '@/lib/utils'
+import { firstName } from '@/lib/format'
 import {
   ADMIN_ITEMS,
   FOOTER_ITEMS,
-  NavItem,
-  NAV_ITEMS,
-  isActive,
 } from '@/lib/nav'
 import { createClient } from '@/lib/supabase/client'
-import { Logo } from '@/components/ui/logo'
-import {
-  ChevronDown,
-  Help,
-  Logout,
-  Settings,
-  User,
-  X,
-  Zap,
-  Gift,
-  Bot,
-  Sparkles,
-  Box,
-} from '@/components/ui/icons'
 import { useToast } from '@/components/ui/toast'
 
 /**
- * Sidebar única para os três breakpoints:
- *  - desktop (lg+): fixa, 240px, sempre visível
- *  - tablet (md):   ícones apenas, 76px, com tooltip
- *  - mobile (<md):  drawer deslizante, aberto pelo hamburger do header
- *
- * Estrutura (visual Laranjinha adaptado para o BokashiPay):
- *   [Logo]                                  [fechar no mobile]
- *   [+ Criar novo produto]   (CTA brand-gradient)
- *   Avatar + nome + notificação
- *   ── Menu ─────────────────
- *   Dashboard / Vendas / PIX / Clientes / Financeiro / Saques
- *   ── Automações ───────────
- *   Bot Telegram / Agent IA (em breve) / Produtos & Checkouts / Temas
- *   ── Integrações ──────────
- *   Integrações (link)
- *   ── Configurações ────────
- *   Configurações (link)
- *   ── rodapé ───────────────
- *   Indicação (GANHE R$)
- *   Faturamento (R$ 0 / R$ 10k)
- *   Ajuda / Perfil / Sair
- *
- * Sem toggle de tema: dark é o estado fixo.
+ * Sidebar cyberpunk futurista com glassmorphism.
+ * Menu com neon roxo e gradientes vibrantes.
  */
 export function Sidebar({
   open,
@@ -116,7 +79,7 @@ export function Sidebar({
 
   return (
     <>
-      {/* Backdrop, só no mobile. */}
+      {/* Backdrop mobile */}
       {open && (
         <div
           className="fixed inset-0 z-40 animate-fade-in bg-black/70 backdrop-blur-sm md:hidden"
@@ -125,226 +88,234 @@ export function Sidebar({
         />
       )}
 
+      {/* Sidebar */}
       <aside
         aria-label="Navegação principal"
         className={cn(
-          'fixed inset-y-0 left-0 z-50 flex flex-col border-r border-white/[0.06] bg-ink-900 transition-transform duration-300 ease-premium',
-          // mobile: drawer; md: ícones; lg: largura cheia
-          'w-[264px] md:w-[76px] lg:w-[264px]',
-          open ? 'translate-x-0' : '-translate-x-full md:translate-x-0',
+          'glass-panel border-r border-surface-border flex flex-col justify-between z-30 transition-all duration-300',
+          'fixed inset-y-0 left-0 w-64',
+          'md:translate-x-0',
+          open ? 'translate-x-0' : '-translate-x-full',
         )}
       >
-        {/* Topo: Logo + (mobile) botão fechar. */}
-        <div className="flex h-16 shrink-0 items-center justify-between border-b border-white/[0.06] px-5 md:justify-center md:px-0 lg:justify-start lg:px-5">
-          <Link href="/dashboard" aria-label="BokashiPay">
-            {/* md: só ícone, lg: ícone no tamanho padrão. */}
-            <Logo size={44} className="md:!h-11 md:!w-11" />
-          </Link>
-          <button
-            onClick={onClose}
-            aria-label="Fechar menu"
-            className="rounded-lg p-1.5 text-white/40 transition-colors hover:bg-white/[0.06] hover:text-white md:hidden"
-          >
-            <X className="h-5 w-5" />
-          </button>
-        </div>
-
-        {/* Conteúdo scrollável: CTA, avatar, grupos. */}
-        <div className="flex-1 overflow-y-auto overflow-x-hidden">
-          {/* CTA principal */}
-          <div className="px-3 pt-4 md:px-2.5 lg:px-3">
-            <Link
-              href={primaryActionHref}
-              className={cn(
-                'group flex items-center justify-center gap-2 rounded-xl bg-gradient-to-br from-brand-500 to-brand-700 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm transition-all duration-200 hover:brightness-110 active:brightness-95',
-                'md:!justify-center md:!gap-0 md:!px-2',
-                'lg:justify-start lg:gap-2 lg:px-3.5',
-              )}
-            >
-              <span className="text-base leading-none">＋</span>
-              <span className="md:hidden lg:inline">Criar novo produto</span>
-            </Link>
-          </div>
-
-          {/* Avatar com notificação (somente lg — em md fica só o ícone). */}
-
-          {/* Menu */}
-          <Section label="Menu" pathname={pathname} items={NAV_ITEMS.slice(0, 6)} />
-
-          {/* Automações — inclui produtos (que é o "Criar novo produto" também). */}
-          <Section
-            label="Automações"
-            pathname={pathname}
-            items={[
-              { href: '/telegram', label: 'Bot Telegram', icon: Bot },
-              { href: '/integracoes', label: 'Agent IA', icon: Sparkles, badge: 'EM BREVE' },
-              { href: '/produtos', label: 'Produtos & Checkouts', icon: Box },
-              { href: '/temas', label: 'Temas', icon: Sparkles, badge: 'NOVO' },
-            ]}
-          />
-
-          {/* Integrações / Configurações como cabeçalhos com 1 link cada. */}
-          <Section
-            label="Integrações"
-            pathname={pathname}
-            items={[{ href: '/integracoes', label: 'Integrações', icon: Zap }]}
-          />
-
-          <Section
-            label="Configurações"
-            pathname={pathname}
-            items={[{ href: '/configuracoes', label: 'Configurações', icon: Settings }]}
-          />
-
-          {/* Indicação + Faturamento (rodapé promocional). */}
-          <div className="mt-4 hidden border-t border-white/[0.06] p-3 lg:block">
-            <Link
-              href="/configuracoes"
-              className="group flex items-center gap-3 rounded-xl border border-brand-500/30 bg-brand-500/[0.08] p-3 transition-all hover:border-brand-400/50 hover:bg-brand-500/[0.12]"
-            >
-              <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-brand-500/20 text-brand-300">
-                <Gift className="h-4 w-4" />
-              </span>
-              <span className="flex-1">
-                <span className="block text-[10px] font-semibold uppercase tracking-wider text-brand-300">
-                  Indicações
-                </span>
-                <span className="block text-sm font-semibold text-white">
-                  Ganhe R$ indicando amigos
-                </span>
-              </span>
-              <span className="rounded-full bg-brand-500/30 px-2 py-0.5 text-[10px] font-semibold text-brand-200">
-                GANHE R$
-              </span>
-            </Link>
-
-            {/* Linha de faturamento (ranking visual). */}
-            <div className="mt-3 rounded-xl border border-white/[0.06] bg-white/[0.02] p-3">
-              <div className="flex items-center justify-between text-[10px] font-semibold uppercase tracking-wider text-white/40">
-                <span>Faturamento</span>
-                <span>0% • R$ 0 / R$ 10k</span>
-              </div>
-              <div className="mt-2 h-1.5 overflow-hidden rounded-full bg-white/[0.06]">
-                <div className="brand-gradient h-full w-[2%] rounded-full" />
+        {/* Top Section */}
+        <div className="p-5 flex flex-col h-full overflow-hidden">
+          {/* Logo */}
+          <div className="flex items-center gap-3 mb-6 px-1">
+            <div className="relative w-9 h-9 rounded-xl bg-gradient-to-tr from-cyber-purple via-cyber-indigo to-pink-500 p-[1.5px] shadow-neon-sm flex items-center justify-center">
+              <div className="w-full h-full bg-deep rounded-[10px] flex items-center justify-center">
+                <svg className="w-5 h-5 text-cyber-violet" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
+                </svg>
               </div>
             </div>
+            <div className="flex flex-col">
+              <span className="font-mono text-lg font-bold tracking-wider text-white">Bokashi<span className="text-cyber-neon">Pay</span></span>
+              <span className="text-[9px] uppercase tracking-widest text-cyber-purple/70 font-mono -mt-1">Quantum Gateway</span>
+            </div>
           </div>
-        </div>
 
-        {/* Área administrativa + rodapé funcional: Ajuda / Perfil / Sair. */}
-        <div className="shrink-0 border-t border-white/[0.06] p-3 md:px-2.5">
-          {isAdmin && (
-            <>
-              <p className="mb-1.5 px-3 text-[10px] font-semibold uppercase tracking-widest text-white/30 md:px-0 md:text-center lg:px-3 lg:text-left">
-                Admin
-              </p>
+          {/* CTA Button */}
+          <Link
+            href={primaryActionHref}
+            className="w-full relative group overflow-hidden rounded-xl p-[1px] focus:outline-none transition-all duration-300 hover:shadow-neon-md mb-6"
+          >
+            <div className="absolute inset-0 bg-gradient-to-r from-cyber-purple via-fuchsia-500 to-cyber-indigo rounded-xl transition-all duration-300 group-hover:opacity-90"></div>
+            <div className="relative px-4 py-2.5 rounded-[11px] bg-gradient-to-r from-deep/80 to-surface-elevated/80 backdrop-blur-md flex items-center justify-center gap-2 text-white font-medium text-xs tracking-wide">
+              <svg className="w-4 h-4 text-cyber-violet group-hover:rotate-90 transition-transform duration-300" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
+              </svg>
+              <span>+ Criar novo produto</span>
+            </div>
+          </Link>
+
+          {/* Navigation */}
+          <nav className="flex-1 overflow-y-auto space-y-6 custom-scrollbar pr-1 -mr-2">
+            {/* Core Menu */}
+            <div>
+              <span className="text-[10px] font-semibold text-slate-500 uppercase tracking-widest px-3 block mb-2 font-mono">Geral</span>
               <ul className="space-y-1">
-                {ADMIN_ITEMS.map((item) => (
+                {MAIN_NAV.map((item) => (
                   <NavLink key={item.href} item={item} pathname={pathname} />
                 ))}
               </ul>
-            </>
-          )}
+            </div>
 
-          <ul className="mt-1 space-y-1">
-            {FOOTER_ITEMS.map((item) => (
-              <NavLink key={item.href} item={item} pathname={pathname} />
-            ))}
-            <li>
-              <button
-                onClick={signOut}
-                disabled={signingOut}
-                title="Sair"
-                className={cn(
-                  'mt-1 flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium text-white/50 transition-all duration-200',
-                  'hover:bg-red-500/10 hover:text-red-300',
-                  'disabled:opacity-50',
-                  'md:justify-center md:px-0 lg:justify-start lg:px-3',
-                )}
-              >
-                <Logout className="h-[18px] w-[18px] shrink-0" />
-                <span className="truncate md:hidden lg:inline">
-                  {signingOut ? 'Saindo…' : 'Sair'}
-                </span>
-              </button>
-            </li>
-          </ul>
+            {/* Automations */}
+            <div>
+              <span className="text-[10px] font-semibold text-slate-500 uppercase tracking-widest px-3 block mb-2 font-mono">Automações</span>
+              <ul className="space-y-1">
+                {AUTOMATION_NAV.map((item) => (
+                  <NavLink key={item.href} item={item} pathname={pathname} badge={item.badge} />
+                ))}
+              </ul>
+            </div>
+
+            {/* Integration */}
+            <div>
+              <span className="text-[10px] font-semibold text-slate-500 uppercase tracking-widest px-3 block mb-2 font-mono">Integração</span>
+              <ul className="space-y-1">
+                {INTEGRATION_NAV.map((item) => (
+                  <NavLink key={item.href} item={item} pathname={pathname} />
+                ))}
+              </ul>
+            </div>
+
+            {/* Referral Card */}
+            <div className="pt-2">
+              <div className="rounded-xl p-3 bg-gradient-to-b from-cyber-purple/10 to-surface-card border border-cyber-purple/20 relative overflow-hidden">
+                <div className="absolute -right-4 -bottom-4 w-16 h-16 bg-cyber-purple/20 rounded-full blur-xl pointer-events-none"></div>
+                <div className="flex items-center gap-2 mb-1.5">
+                  <svg className="w-4 h-4 text-cyber-neon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <polyline points="20 12 20 22 4 22 4 12"/><rect x="2" y="7" width="20" height="5"/><line x1="12" y1="22" x2="12" y2="7"/><path d="M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7z"/><path d="M12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z"/>
+                  </svg>
+                  <span className="text-xs font-semibold text-cyber-violet">Indique & Ganhe</span>
+                </div>
+                <p className="text-[11px] text-slate-400 leading-tight mb-2.5">Ganhe até 0.5% de todas transações de amigos convidados.</p>
+                <button className="w-full py-1.5 text-[10px] font-mono tracking-wider font-semibold rounded bg-cyber-purple/30 hover:bg-cyber-purple/50 border border-cyber-purple/40 text-cyber-violet transition-all">
+                  CONVIDAR
+                </button>
+              </div>
+            </div>
+          </nav>
+
+          {/* Footer */}
+          <div className="pt-4 border-t border-cyber-purple/20 mt-2 space-y-1">
+            <a className="flex items-center gap-2 px-2 py-1.5 text-xs text-slate-400 hover:text-white transition" href="#">
+              <svg className="w-3.5 h-3.5 text-cyber-purple/70" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><path d="M12 17h.01"/>
+              </svg>
+              <span>Apoio e Suporte</span>
+            </a>
+            <a className="flex items-center gap-2 px-2 py-1.5 text-xs text-slate-400 hover:text-white transition" href="#">
+              <svg className="w-3.5 h-3.5 text-cyber-purple/70" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><path d="M12 17h.01"/>
+              </svg>
+              <span>Ajuda & Docs</span>
+            </a>
+          </div>
         </div>
       </aside>
     </>
   )
 }
 
-/** Cabeçalho de seção da sidebar. md: nada, lg: rótulo. */
-function Section({
-  label,
-  items,
-  pathname,
-}: {
-  label: string
-  items: (NavItem & { badge?: string })[]
-  pathname: string
-}) {
-  return (
-    <div className="mt-4 px-3 md:px-2.5 lg:px-3">
-      <p className="mb-1.5 hidden text-[10px] font-semibold uppercase tracking-widest text-white/30 lg:block">
-        {label}
-      </p>
-      <ul className="space-y-1">
-        {items.map((item) => (
-          <NavLink key={`${label}-${item.href}-${item.label}`} item={item} pathname={pathname} badge={item.badge} />
-        ))}
-      </ul>
-    </div>
-  )
-}
-
-/** Item de navegação com estado ativo. Badge opcional (ex.: NOVO, EM BREVE). */
+/** NavLink cyberpunk com glow roxo */
 function NavLink({
   item,
   pathname,
   badge,
 }: {
-  item: NavItem
+  item: NavItem & { badge?: string }
   pathname: string
   badge?: string
 }) {
   const active = isActive(item, pathname)
-  const Icon = item.icon
+
+  // Dynamic icon based on item href
+  const IconComponent = getIcon(item.href)
+
   return (
     <li>
       <Link
         href={item.href}
         title={item.label}
         className={cn(
-          'group relative flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition-all duration-200 ease-premium',
-          'md:justify-center md:px-0 lg:justify-start lg:px-3',
+          'flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-all duration-200',
           active
-            ? 'bg-brand-500/15 text-brand-300'
-            : 'text-white/60 hover:bg-white/[0.04] hover:text-white',
+            ? 'bg-gradient-to-r from-cyber-purple/30 to-cyber-purple/10 text-cyber-violet border-l-2 border-cyber-violet shadow-sm'
+            : 'text-slate-400 hover:text-slate-100 hover:bg-white/5'
         )}
       >
-        <span
-          className={cn(
-            'absolute left-0 h-5 w-1 rounded-r-full bg-brand-500 transition-all duration-200',
-            active ? 'opacity-100' : 'opacity-0',
-            'md:hidden lg:block',
-          )}
-          aria-hidden="true"
-        />
-        <Icon
-          className={cn(
-            'h-[18px] w-[18px] shrink-0 transition-colors',
-            active && 'text-brand-300',
-          )}
-        />
-        <span className="truncate md:hidden lg:inline">{item.label}</span>
+        <span className={cn('w-4 h-4', active ? 'text-cyber-violet' : 'text-slate-400')}>
+          {IconComponent}
+        </span>
+        <span className="truncate">{item.label}</span>
         {badge && (
-          <span className="ml-auto hidden rounded-full bg-brand-500/20 px-2 py-0.5 text-[9px] font-semibold uppercase tracking-wider text-brand-200 lg:inline">
+          <span className="ml-auto text-[9px] font-mono px-1.5 py-0.5 rounded bg-cyber-purple/20 text-cyber-violet border border-cyber-purple/30">
             {badge}
+          </span>
+        )}
+        {item.href === '/telegram' && (
+          <span className="ml-auto text-[9px] font-mono px-1.5 py-0.5 rounded bg-amber-500/20 text-amber-300 border border-amber-500/30">
+            EM BREVE
           </span>
         )}
       </Link>
     </li>
   )
+}
+
+function getIcon(href: string) {
+  switch (href) {
+    case '/dashboard':
+      return <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect width="7" height="9" x="3" y="3" rx="1"/><rect width="7" height="5" x="14" y="3" rx="1"/><rect width="7" height="9" x="14" y="12" rx="1"/><rect width="7" height="5" x="3" y="16" rx="1"/></svg>
+    case '/transacoes':
+      return <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="17" y1="7" x2="17" y2="17"/><line x1="21" y1="7" x2="21" y2="17"/><line x1="3" y1="7" x2="3" y2="17"/><path d="m21 7-9 9-9-9"/></svg>
+    case '/vendas':
+      return <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg>
+    case '/clientes':
+      return <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+    case '/financeiro':
+      return <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+    case '/saques':
+      return <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+    case '/produtos':
+      return <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+    case '/telegram':
+      return <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 3 9 15"/><path d="M12 3H3v18h18V12h-7"/><path d="m9 9 1.5 3.5L14 10l3.5 6.5"/></svg>
+    case '/apps-ia':
+      return <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"/><path d="M5 3v4"/><path d="M19 17v4"/><path d="M3 5h4"/><path d="M17 19h4"/></svg>
+    case '/integracoes':
+      return <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+    case '/webhooks':
+      return <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+    case '/configuracoes':
+      return <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="4" y1="21" x2="4" y2="14"/><line x1="4" y1="10" x2="4" y2="3"/><line x1="12" y1="21" x2="12" y2="12"/><line x1="12" y1="8" x2="12" y2="3"/><line x1="20" y1="21" x2="20" y2="16"/><line x1="20" y1="12" x2="20" y2="3"/><line x1="1" y1="14" x2="7" y2="14"/><line x1="9" y1="8" x2="15" y2="8"/><line x1="17" y1="16" x2="23" y2="16"/></svg>
+    case '/ajuda':
+      return <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><path d="M12 17h.01"/></svg>
+    case '/perfil':
+      return <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+    case '/chaves':
+      return <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="7.5" cy="15.5" r="5.5"/><path d="m21 2-9.6 9.6"/><path d="m15.5 7.5 3 3L22 7l-3-3"/></svg>
+    default:
+      return <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+  }
+}
+
+// Navigation arrays
+const MAIN_NAV = [
+  { href: '/dashboard', label: 'Dashboard' },
+  { href: '/transacoes', label: 'Transações' },
+  { href: '/vendas', label: 'Vendas' },
+  { href: '/clientes', label: 'Clientes' },
+  { href: '/financeiro', label: 'Financeiro' },
+  { href: '/saques', label: 'Pay-outs' },
+  { href: '/produtos', label: 'Produtos' },
+]
+
+const AUTOMATION_NAV = [
+  { href: '/telegram', label: 'Bot Telegram' },
+  { href: '/apps-ia', label: 'Apps IA', badge: 'NOVO' },
+  { href: '/produtos', label: 'Produtos & Checkouts' },
+  { href: '/taxas', label: 'Taxas', badge: 'PROMO' },
+]
+
+const INTEGRATION_NAV = [
+  { href: '/webhooks', label: 'Integração Webhook' },
+  { href: '/configuracoes', label: 'Configurações' },
+]
+
+// Extend NavItem type locally
+type NavItem = {
+  href: string
+  label: string
+  badge?: string
+}
+
+function isActive(item: NavItem, pathname: string): boolean {
+  if (item.href === '/dashboard') {
+    return pathname === '/dashboard' || pathname === '/'
+  }
+  return pathname.startsWith(item.href)
 }
