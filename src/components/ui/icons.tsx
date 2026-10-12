@@ -341,3 +341,20 @@ export const Link2 = (p: IconProps) => (
 export const At = (p: IconProps) => (
   <Icon {...p}><circle cx="12" cy="12" r="4" /><path d="M16 8v5a3 3 0 0 0 6 0v-1a10 10 0 1 0-4 8" /></Icon>
 )
+
+// === Novos ícones do redesign (sidebar + dashboard) ===
+export const BarChart3 = (p: IconProps) => (
+  <Icon {...p}><path d="M3 3v18h18" /><path d="M7 16V9M12 16v-4M17 16V6" /></Icon>
+)
+export const BookOpen = (p: IconProps) => (
+  <Icon {...p}><path d="M2 4h7a4 4 0 0 1 4 4v12" /><path d="M22 4h-7a4 4 0 0 0-4 4v12" /><path d="M2 4v15h7a4 4 0 0 1 4 1" /><path d="M22 4v15h-7a4 4 0 0 0-4 1" /></Icon>
+)
+export const KeyRound = (p: IconProps) => (
+  <Icon {...p}><path d="M2 18v3a1 1 0 0 0 1 1h3" /><path d="M2 14a6 6 0 0 1 11-4 6 6 0 0 1-4 11H6" /><circle cx="14" cy="12" r="2" /><path d="m16 14 5 5" /><path d="m19 17 3 3" /></Icon>
+)
+export const CheckCircle2 = (p: IconProps) => (
+  <Icon {...p}><circle cx="12" cy="12" r="9" /><path d="m8.5 12.5 2.5 2.5 4.5-5" /></Icon>
+)
+export const FileText = (p: IconProps) => (
+  <Icon {...p}><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" /><path d="M14 2v6h6" /><path d="M9 13h6M9 17h6M9 9h2" /></Icon>
+)

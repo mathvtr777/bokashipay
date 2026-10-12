@@ -1226,3 +1226,70 @@ export async function getSourceBreakdown(
 
   return { items: Object.values(buckets) }
 }
+
+// -----------------------------------------------------------------------------
+// Telegram Bots
+// -----------------------------------------------------------------------------
+
+export async function getTelegramBots(): Promise<import('@/lib/types').TelegramBot[]> {
+  const supabase = await createClient()
+  const { data } = await supabase
+    .from('telegram_bots')
+    .select('*')
+    .order('created_at', { ascending: false })
+  return (data ?? []) as import('@/lib/types').TelegramBot[]
+}
+
+export async function getTelegramBotStats(): Promise<{
+  total: number
+  active: number
+  inactive: number
+}> {
+  const bots = await getTelegramBots()
+  return {
+    total: bots.length,
+    active: bots.filter((b) => b.status === 'active').length,
+    inactive: bots.filter((b) => b.status === 'inactive').length,
+  }
+}
+
+export async function getTelegramBot(id: string): Promise<import('@/lib/types').TelegramBot | null> {
+  const supabase = await createClient()
+  const { data } = await supabase
+    .from('telegram_bots')
+    .select('*')
+    .eq('id', id)
+    .maybeSingle()
+  return data as import('@/lib/types').TelegramBot | null
+}
+
+export async function getTelegramFlows(): Promise<import('@/lib/types').TelegramFlow[]> {
+  const supabase = await createClient()
+  const { data } = await supabase
+    .from('telegram_flows')
+    .select('*, telegram_bots(name)')
+    .order('created_at', { ascending: false })
+  return (data as unknown as import('@/lib/types').TelegramFlow[]) ?? []
+}
+
+export async function getTelegramFlow(id: string): Promise<import('@/lib/types').TelegramFlow | null> {
+  const supabase = await createClient()
+  const { data } = await supabase
+    .from('telegram_flows')
+    .select('*')
+    .eq('id', id)
+    .maybeSingle()
+  return (data as unknown as import('@/lib/types').TelegramFlow | null) ?? null
+}
+
+export async function getTelegramFlowsByBot(
+  botId: string,
+): Promise<import('@/lib/types').TelegramFlow[]> {
+  const supabase = await createClient()
+  const { data } = await supabase
+    .from('telegram_flows')
+    .select('*')
+    .eq('bot_id', botId)
+    .order('created_at', { ascending: false })
+  return (data as unknown as import('@/lib/types').TelegramFlow[]) ?? []
+}

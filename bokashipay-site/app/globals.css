@@ -1,0 +1,69 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: dark;
+}
+
+html, body {
+  background: #0a0612;
+  color: #f4f1ff;
+}
+
+/* Gradiente sutil de fundo nas seções */
+.bg-grid {
+  background-image:
+    radial-gradient(60% 50% at 50% 0%, rgba(122,58,255,0.18) 0%, rgba(10,6,18,0) 60%),
+    linear-gradient(180deg, #0a0612 0%, #0a0612 100%);
+}
+
+.bg-grid::before {
+  content: "";
+  position: absolute; inset: 0;
+  background-image:
+    linear-gradient(rgba(122,58,255,0.06) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(122,58,255,0.06) 1px, transparent 1px);
+  background-size: 48px 48px;
+  mask-image: radial-gradient(ellipse at center, #000 30%, transparent 75%);
+  pointer-events: none;
+}
+
+.gradient-text {
+  background: linear-gradient(135deg, #b693ff 0%, #7a3aff 50%, #4f17b3 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.btn-primary {
+  @apply inline-flex items-center justify-center gap-2 rounded-full
+         bg-bp-500 px-6 py-3 font-semibold text-white
+         shadow-[0_8px_30px_rgba(122,58,255,0.45)]
+         transition hover:bg-bp-600 hover:shadow-[0_10px_40px_rgba(122,58,255,0.6)]
+         active:scale-[0.98];
+}
+.btn-ghost {
+  @apply inline-flex items-center justify-center gap-2 rounded-full
+         border border-bp-line bg-bp-panel/50 px-6 py-3 font-semibold text-bp-mist
+         transition hover:border-bp-500/60 hover:bg-bp-panel;
+}
+.chip {
+  @apply inline-flex items-center gap-2 rounded-full border border-bp-line
+         bg-bp-panel/60 px-3 py-1 text-xs text-bp-mist/80;
+}
+
+/* Util: placeholders de imagem editáveis */
+.placeholder-img {
+  @apply relative overflow-hidden rounded-2xl border border-bp-line
+         bg-gradient-to-br from-bp-panel to-bp-ink
+         flex items-center justify-center text-bp-mist/40 text-sm;
+}
+.placeholder-img::after {
+  content: "";
+  position: absolute; inset: 0;
+  background-image:
+    linear-gradient(45deg, rgba(255,255,255,0.03) 25%, transparent 25%, transparent 50%,
+                    rgba(255,255,255,0.03) 50%, rgba(255,255,255,0.03) 75%, transparent 75%);
+  background-size: 16px 16px;
+}

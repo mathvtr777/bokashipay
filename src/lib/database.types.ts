@@ -784,6 +784,160 @@ export interface Database {
         }
         Relationships: []
       }
+      telegram_bots: {
+        Row: {
+          id: string
+          user_id: string
+          name: string
+          bot_username: string | null
+          bot_id: number | null
+          token_hash: string
+          token_encrypted: string | null
+          status: string
+          error_message: string | null
+          webhook_url: string | null
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          user_id: string
+          name: string
+          bot_username?: string | null
+          bot_id?: number | null
+          token_hash: string
+          token_encrypted?: string | null
+          status?: string
+          error_message?: string | null
+          webhook_url?: string | null
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          user_id?: string
+          name?: string
+          bot_username?: string | null
+          bot_id?: number | null
+          token_hash?: string
+          token_encrypted?: string | null
+          status?: string
+          error_message?: string | null
+          webhook_url?: string | null
+          created_at?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      telegram_flows: {
+        Row: {
+          id: string
+          user_id: string
+          bot_id: string | null
+          name: string
+          description: string | null
+          steps: Json
+          active: boolean
+          trigger_type: string
+          trigger_value: string | null
+          template_id: string | null
+          runs_count: number
+          last_run_at: string | null
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          user_id: string
+          bot_id?: string | null
+          name: string
+          description?: string | null
+          steps?: Json
+          active?: boolean
+          trigger_type?: string
+          trigger_value?: string | null
+          template_id?: string | null
+          runs_count?: number
+          last_run_at?: string | null
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          user_id?: string
+          bot_id?: string | null
+          name?: string
+          description?: string | null
+          steps?: Json
+          active?: boolean
+          trigger_type?: string
+          trigger_value?: string | null
+          template_id?: string | null
+          runs_count?: number
+          last_run_at?: string | null
+          created_at?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: 'telegram_flows_bot_id_fkey'
+            columns: ['bot_id']
+            isOneToOne: false
+            referencedRelation: 'telegram_bots'
+            referencedColumns: ['id']
+          },
+        ]
+      }
+      telegram_flow_runs: {
+        Row: {
+          id: string
+          flow_id: string
+          user_id: string
+          trigger_message: string | null
+          user_telegram_id: number | null
+          user_first_name: string | null
+          response_sent: string | null
+          status: string
+          error_message: string | null
+          execution_ms: number | null
+          created_at: string
+        }
+        Insert: {
+          id?: string
+          flow_id: string
+          user_id: string
+          trigger_message?: string | null
+          user_telegram_id?: number | null
+          user_first_name?: string | null
+          response_sent?: string | null
+          status?: string
+          error_message?: string | null
+          execution_ms?: number | null
+          created_at?: string
+        }
+        Update: {
+          id?: string
+          flow_id?: string
+          user_id?: string
+          trigger_message?: string | null
+          user_telegram_id?: number | null
+          user_first_name?: string | null
+          response_sent?: string | null
+          status?: string
+          error_message?: string | null
+          execution_ms?: number | null
+          created_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: 'telegram_flow_runs_flow_id_fkey'
+            columns: ['flow_id']
+            isOneToOne: false
+            referencedRelation: 'telegram_flows'
+            referencedColumns: ['id']
+          },
+        ]
+      }
     }
     Views: {
       integrations_safe: {

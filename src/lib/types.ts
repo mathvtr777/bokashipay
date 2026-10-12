@@ -228,3 +228,58 @@ export type Result<T> =
 
 /** Um provedor externo ainda sem credencial configurada. */
 export const INTEGRATION_NOT_CONFIGURED = 'Integração não configurada' as const
+
+// -----------------------------------------------------------------------------
+// Telegram Bots
+// -----------------------------------------------------------------------------
+
+export interface TelegramBot {
+  id: string
+  user_id: string
+  name: string
+  bot_username: string | null
+  bot_id: number | null
+  token_hash: string
+  token_encrypted: string | null
+  status: 'pending' | 'active' | 'inactive' | 'error'
+  error_message: string | null
+  webhook_url: string | null
+  created_at: string
+  updated_at: string
+}
+
+export interface TelegramFlow {
+  id: string
+  user_id: string
+  bot_id: string | null
+  name: string
+  description: string | null
+  steps: FlowStep[]
+  active: boolean
+  trigger_type: 'keyword' | 'command' | 'button' | 'payment'
+  trigger_value: string | null
+  template_id: string | null
+  runs_count: number
+  last_run_at: string | null
+  created_at: string
+  updated_at: string
+}
+
+export interface TelegramFlowRun {
+  id: string
+  flow_id: string
+  user_id: string
+  trigger_message: string | null
+  user_telegram_id: number | null
+  user_first_name: string | null
+  response_sent: string | null
+  status: 'success' | 'error' | 'skipped'
+  error_message: string | null
+  execution_ms: number | null
+  created_at: string
+}
+
+export type FlowStep =
+  | { type: 'send_message'; text: string }
+  | { type: 'send_buttons'; text: string; buttons: { text: string; data: string }[] }
+  | { type: 'generate_pix'; description?: string }

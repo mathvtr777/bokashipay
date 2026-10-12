@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from 'next'
-import { Inter, Manrope, Sora } from 'next/font/google'
+import { Inter, Manrope, Sora, Orbitron } from 'next/font/google'
 import { ToastProvider } from '@/components/ui/toast'
 import './globals.css'
 
@@ -23,6 +23,14 @@ const inter = Inter({
   display: 'swap',
 })
 
+// Orbitron — fonte cyberpunk para elementos de destaque (dashboard)
+const orbitron = Orbitron({
+  subsets: ['latin'],
+  variable: '--font-mono',
+  display: 'swap',
+  weight: ['500', '700', '900'],
+})
+
 export const metadata: Metadata = {
   title: {
     default: 'Bokashi | O próximo nível dos seus pagamentos',
@@ -41,7 +49,7 @@ export const metadata: Metadata = {
 export const viewport: Viewport = {
   width: 'device-width',
   initialScale: 1,
-  themeColor: '#0e1016',
+  themeColor: '#06050a',
 }
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
@@ -49,11 +57,12 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="pt-BR" className="dark" suppressHydrationWarning>
       <body
-        className={`${manrope.variable} ${sora.variable} ${inter.variable} font-sans antialiased`}
+        className={`${manrope.variable} ${sora.variable} ${inter.variable} ${orbitron.variable} font-sans antialiased`}
         style={{
           ['--font-sans' as never]: `var(${manrope.variable})`,
           ['--font-display' as never]: `var(${sora.variable})`,
           ['--font-inter' as never]: `var(${inter.variable})`,
+          ['--font-mono' as never]: `var(${orbitron.variable})`,
         }}
       >
         <ToastProvider>{children}</ToastProvider>

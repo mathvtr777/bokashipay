@@ -3,23 +3,16 @@
 @tailwind utilities;
 
 @layer base {
-  /* Tema único: dark. Não há toggle — todas as variáveis abaixo são fixas. */
+  /* Tema cyberpunk futurista — BokashiPay Quantum Gateway */
   :root {
     color-scheme: dark;
-
     --border: 0 0% 100% / 0.08;
-
-    /* Tokens compartilhados (landing + app logado). */
     --electric: 268 95% 76%;
     --primary-purple: 262 83% 58%;
     --ink-muted: 270 12% 75%;
     --surface: 270 18% 17%;
     --card: 270 16% 15%;
     --grid: 0 0% 100%;
-    --brand-gradient: linear-gradient(110deg, hsl(266 84% 50%), hsl(290 70% 60%));
-    --glow-soft: radial-gradient(closest-side, hsl(262 83% 58% / 0.28), transparent 72%);
-    --glow-strong: radial-gradient(closest-side, hsl(262 83% 58% / 0.4), transparent 70%);
-    --header-shadow: 0 14px 44px hsl(0 0% 0% / 0.55);
   }
 
   .dark {
@@ -36,59 +29,139 @@
   }
 
   body {
-    @apply bg-ink-950 text-ink-50 antialiased;
+    @apply bg-deep text-slate-200 antialiased;
     font-feature-settings: 'cv11', 'ss01';
+    background-image:
+      radial-gradient(circle at 15% 15%, rgba(112, 26, 232, 0.12) 0%, transparent 45%),
+      radial-gradient(circle at 85% 20%, rgba(168, 85, 247, 0.10) 0%, transparent 50%),
+      radial-gradient(circle at 50% 80%, rgba(99, 102, 241, 0.08) 0%, transparent 60%);
+    background-attachment: fixed;
   }
 
   :focus-visible {
-    @apply outline-none ring-2 ring-brand-500 ring-offset-2 ring-offset-ink-950;
+    @apply outline-none ring-2 ring-cyber-violet ring-offset-2 ring-offset-deep;
   }
 
   ::selection {
-    @apply bg-brand-500/30 text-white;
+    @apply bg-cyber-purple/30 text-white;
   }
 
   ::-webkit-scrollbar {
-    width: 10px;
-    height: 10px;
+    width: 5px;
+    height: 5px;
   }
   ::-webkit-scrollbar-track {
     @apply bg-transparent;
   }
   ::-webkit-scrollbar-thumb {
-    @apply rounded-full bg-white/10;
+    @apply rounded-full bg-cyber-purple/30;
   }
   ::-webkit-scrollbar-thumb:hover {
-    @apply bg-white/20;
+    @apply bg-cyber-violet/60;
   }
 }
 
 @layer components {
-  /* === Componentes compartilhados (app logado + landing) === */
+  /* === Glass Panel Cyberpunk === */
+  .glass-panel {
+    background: rgba(18, 14, 28, 0.72);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid rgba(168, 85, 247, 0.14);
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.4);
+  }
+
+  .glass-panel-glow {
+    background: linear-gradient(135deg, rgba(28, 20, 48, 0.75), rgba(16, 12, 26, 0.85));
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(168, 85, 247, 0.28);
+    box-shadow: 0 0 25px -5px rgba(147, 51, 234, 0.25);
+  }
+
+  /* === Superfícies === */
   .surface {
-    @apply rounded-2xl border border-white/[0.08] bg-surface shadow-card;
+    @apply rounded-2xl border border-surface-border bg-surface-card;
   }
 
   .surface-hover {
-    @apply transition-all duration-200 ease-premium hover:border-white/[0.14] hover:shadow-card-hover;
+    @apply transition-all duration-200 hover:border-cyber-purple/30;
   }
 
   .label {
-    @apply text-xs font-medium uppercase tracking-wider text-white/40;
+    @apply text-xs font-medium uppercase tracking-wider text-slate-400;
   }
 
   .brand-gradient {
-    @apply bg-gradient-to-br from-brand-500 to-brand-700;
+    @apply bg-gradient-to-br from-cyber-purple to-cyber-indigo;
   }
 
   .brand-text-gradient {
-    @apply bg-gradient-to-br from-brand-400 to-brand-700 bg-clip-text text-transparent;
+    @apply bg-gradient-to-r from-cyber-violet to-cyber-indigo bg-clip-text text-transparent;
   }
 
   .brand-glow {
     box-shadow: 0 0 0 1px rgb(139 92 246 / 0.12), 0 10px 40px -12px rgb(139 92 246 / 0.28);
   }
 
+  /* === Botões Cyberpunk === */
+  .btn-cyber-primary {
+    @apply inline-flex items-center justify-center gap-2 rounded-xl px-5 py-2.5 text-sm font-semibold text-white;
+    background: linear-gradient(135deg, #7C3AED 0%, #9333FF 100%);
+    box-shadow:
+      0 0 0 1px rgba(255, 255, 255, 0.08) inset,
+      0 8px 24px -8px rgba(124, 58, 237, 0.55);
+    transition: filter 0.2s, box-shadow 0.2s, transform 0.2s;
+  }
+  .btn-cyber-primary:hover {
+    filter: brightness(1.10);
+    box-shadow:
+      0 0 0 1px rgba(255, 255, 255, 0.14) inset,
+      0 10px 32px -8px rgba(124, 58, 237, 0.65);
+  }
+  .btn-cyber-primary:active {
+    transform: scale(0.98);
+  }
+
+  .btn-cyber-secondary {
+    @apply inline-flex items-center justify-center gap-2 rounded-xl border border-cyber-purple/20 bg-white/5 px-5 py-2.5 text-sm font-medium text-slate-200 backdrop-blur-md;
+    transition: all 0.2s;
+  }
+  .btn-cyber-secondary:hover {
+    @apply border-cyber-purple/40 bg-white/10;
+  }
+  .btn-cyber-secondary:active {
+    transform: scale(0.98);
+  }
+
+  .btn-glass {
+    @apply inline-flex items-center justify-center gap-2 rounded-xl border border-white/[0.10] bg-white/[0.04] px-5 py-2.5 text-sm font-semibold text-white backdrop-blur-md;
+    transition: background 0.2s, border-color 0.2s, transform 0.2s;
+  }
+  .btn-glass:hover {
+    @apply border-white/[0.18] bg-white/[0.08];
+  }
+  .btn-glass:active {
+    transform: scale(0.98);
+  }
+
+  /* === Pills de filtro === */
+  .pill-tab {
+    @apply rounded-lg px-3 py-1.5 text-xs font-medium text-slate-400 transition-all duration-200;
+  }
+  .pill-tab:hover {
+    @apply bg-white/5 text-slate-100;
+  }
+  .pill-tab[data-active='true'] {
+    @apply bg-cyber-purple/20 text-cyber-violet;
+  }
+
+  /* === Nav item ativo === */
+  .nav-item-active {
+    background: linear-gradient(to right, rgba(147, 51, 234, 0.35), rgba(147, 51, 234, 0.10));
+    border-left: 2px solid #a855f7;
+  }
+
+  /* === Skeleton loading === */
   .skeleton {
     @apply relative overflow-hidden bg-white/[0.04];
   }
@@ -98,154 +171,47 @@
     content: '';
   }
 
+  /* === Data table === */
   .data-table {
     @apply w-full text-left text-sm;
   }
   .data-table thead th {
-    @apply whitespace-nowrap border-b border-white/[0.08] bg-white/[0.02] px-4 py-3 text-xs font-medium uppercase tracking-wider text-white/40;
+    @apply whitespace-nowrap border-b border-surface-border bg-surface-elevated px-4 py-3 text-[10px] font-mono font-semibold uppercase tracking-wider text-slate-400;
   }
   .data-table tbody td {
-    @apply border-b border-white/[0.06] px-4 py-3.5;
+    @apply border-b border-surface-border px-4 py-3.5;
   }
   .data-table tbody tr {
     @apply transition-colors duration-150 hover:bg-white/[0.03];
   }
 
-  /* === Landing page — BokashiPay === */
-  .lp-eyebrow {
-    display: inline-flex;
-    align-items: center;
-    gap: 9px;
-    color: hsl(268 95% 76%);
-    border: 1px solid hsl(268 95% 76% / 0.35);
-    background: hsl(262 83% 58% / 0.1);
-    backdrop-filter: blur(8px);
+  /* === Custom scrollbar === */
+  .custom-scrollbar::-webkit-scrollbar {
+    width: 5px;
+  }
+  .custom-scrollbar::-webkit-scrollbar-track {
+    background: rgba(10, 8, 16, 0.5);
+  }
+  .custom-scrollbar::-webkit-scrollbar-thumb {
+    background: rgba(147, 51, 234, 0.3);
     border-radius: 9999px;
-    padding: 9px 16px;
-    font-size: 11px;
-    font-weight: 700;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
+  }
+  .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+    background: rgba(168, 85, 247, 0.6);
   }
 
-  .lp-eyebrow-dot {
-    width: 6px;
-    height: 6px;
-    border-radius: 50%;
-    background: hsl(268 95% 76%);
-    box-shadow: 0 0 10px hsl(268 95% 76%);
+  /* === Gradient cards === */
+  .revenue-gradient {
+    background:
+      radial-gradient(120% 100% at 100% 0%, rgba(147, 51, 234, 0.4) 0%, transparent 55%),
+      radial-gradient(80% 80% at 0% 100%, rgba(76, 29, 149, 0.5) 0%, transparent 60%),
+      linear-gradient(135deg, rgba(18, 14, 28, 0.9) 0%, rgba(23, 17, 38, 0.85) 100%);
   }
 
-  .lp-cta {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 9px;
-    background: linear-gradient(110deg, hsl(266 84% 50%), hsl(290 70% 60%));
-    color: hsl(0 0% 100%);
-    border-radius: 9999px;
-    height: 50px;
-    padding: 0 24px;
-    font-size: 13px;
-    font-weight: 700;
-    box-shadow:
-      0 0 0 1px hsl(0 0% 100% / 0.12) inset,
-      0 8px 30px hsl(262 83% 58% / 0.4);
-    transition: filter 0.2s, box-shadow 0.2s, transform 0.2s;
-    text-decoration: none;
-    border: 0;
-    cursor: pointer;
-    white-space: nowrap;
-  }
-  .lp-cta:hover {
-    filter: brightness(1.12);
-    box-shadow:
-      0 0 0 1px hsl(0 0% 100% / 0.18) inset,
-      0 10px 40px hsl(262 83% 58% / 0.55);
-  }
-
-  .lp-cta-outline {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-    height: 50px;
-    padding: 0 22px;
-    border-radius: 9999px;
-    font-size: 13px;
-    font-weight: 600;
-    background: hsl(0 0% 100% / 0.05);
-    border: 1px solid hsl(0 0% 100% / 0.12);
-    color: hsl(0 0% 100%);
-    backdrop-filter: blur(8px);
-    text-decoration: none;
-    transition: background 0.2s, border-color 0.2s;
-    white-space: nowrap;
-  }
-  .lp-cta-outline:hover {
-    background: hsl(0 0% 100% / 0.1);
-    border-color: hsl(0 0% 100% / 0.18);
-  }
-
-  /* === Landing pública (bokashipay-site) — paleta `bp-*` === */
-
-  /* Gradiente sutil de fundo nas seções, com grid CSS de baixa opacidade. */
-  .bg-grid {
-    background-image:
-      radial-gradient(60% 50% at 50% 0%, rgba(122, 58, 255, 0.18) 0%, rgba(10, 6, 18, 0) 60%),
-      linear-gradient(180deg, #0a0612 0%, #0a0612 100%);
-  }
-  .bg-grid::before {
-    content: "";
-    position: absolute;
-    inset: 0;
-    background-image:
-      linear-gradient(rgba(122, 58, 255, 0.06) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(122, 58, 255, 0.06) 1px, transparent 1px);
-    background-size: 48px 48px;
-    mask-image: radial-gradient(ellipse at center, #000 30%, transparent 75%);
-    pointer-events: none;
-  }
-
-  .gradient-text {
-    background: linear-gradient(135deg, #b693ff 0%, #7a3aff 50%, #4f17b3 100%);
-    -webkit-background-clip: text;
-    background-clip: text;
-    color: transparent;
-  }
-
-  .btn-primary {
-    @apply inline-flex items-center justify-center gap-2 rounded-full
-           bg-bp-500 px-6 py-3 font-semibold text-white
-           shadow-[0_8px_30px_rgba(122,58,255,0.45)]
-           transition hover:bg-bp-600 hover:shadow-[0_10px_40px_rgba(122,58,255,0.6)]
-           active:scale-[0.98];
-  }
-
-  .btn-ghost {
-    @apply inline-flex items-center justify-center gap-2 rounded-full
-           border border-bp-line bg-bp-panel/50 px-6 py-3 font-semibold text-bp-mist
-           transition hover:border-bp-500/60 hover:bg-bp-panel;
-  }
-
-  .chip {
-    @apply inline-flex items-center gap-2 rounded-full border border-bp-line
-           bg-bp-panel/60 px-3 py-1 text-xs text-bp-mist/80;
-  }
-
-  .placeholder-img {
-    @apply relative overflow-hidden rounded-2xl border border-bp-line
-           bg-gradient-to-br from-bp-panel to-bp-ink
-           flex items-center justify-center text-bp-mist/40 text-sm;
-  }
-  .placeholder-img::after {
-    content: "";
-    position: absolute;
-    inset: 0;
-    background-image:
-      linear-gradient(45deg, rgba(255, 255, 255, 0.03) 25%, transparent 25%, transparent 50%,
-                      rgba(255, 255, 255, 0.03) 50%, rgba(255, 255, 255, 0.03) 75%, transparent 75%);
-    background-size: 16px 16px;
+  .balance-gradient {
+    background:
+      radial-gradient(100% 100% at 100% 50%, rgba(147, 51, 234, 0.25) 0%, transparent 60%),
+      linear-gradient(135deg, rgba(18, 14, 28, 0.85) 0%, rgba(23, 17, 38, 0.9) 100%);
   }
 }
 

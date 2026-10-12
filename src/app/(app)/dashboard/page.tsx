@@ -1,17 +1,16 @@
 import * as React from 'react'
 import type { Metadata } from 'next'
+import Link from 'next/link'
 import { PageHeader } from '@/components/layout/app-shell'
-import { BalanceHero, PendingBalanceCard } from '@/components/dashboard/balance-hero'
+import { RevenueCard } from '@/components/dashboard/revenue-card'
+import { BalanceCard } from '@/components/dashboard/balance-card'
 import { StatCards } from '@/components/dashboard/stat-cards'
-import { GoalProgress } from '@/components/dashboard/goal-progress'
-import { SalesChart } from '@/components/dashboard/sales-chart'
+import { RevenueChart } from '@/components/dashboard/revenue-chart'
+import { ChargeStatusChart } from '@/components/dashboard/charge-status-chart'
+import { RecentTransactionsTable } from '@/components/dashboard/recent-transactions-table'
+import { PendingCharges } from '@/components/dashboard/pending-charges'
 import { PeriodSelector } from '@/components/dashboard/period-selector'
-import { TopProducts } from '@/components/dashboard/sales-table'
-import { StatusDonut } from '@/components/dashboard/status-donut'
-import { ProducerRanking } from '@/components/dashboard/producer-ranking'
-import { PixConversion } from '@/components/dashboard/pix-conversion'
-import { ConversionFunnel } from '@/components/dashboard/conversion-funnel'
-import { PaymentVelocity } from '@/components/dashboard/payment-velocity'
+import { Button } from '@/components/ui/button'
 import { firstName } from '@/lib/format'
 import { resolveRange } from '@/lib/date-range'
 import type { DateRangePreset } from '@/lib/types'
@@ -19,13 +18,9 @@ import {
   getBankAccounts,
   getDashboardMetrics,
   getProfile,
+  getRecentTransactions,
   getSalesSeries,
   getStatusDonut,
-  getTopProducts,
-  getProducerRanking,
-  getPixConversion,
-  getConversionFunnel,
-  getPaymentVelocity,
 } from '@/lib/queries'
 import { getPixProvider } from '@/services/pix'
 
@@ -34,40 +29,31 @@ export const metadata: Metadata = { title: 'Dashboard' }
 export default async function DashboardPage({
   searchParams,
 }: {
-  searchParams: Promise<{ periodo?: string; de?: string; ate?: string }>
+  searchParams: Promise< { periodo?: string; de?: string; ate?: string }>
 }) {
   const params = await searchParams
   const range = resolveRange(
-    (params.periodo ?? '30d') as DateRangePreset,
+    (params.periodo ?? '7d') as DateRangePreset,
     params.de,
     params.ate,
   )
 
-  // Tudo em paralelo: queries existentes + 5 novos stubs.
+  // Queries em paralelo: métricas, série, status, últimas transações, perfil.
   const [
     profile,
     metrics,
     series,
-    products,
     statusDonut,
-    producerRanking,
-    pixConversion,
-    conversionFunnel,
-    paymentVelocity,
+    recentTransactions,
   ] = await Promise.all([
     getProfile(),
     getDashboardMetrics(range),
     getSalesSeries(range),
-    getTopProducts(5),
     getStatusDonut(range),
-    getProducerRanking(range, 5),
-    getPixConversion(range),
-    getConversionFunnel(),
-    getPaymentVelocity(range),
+    getRecentTransactions(5),
   ])
 
-  // Chave PIX do merchant (conta primária) + status do provedor — lidos
-  // server-side para o BalanceHero abrir o modal já populado.
+  // Chave PIX do merchant (conta primária) + status do provedor
   const bankAccounts = await getBankAccounts()
   const primaryAccount = bankAccounts.find((a) => a.is_primary) ?? bankAccounts[0]
   const pixKey = primaryAccount?.pix_key ?? null
@@ -75,8 +61,8 @@ export default async function DashboardPage({
 
   const name = firstName(profile?.full_name)
 
-  // Rótulo do eixo do gráfico, dinâmico pelo período.
-  const dateLabel =
+  // Rótulo do período para o cabeçalho e o card de receita.
+  const periodLabel =
     params.periodo === 'today'
       ? 'hoje'
       : params.periodo === '7d'
@@ -87,107 +73,118 @@ export default async function DashboardPage({
             ? 'últimos 90 dias'
             : 'período selecionado'
 
+  // Pendentes = transactions pendentes recentes (limit 6 para o card).
+  const pendingTransactions = recentTransactions
+    .filter((t) => t.status === 'pending')
+    .slice(0, 6)
+
+  // Datas inicial/final formatadas para o badge do período.
+  const dateRangeLabel = `${formatDateLabel(range.from)} – ${formatDateLabel(range.to)}`
+
   return (
     <div className="space-y-6">
-      <PageHeader
-        title={`Olá, ${name}`}
-        description="Veja o desempenho do seu negócio hoje."
-        actions={<GoalProgress goal={metrics?.goal ?? null} />}
-      />
+      {/* Welcome Greeting Banner */}
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+        <div>
+          <h1 className="text-2xl font-bold tracking-tight text-white flex items-center gap-2">
+            Olá, {name} <span className="inline-block animate-pulse">⚡</span>
+          </h1>
+          <p className="text-xs text-slate-400 mt-0.5">Veja o desempenho do seu negócio em tempo real.</p>
+        </div>
+        {/* Period Selector Tabs */}
+        <div className="flex items-center bg-surface-elevated/60 p-1 rounded-xl border border-cyber-purple/20 text-xs font-mono">
+          <button className="px-3 py-1 rounded-lg text-slate-400 hover:text-white transition">Hoje</button>
+          <button className="px-3 py-1 rounded-lg text-slate-400 hover:text-white transition">7 dias</button>
+          <button className="px-3.5 py-1 rounded-lg bg-gradient-to-r from-cyber-purple to-cyber-indigo text-white font-semibold shadow-neon-sm">15 dias</button>
+          <button className="px-3 py-1 rounded-lg text-slate-400 hover:text-white transition">30 dias</button>
+        </div>
+      </div>
 
-      {/* Hero de saldo + card lateral de pendente. */}
-      <div className="grid gap-4 lg:grid-cols-[1fr_320px]">
-        <BalanceHero
-          availableBalance={metrics?.availableBalance ?? 0}
-          pixKey={pixKey}
-          providerConfigured={providerConfigured}
+      {/* Linha 1: Card de receita (2 colunas) + Saldo pendente (1 coluna) */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
+        <RevenueCard
+          value={metrics?.totalReceived ?? 0}
+          change={metrics?.change.totalReceived}
+          series={series}
+          dateLabel={periodLabel}
+          className="lg:col-span-2"
         />
-        <PendingBalanceCard value={metrics?.pendingBalance ?? 0} />
+        <BalanceCard
+          value={metrics?.availableBalance ?? 0}
+          pendingBalance={metrics?.pendingBalance ?? 0}
+        />
       </div>
 
-      <StatCards metrics={metrics} />
+      {/* Linha 2: 4 cards de métricas cyberpunk */}
+      <StatCards metrics={metrics} series={series} />
 
-      {/* Período de análise + seletor */}
-      <div className="flex flex-wrap items-center justify-between gap-3">
-        <p className="text-xs text-white/40">Período de análise</p>
-        <PeriodSelector />
-      </div>
-
-      {/* Gráfico de receita + Status dos pedidos */}
-      <div className="grid grid-cols-1 gap-4 xl:grid-cols-3">
-        <div className="xl:col-span-2">
-          <SalesChart data={series} dateLabel={dateLabel} />
+      {/* Linha 3: Gráfico de receita (2 colunas) + Status das cobranças (1 coluna) */}
+      <div className="grid grid-cols-1 gap-5 xl:grid-cols-3">
+        <div className="xl:col-span-2 glass-panel p-5 rounded-2xl">
+          <RevenueChart data={series} dateLabel={periodLabel} />
         </div>
-        <div className="surface flex flex-col">
-          <div className="border-b border-white/[0.06] p-5 pb-4">
-            <h2 className="text-base font-semibold tracking-tight text-white">Status dos pedidos</h2>
-            <p className="mt-1 text-sm text-white/50">Aprovadas vs pendentes</p>
-          </div>
-          <div className="flex-1 px-5 py-6">
-            <StatusDonut approved={statusDonut.approved} pending={statusDonut.pending} />
-          </div>
+        <div className="glass-panel p-5 rounded-2xl">
+          <ChargeStatusChart
+            approved={statusDonut.approved}
+            pending={statusDonut.pending}
+          />
         </div>
       </div>
 
-      {/* Ranking de produtores (2/3) + Conversão de PIX (1/3) */}
-      <div className="grid grid-cols-1 gap-4 xl:grid-cols-3">
-        <div className="surface xl:col-span-2">
-          <div className="flex items-start justify-between gap-4 p-5 pb-4">
+      {/* Linha 4: Últimas transações (2 colunas) + Cobranças em aberto (1 coluna) */}
+      <div className="grid grid-cols-1 gap-5 xl:grid-cols-3 pb-4">
+        <div className="glass-panel xl:col-span-2 rounded-2xl">
+          <div className="flex items-start justify-between gap-4 border-b border-cyber-purple/10 p-5 pb-4">
             <div>
-              <h2 className="text-base font-semibold tracking-tight text-white">Ranking de produtores</h2>
-              <p className="mt-1 text-sm text-white/50">Top 5 do mês · atualizado agora</p>
+              <h2 className="text-base font-semibold tracking-tight text-white">
+                Últimas transações
+              </h2>
+              <p className="mt-1 text-sm text-slate-400">
+                As 5 transações mais recentes
+              </p>
             </div>
-            <span className="rounded-full bg-white/[0.06] px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-brand-300">
-              Ao vivo
-            </span>
+            <Link href="/transacoes">
+              <Button variant="ghost" size="sm" className="rounded-lg">
+                Ver todas
+                <svg className="h-3.5 w-3.5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M5 12h14"/><path d="m12 5 7 7-7 7"/>
+                </svg>
+              </Button>
+            </Link>
           </div>
-          <div className="px-5 pb-5">
-            <ProducerRanking producers={producerRanking} live />
-          </div>
+          <RecentTransactionsTable
+            transactions={recentTransactions.slice(0, 5) as never}
+          />
         </div>
 
-        <div className="surface flex flex-col">
-          <div className="border-b border-white/[0.06] p-5 pb-4">
-            <h2 className="text-base font-semibold tracking-tight text-white">Conversão de PIX</h2>
-            <p className="mt-1 text-sm text-white/50">Pedidos gerados vs pagos</p>
+        <div className="glass-panel p-5 rounded-2xl">
+          <div className="mb-5 flex items-start justify-between gap-4">
+            <div>
+              <h2 className="text-base font-semibold tracking-tight text-white">
+                Cobranças em aberto
+              </h2>
+              <p className="mt-1 text-sm text-slate-400">
+                Acompanhe suas cobranças pendentes
+              </p>
+            </div>
+            <Link href="/vendas?status=pending">
+              <Button variant="ghost" size="sm" className="rounded-lg">
+                Ver todas
+                <svg className="h-3.5 w-3.5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M5 12h14"/><path d="m12 5 7 7-7 7"/>
+                </svg>
+              </Button>
+            </Link>
           </div>
-          <div className="flex-1 px-5 py-6">
-            <PixConversion generated={pixConversion.generated} paid={pixConversion.paid} />
-          </div>
-        </div>
-      </div>
-
-      {/* Funil de conversão (2/3) + Velocidade de pagamento (1/3) */}
-      <div className="grid grid-cols-1 gap-4 xl:grid-cols-3">
-        <div className="surface xl:col-span-2">
-          <div className="border-b border-white/[0.06] p-5 pb-4">
-            <h2 className="text-base font-semibold tracking-tight text-white">Funil de conversão</h2>
-            <p className="mt-1 text-sm text-white/50">PIX gerado → pago</p>
-          </div>
-          <div className="px-5 py-5">
-            <ConversionFunnel
-              generated={conversionFunnel.generated}
-              paid={conversionFunnel.paid}
-            />
-          </div>
-        </div>
-
-        <div className="surface flex flex-col">
-          <div className="border-b border-white/[0.06] p-5 pb-4">
-            <h2 className="text-base font-semibold tracking-tight text-white">Velocidade de pagamento</h2>
-            <p className="mt-1 text-sm text-white/50">Tempo médio até a confirmação</p>
-          </div>
-          <div className="flex-1 px-5 py-6">
-            <PaymentVelocity
-              series={paymentVelocity.series}
-              medianSeconds={paymentVelocity.medianSeconds}
-            />
-          </div>
+          <PendingCharges transactions={pendingTransactions as never} />
         </div>
       </div>
-
-      {/* Top produtos no fim. */}
-      <TopProducts products={products} />
     </div>
   )
+}
+
+function formatDateLabel(iso: string): string {
+  // iso = 'yyyy-mm-dd'
+  const [, m, d] = iso.split('-')
+  return `${d}/${m}`
 }
